@@ -1,0 +1,93 @@
+.tax-calculator-title-container {
+  display: flex;
+  align-items: center;
+  /* centra verticalmente el texto e ícono */
+  gap: 8px;
+  /* espacio entre ícono y texto */
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.tax-calculator-icon {
+  display: inline-block;
+  background-color: #F7D77F;
+}
+
+.tax-calculator-title {
+  margin: 0;
+  /* elimina márgenes por defecto del h5 */
+}
+
+.tax-calculator-frame {
+  margin-top: 10px;
+  padding: 11px;
+  position: relative;
+  width: 100%;
+  background: #F7D77F;
+  border-radius: 6px;
+  border: none;
+}
+
+.tax-calculator-sack-icon {
+  display: inline-block;
+  background-color: #14755C;
+  margin-left: 10px;
+}
+
+.tax-calculator-calendar-days-icon {
+  display: inline-block;
+  background-color: #14755C;
+  margin-left: 12px;
+}
+
+.tax-calculator-copy-icon {
+  display: inline-block;
+  background-color: #F7D77F;;
+  margin-left: 12px;
+  margin-top: 4px;
+}
+
+.col-form-label {
+  padding-top: 2px;
+}
+
+.tax-calculator-field {
+  margin-bottom: 6px !important;
+}
+
+.tax-calculator-btn-primary {
+  margin-right: 12px;
+}
+
+.tax-calculator-results-area {
+  margin-top: 13px;
+  background: #FFFFFF;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.tax-calculator-text-4 {
+  margin-bottom: 16px;
+}
+
+.tax-calculator-results-label {
+  text-align: right;
+}
+
+.tax-calculator-results-value {
+  text-align: right;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.tax-calculator-copy-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.tax-calculator-copy-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

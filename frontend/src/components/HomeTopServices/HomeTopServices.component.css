@@ -1,0 +1,43 @@
+.home-top-services-container {
+    margin-bottom: 20px;
+}
+
+.home-ts-tax-titles {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.home-ts-icon-container {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-left: 6px;
+    margin-top: 3px;
+}
+
+.home-ts-text-container {
+    display: flex;
+    justify-content: left;
+    text-align: left;
+    margin-left: 0px;
+    margin-right: 3px;
+    padding: 0px;
+}
+
+.home-ts-text-container a {
+    
+    color: #393D3D;
+}
+
+
+.home-ts-text-container a:hover {
+    text-decoration: none;
+    color: #D1661F;
+}
+
+.home-ts-bank-image {
+    max-width: 200px;
+    height: auto;
+    padding-left: 10px;
+    margin: 10px;
+}

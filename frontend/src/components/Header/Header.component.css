@@ -1,0 +1,605 @@
+/* Header.component.css */
+
+.header-container {
+    /*max-width: 1280px;
+    width: 100%;*/
+    background-color: #ffffff;
+    padding: 0px;
+    margin: 0 auto;
+    overflow-x: visible;
+}
+
+.header-top {
+    width: 100%;
+    height: 40px;
+    text-align: center;
+    background: #109B78;
+    display: flex;
+    align-items: center;
+}
+
+.header-carousel {
+    position: relative;
+    width: 100%;
+    height: 34px;
+    top: 3px;
+    background: #14755C;
+    padding: 3px 10px 0px 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.header-carousel-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.header-carousel-content {
+    display: inline-flex;
+    animation: scroll-left 60s linear infinite;
+    padding-top: 3px;
+}
+
+.header-carousel-content:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.header-carousel-text {
+    font-family: 'Avenir Next LT Pro', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #F7D77F;
+    white-space: nowrap;
+}
+
+.header-carousel-big-link {
+    font-family: 'Baloo Chettan', cursive;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 30px;
+    color: #DCAC43;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+}
+
+.header-carousel-big-link:hover {
+    color: #F7D77F;
+}
+
+.header-middle {
+    width: 100%;
+    height: 190px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-moto-pc {
+    display: block;
+}
+
+.header-moto-mobile {
+    display: none;
+}
+
+.header-logo {
+    height: 160px;
+    width: 160px;
+}
+
+.header-logo-left {
+    margin-left: 10px;
+}
+
+.header-logo-right {
+    margin-right: 10px;
+}
+
+.header-title {
+    position: relative;
+    top: 5px;
+}
+
+.header-title .mobile-only-break {
+    display: none;
+}
+
+.header-subtitle {
+    position: relative;
+    top: 0px;
+    color: #393D3D;
+}
+
+/* Header Menu (barra amarilla de navegación) */
+.header-menu {
+    width: 100%;
+    height: 40px;
+    background: #F7D77F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-navbar {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    background: #F7D77F !important;
+    font-family: 'Baloo Chettan 2', cursive;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    width: 100%;
+    /* Asegura que la navbar ocupe todo el ancho disponible */
+}
+
+.header-menu a {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+}
+
+.header-menu .header-english {
+    padding-right: 0px !important;
+    color: #D1661F;
+}
+
+.header-menu .header-espanol {
+    padding-left: 2px !important;
+    color: #D1661F;
+}
+
+.header-menu li .active {
+    background: #109B78;
+}
+
+.header-menu .nav-item:hover {
+    background: #109B78;
+}
+
+/* Estilos de Dropdown */
+.header-menu .nav-item ul {
+    background: #109B78 !important;
+    border-radius: 0 !important;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.header-menu .dropdown-item {
+    color: #F7D77F;
+}
+
+.header-menu .dropdown-item:hover {
+    background: #DCAC43 !important;
+    color: #14755C !important;
+}
+
+.dropend .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: 0;
+    margin-left: 0.125rem;
+}
+
+.header-menu .dropend .dropdown-menu {
+    background: #109B78 !important;
+    border-radius: 0 !important;
+}
+
+.header-menu .dropend .dropdown-item {
+    background: transparent !important;
+    color: #F7D77F !important;
+}
+
+.header-menu .dropend .dropdown-item:hover {
+    background: #DCAC43 !important;
+    color: #14755C !important;
+}
+
+.header-menu .dropend>.dropdown-toggle {
+    background: transparent !important;
+    color: #F7D77F !important;
+}
+
+.header-menu .dropend>.dropdown-toggle:hover {
+    background: #DCAC43 !important;
+    color: #14755C !important;
+}
+
+.header-menu .dropend>.dropdown-toggle.show {
+    background: #DCAC43 !important;
+    color: #14755C !important;
+}
+
+.dropend .dropdown-toggle::after {
+    border: none;
+    content: "›";
+    font-size: 1.2rem;
+    vertical-align: middle;
+    margin-left: auto;
+    float: right;
+}
+
+/* Estilos de Idioma */
+.header-menu .nav-item.header-lang:hover {
+    background: transparent !important;
+}
+
+.header-menu .header-lang .header-english:hover,
+.header-menu .header-lang .header-espanol:hover {
+    font-weight: 600;
+    color: #D1661F;
+}
+
+.header-menu .header-lang .header-english,
+.header-menu .header-lang .header-espanol {
+    transition: font-weight 0.2s ease;
+}
+
+.header-lang .active-lang {
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+@media (max-width: 991px) {
+
+    .header-container {
+        display: flex;
+        flex-direction: column;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .header-menu {
+        order: 1;
+    }
+
+    .header-middle {
+        order: 2;
+    }
+
+    .header-middle {
+        height: auto;
+        padding: 15px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    /* .header-logo-left, .header-logo-right {
+        display: none !important;
+    } */
+
+    .header-logo {
+        height: 90px;
+        width: 90px;
+    }
+
+    .header-title {
+        position: relative;
+        top: 5px;
+    }
+
+    .header-title .mobile-only-break {
+        display: inline;
+    }
+
+    .header-logo-left,
+    .header-logo-right {
+        flex-shrink: 0;
+    }
+
+    .header-subtitle {
+        font-size: 13px;
+        top: 0;
+    }
+
+    .header-menu {
+        height: auto;
+        padding: 8px 0;
+    }
+
+    .header-navbar .container-fluid {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 0 15px;
+    }
+
+    .header-mobile-brand {
+        /* Convertimos el enlace en un contenedor flex vertical */
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        /* Alinea el texto a la izquierda */
+        padding: 0 !important;
+        line-height: 1;
+        /* Ajusta el espaciado entre líneas */
+    }
+
+    /* Estilo para "IRIS" */
+    .header-mobile-brand .brand-iris {
+        font-family: 'Baloo Chettan', cursive;
+        font-size: 24px;
+        /* Tamaño grande */
+        font-weight: 700;
+        /* Más grueso */
+        color: #14755C !important;
+        /* Verde oscuro (como el del título principal) */
+        line-height: 1.1;
+    }
+
+    /* Estilo para "BELIZE" */
+    .header-mobile-brand .brand-belize {
+        font-family: 'Baloo Chettan 2', cursive;
+        font-size: 10px;
+        /* Tamaño pequeño */
+        font-weight: 600;
+        color: #D1661F !important;
+        /* Naranja/marrón (como el de TAX Calculator) */
+        letter-spacing: 2px;
+        /* Espaciado de letras */
+        margin-top: -5px;
+        /* Ajuste para acercarlo a IRIS */
+    }
+
+    .header-mobile-tax-link {
+        color: #D1661F !important;
+        text-decoration: underline;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 0 !important;
+        white-space: nowrap;
+    }
+
+    .navbar-toggler {
+        border: none;
+        /*padding: 6px 10px;*/
+        padding: 0;
+        margin-left: 0;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23D1661F' stroke-linecap='round' stroke-miterlimit='10' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        width: 24px;
+        height: 24px;
+    }
+
+    .navbar-collapse {
+        background: #F7D77F;
+        margin-top: 10px;
+        flex-basis: 100%;
+    }
+
+    .navbar-nav {
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .header-menu .nav-item {
+        width: 100%;
+        border-bottom: 1px solid rgba(220, 172, 67, 0.3);
+    }
+
+    .header-menu .nav-link {
+        padding: 12px 16px !important;
+        color: #14755C !important;
+        font-size: 16px;
+        text-align: left;
+    }
+
+    .header-menu .nav-link:hover {
+        color: #F7D77F !important;
+    }
+
+    /* Dropdowns en móvil */
+    .header-menu .dropdown-menu {
+        position: static !important;
+        float: none;
+        width: 100%;
+        margin: 0;
+        border: none;
+        box-shadow: none;
+        background: #109B78 !important;
+        padding: 0;
+    }
+
+    .header-menu .dropdown-item {
+        padding: 10px 30px;
+        color: #F7D77F !important;
+        border-bottom: 1px solid rgba(20, 117, 92, 0.3);
+    }
+
+    .header-menu .dropend .dropdown-menu {
+        background: #0D8A6A !important;
+    }
+
+    .header-menu .dropend .dropdown-item {
+        padding-left: 45px;
+    }
+
+    /* Idiomas en móvil */
+    .header-lang-mobile-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .header-lang-mobile-wrapper span {
+        color: #D1661F;
+        margin: 0 5px;
+    }
+
+    .header-lang-mobile-wrapper .nav-link {
+        width: auto;
+        display: inline-block;
+        color: #D1661F !important;
+        padding: 0 !important;
+    }
+
+    /* Mantener una sola fila para logos + título y permitir una segunda fila para el moto */
+    .header-middle {
+        height: auto;
+        padding: 15px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        /* border-bottom: 4px solid #B0B0B0; */
+        /* <--- LÍNEA ELIMINADA */
+
+        position: relative;
+        /* <--- AÑADIDO */
+        padding-bottom: 30px;
+        /* <--- AÑADIDO (para dar espacio a la línea) */
+    }
+
+    .header-middle::after {
+        content: '';
+        position: absolute;
+        bottom: 15px;
+        /* Distancia desde abajo */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        /* La línea ocupará el 90% del ancho, sin tocar los bordes */
+        height: 4px;
+        background-color: #B0B0B0;
+    }
+
+    .header-logo-left,
+    .header-logo-right {
+        flex-shrink: 0;
+    }
+
+    /* Primer fila (logos + título) */
+    .header-logo-left,
+    .title-center,
+    .header-logo-right {
+        order: 1;
+        /* asegurar que queden en la primera fila */
+    }
+
+    .title-center {
+        flex: 1 1 auto;
+        /* que el título use el espacio intermedio */
+        min-width: 0;
+        /* evita saltos raros */
+    }
+
+    /* Ocultar moto de desktop */
+    .header-moto-pc {
+        display: none !important;
+    }
+
+    /* Segunda fila (moto móvil, ancho completo) */
+    .header-moto-mobile {
+        display: block !important;
+        order: 2;
+        flex: 0 0 100%;
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+        padding: 0 12px;
+    }
+
+    /* Si usas .row de Bootstrap, quita márgenes negativos en este caso */
+    .header-moto-mobile.row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+@media (min-width: 393px) and (max-width: 991px) {
+    .header-logo {
+        height: 80px;
+        width: 80px;
+    }
+    
+    .header-title {
+        font-size: 32px;
+        font-weight: bold;
+        line-height: 1.1;
+    }
+
+    .header-subtitle {
+        font-size: 16px;
+    }
+
+    .title-center {
+        padding-left: 15px;
+        padding-right: 15px;
+        /*border-bottom: 2px solid #B0B0B0;*/
+        /*padding-bottom: 20px;*/
+    }
+}
+
+@media (max-width: 393px) {
+    .header-logo {
+        height: 70px;
+        width: 70px;
+    }
+
+    .header-title {
+        font-size: 32px;
+        font-weight: bold;
+        line-height: 1;
+    }
+
+    .header-subtitle {
+        font-size: 20px;
+        color: #393D3D;
+        line-height: 1.3;
+        padding: 0 15px;
+    }
+
+    .header-mobile-tax-link {
+        font-size: 18px;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 340px) {
+    .header-logo {
+        height: 50px;
+        width: 50px;
+    }
+
+    .header-title {
+        font-size: 20px;
+    }
+
+    .header-subtitle {
+        font-size: 15px;
+    }
+}

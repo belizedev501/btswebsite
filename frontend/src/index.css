@@ -1,0 +1,314 @@
+body {
+  margin: 0;
+  background-color: lightgray;
+}
+
+@font-face {
+  font-family: 'Avenir Next LT Pro';
+  src: url('../public/assets/fonts/AvenirNextLTPro-Regular.woff2') format('woff2'),
+    url('../public/assets/fonts/AvenirNextLTPro-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Baloo Chettan';
+  src: url('../public/assets/fonts/BalooChettan-Regular.woff2') format('woff2'),
+    url('../public/assets/fonts/BalooChettan-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Baloo Chettan 2';
+  src: url('../public/assets/fonts/BalooChettan2-VariableFont_wght.woff2') format('woff2'),
+    url('../public/assets/fonts/BalooChettan2-VariableFont_wght.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+p {
+  font-family: 'Avenir Next LT Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #393D3D;
+}
+
+h1 {
+  font-family: 'Baloo Chettan';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 69px;
+  color: #14755C;
+}
+
+h2 {
+  font-family: 'Baloo Chettan';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 39px;
+  line-height: 56px;
+  color: #14755C;
+}
+
+h5 {
+  font-family: 'Baloo Chettan';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 30px;
+  color: #109B78;
+}
+
+h6 {
+  font-family: 'Baloo Chettan 2';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.icon-size_1 {
+  width: auto;
+  /* Permitir que se calcule automáticamente */
+  height: 28px;
+}
+
+.icon-size_2 {
+  width: auto;
+  /* Permitir que se calcule automáticamente */
+  height: 24px;
+}
+
+.icon-size_3 {
+  width: auto;
+  /* Permitir que se calcule automáticamente */
+  height: 18px;
+}
+
+.icon-size_4 {
+  width: auto;
+  /* Permitir que se calcule automáticamente */
+  height: 20px;
+}
+
+.icon-size_5 {
+  width: auto;
+  /* Permitir que se calcule automáticamente */
+  height: 16px;
+}
+
+.icon-calculator_solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/calculator-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/calculator-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 21 / 28;
+  display: inline-block;
+}
+
+.icon-sack-dollar-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/sack-dollar-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/sack-dollar-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 1 / 1;
+  display: inline-block;
+}
+
+.icon-calendar-days-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/calendar-days-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/calendar-days-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 21 / 24;
+  display: inline-block;
+}
+
+.icon-copy-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/copy-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/copy-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 16 / 18;
+  display: inline-block;
+}
+
+.icon-backward-solid {
+  background-color: rgba(99, 114, 21);
+  mask: url('/public/assets/icons/backward-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/backward-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 1 / 1;
+  display: inline-block;
+}
+
+.icon-forward-solid {
+  background-color: rgba(99, 114, 21);
+  mask: url('/public/assets/icons/forward-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/forward-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 1 / 1;
+  display: inline-block;
+}
+
+.icon-newspaper-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/newspaper-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/newspaper-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 1 / 1;
+  display: inline-block;
+}
+
+.icon-circle-exclamation-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/circle-exclamation-solid-full.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/circle-exclamation-solid-full.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 1 / 1;
+  display: inline-block;
+}
+
+.icon-book-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/book-solid-full.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/book-solid-full.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 24 / 27;
+  display: inline-block;
+}
+
+.icon-link-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/link-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/link-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 19 / 16;
+  display: inline-block;
+}
+
+.icon-download-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/download-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/download-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 16 / 16;
+  display: inline-block;
+}
+
+.icon-file-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/file-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/file-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 10 / 14;
+  display: inline-block;
+}
+
+
+.icon-clipboard-list-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/clipboard-list-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/clipboard-list-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 14 / 18;
+  display: inline-block;
+}
+
+.icon-scale-balanced-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/scale-balanced-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/scale-balanced-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 30 / 24;
+  display: inline-block;
+}
+
+.icon-list-check-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/list-check-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/list-check-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 24 / 24;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: #D1661F;
+  border: none;
+  color: #F7D77F;
+  font-family: 'Baloo Chettan 2';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 28px;
+  height: 28px;
+  border-radius: 6px;
+  padding-top: 0px;
+}
+
+.btn-primary:hover {
+  background: #b14e19;
+}
+
+.btn-secondary {
+  background: rgba(99, 114, 21);
+  border: none;
+  color: #F7D77F;
+  font-family: 'Baloo Chettan 2';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 28px;
+  height: 28px;
+  border-radius: 6px;
+  padding-top: 0px;
+}
+
+.btn-secondary:hover {
+  background: rgba(79, 91, 17);
+}
+
+.form-control {
+  height: 30px;
+  font-family: 'Avenir Next LT Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.form-select {
+  height: 30px;
+  font-family: 'Avenir Next LT Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+@media (width:393px) {
+  h1 {
+    font-size: 33px;
+    line-height: 48px;
+  }
+}

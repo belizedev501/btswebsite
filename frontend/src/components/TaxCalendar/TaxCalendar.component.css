@@ -1,0 +1,219 @@
+.tax-calendar-title-container {
+  display: flex;
+  align-items: center;
+  /* centra verticalmente el texto e ícono */
+  gap: 8px;
+  /* espacio entre ícono y texto */
+  padding-top: 40px;
+  padding-bottom: 10px;
+}
+
+.tax-calendar-title {
+  margin: 0;
+  /* elimina márgenes por defecto del h5 */
+}
+
+.tax-calendar-icon {
+  display: inline-block;
+  background-color: #F7D77F;
+}
+
+.tax-calendar-period-content {
+  display: flex;
+  align-items: center;
+  /* Cambiar de align-content a align-items */
+  justify-content: center;
+  /* Centrar horizontalmente */
+  margin-bottom: 10px;
+  /* Espacio entre elementos */
+}
+
+.tax-calendar-period-text-content {
+  display: flex;
+  align-items: center;
+  /* Alinear verticalmente */
+  justify-content: flex-end;
+  margin-right: 0px;
+}
+
+.tax-calendar-period-text-content p {
+  margin: 0;
+  /* Eliminar márgenes del párrafo */
+}
+
+.tax-calendar-period-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tax-calendar-period-value-content {
+  display: flex;
+  align-items: center;
+  /* Centrar verticalmente el texto */
+  justify-content: center;
+  /* Centrar horizontalmente el texto */
+  margin: 0px;
+  padding: 6px;
+  width: 127px;
+  height: 28px;
+  background: #929294;
+  border-radius: 6px;
+}
+
+.tax-calendar-period-value {
+  font-family: 'Baloo Chettan 2';
+  color: #FFFFFF;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 14px;
+  margin: 0;
+  /* Eliminar márgenes del párrafo */
+}
+
+.tax-calendar-backward-icon {
+  display: inline-block;
+}
+
+.tax-calendar-forward-icon {
+  display: inline-block;
+}
+
+.tax-calendar-frame {
+  background: none;
+}
+
+.tax-calendar-day-name {
+  font-family: 'Baloo Chettan 2';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 28px;
+  color: #14755C;
+  margin-bottom: 8px;
+}
+
+.tax-calendar-frame .row .col {
+  padding-right: 6px;
+  padding-left: 6px;
+}
+
+.tax-calendar-separator {
+  width: 100%;
+  border: 1px solid #F7D77F;
+  height: 0px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.tax-calendar-week-row {
+  margin-bottom: 8px;
+}
+
+.tax-calendar-day-other-month {
+  font-family: 'Baloo Chettan 2';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 28px;
+  color: #F7D77F;
+  background: none;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0px;
+}
+
+.tax-calendar-past-day-this-month {
+  font-family: 'Baloo Chettan 2';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 28px;
+  color: #DCAC43;
+  background: none;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0px;
+}
+
+.tax-calendar-day-this-month {
+  font-family: 'Baloo Chettan 2';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 28px;
+  color: #14755C;
+  background: none;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0px;
+}
+
+.tax-calendar-box-today {
+  box-sizing: border-box;
+  width: 38px;
+  height: 28px;
+  border: 3px solid #14755C;
+  border-radius: 6px;
+}
+
+.tax-calendar-day-with-event {
+  font-family: 'Baloo Chettan 2';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 28px;
+  height: 28px;
+  color: #DCAC43;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0px;
+}
+
+.tax-calendar-box-with-event {
+  width: 38px;
+  background: #D1661F;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+}
+
+.tax-calendar-coming-title {
+  margin-top: 20px;
+  color: #DCAC43;
+}
+
+.tax-calendar-expired-title {
+  margin-top: 20px;
+  color: #929294;
+}
+
+.tax-calendar-coming-event-date {
+  font-weight: 700;
+  color: #D1661F;
+}
+
+.tax-calendar-coming-event-text {
+  font-weight: 400;
+  color: #393D3D;
+}
+
+.tax-calendar-expired-event-date {
+  font-weight: 700;
+  color: #393D3D;
+}
+
+.tax-calendar-expired-event-text {
+  font-weight: 400;
+  color: #393D3D;
+}

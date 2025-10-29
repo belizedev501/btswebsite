@@ -1,0 +1,11 @@
+.home-area {
+    /*max-width: 1280px;*/
+    background: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.home-news-bordered {
+    border-left: 4px solid #929294;
+    border-right: 4px solid #929294;
+}
