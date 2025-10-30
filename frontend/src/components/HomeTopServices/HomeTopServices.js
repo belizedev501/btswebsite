@@ -123,6 +123,21 @@ const HomeTopServices = () => {
                         </div>
                     </div>
                 ))}
+
+                {/* ===================== SUPPORT ===================== */}
+                <h5 className='home-ts-tax-titles'>
+                    {topServices.Home_TS_Support_Title}
+                </h5>
+                <div className='row' key='more-GAT'>
+                    <div className="col-1 home-ts-icon-container">
+                        <span className='icon-size_4 icon-envelope-solid' />
+                    </div>
+                    <div className="col home-ts-text-container">
+                        <a href='/gat'><h6>{topServices.Home_TS_Support_Email_Contact_Text}</h6></a>
+                    </div>
+                </div>
+
+                <h6>Or Chat with Us Now...</h6>
             </div>
         ) : (
             <p>Loading Home Top Services...</p>

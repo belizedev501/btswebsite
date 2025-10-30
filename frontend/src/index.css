@@ -252,6 +252,17 @@ h6 {
   display: inline-block;
 }
 
+.icon-envelope-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/envelope-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/envelope-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 36 / 27;
+  display: inline-block;
+
+}
+
 .btn-primary {
   background: #D1661F;
   border: none;
