@@ -260,7 +260,16 @@ h6 {
   -webkit-mask-size: contain;
   aspect-ratio: 36 / 27;
   display: inline-block;
+}
 
+.icon-headset-solid {
+  background-color: #14755C;
+  mask: url('/public/assets/icons/headset-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/headset-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 28 / 28;
+  display: inline-block;
 }
 
 .btn-primary {
