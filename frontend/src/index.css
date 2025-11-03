@@ -54,6 +54,15 @@ h2 {
   color: #14755C;
 }
 
+h4 {
+  font-family: 'Baloo Chettan';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 27px;
+  line-height: 39px;
+  color: #DCAC43;
+}
+
 h5 {
   font-family: 'Baloo Chettan';
   font-style: normal;
@@ -269,6 +278,26 @@ h6 {
   mask-size: contain;
   -webkit-mask-size: contain;
   aspect-ratio: 28 / 28;
+  display: inline-block;
+}
+
+.icon-paper-plane-solid {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/paper-plane-solid.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/paper-plane-solid.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 24 / 24;
+  display: inline-block;
+}
+
+.icon-eraser-solid-full {
+  background-color: #DCAC43;
+  mask: url('/public/assets/icons/eraser-solid-full.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/eraser-solid-full.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 20 / 20;
   display: inline-block;
 }
 
