@@ -46,11 +46,31 @@ jobs:
         with:
           name: node-app
 
+      - name: Move build folder to root
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "List downloaded files:"
+          ls -R
+          # move the frontend/build directory if it exists
+          if [ -d "frontend/build" ]; then
+            mv frontend/build ./build
+          elif [ -d "node-app/frontend/build" ]; then
+            mv node-app/frontend/build ./build
+          elif [ -d "node-app/build" ]; then
+            mv node-app/build ./build
+          else
+            echo "Build folder not found!"
+            exit 1
+          fi
+          echo "Final structure:"
+          ls -R
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'btwweb-strapidev'
-          slot-name: 'Production'      # 👈 ajustado al entorno correcto
+          slot-name: 'Production'   # 👈 usa este si tu slot se llama así
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_28CF2CD24D794D8D8F4FB43189C344EB }}
-          package: 'frontend/build'     # 👈 ruta correcta dentro del artefacto
+          package: './build'
