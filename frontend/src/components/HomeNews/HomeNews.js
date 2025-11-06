@@ -185,7 +185,7 @@ const HomeNews = () => {
                                                                     {/* Descargar documento */}
                                                                     {' '}
                                                                     <a
-                                                                        href="#"
+                                                                        href="/"
                                                                         onClick={async (e) => {
                                                                             e.preventDefault();
                                                                             try {

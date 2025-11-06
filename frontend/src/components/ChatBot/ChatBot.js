@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
+/*import React, { useEffect, useState, useContext } from 'react';*/
 import './ChatBot.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
-import { GlobalContext } from '../Context/Context'; // ⬅️ importar contexto
+/*import { GlobalContext } from '../Context/Context'; // ⬅️ importar contexto*/
 
 const ChatBot = () => {
     const [chatBot, setChatBot] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { globalServerStrapi } = useContext(GlobalContext);
+    /*const { globalServerStrapi } = useContext(GlobalContext);*/
     const {
         data: strapiChatBot,
         loading: strapiChatBotLoading,
