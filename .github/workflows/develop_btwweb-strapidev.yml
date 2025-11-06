@@ -54,4 +54,3 @@ jobs:
           slot-name: 'Development'      # 👈 ajustado al entorno correcto
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_28CF2CD24D794D8D8F4FB43189C344EB }}
           package: 'frontend/build'     # 👈 ruta correcta dentro del artefacto
-
