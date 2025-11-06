@@ -36,7 +36,7 @@ jobs:
           name: node-app
           path: frontend/build   # 👈 Carpeta que se genera con el build de React
 
-  deploy:
+    deploy:
     runs-on: ubuntu-latest
     needs: build
 
@@ -51,6 +51,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'btwweb-strapidev'
-          slot-name: 'Production'
+          slot-name: 'Development'      # 👈 ajustado al entorno correcto
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_28CF2CD24D794D8D8F4FB43189C344EB }}
-          package: './build'   # 👈 El artefacto descargado contiene /build
+          package: 'frontend/build'     # 👈 ruta correcta dentro del artefacto
+
