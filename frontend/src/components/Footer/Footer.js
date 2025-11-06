@@ -53,13 +53,13 @@ const Footer = () => {
                         <div className='col-4 footer-column'>
                             <div>
                                 {Array.isArray(footer.Icono_Red_Social) && footer.Icono_Red_Social.map(icono => (
-                                    <a href={icono.Red_Social_URL}><img className='footer-icon' src={globalServerStrapi + icono.Red_Social_Icono.url}></img></a>
+                                    <a href={icono.Red_Social_URL}><img className='footer-icon' src={globalServerStrapi + icono.Red_Social_Icono.url} alt={icono.Red_Social_Name}></img></a>
                                 ))}
                             </div>
 
                             <div>
                                 {Array.isArray(footer.Footer_Logos) && footer.Footer_Logos.map(logo => (
-                                    <img className='footer-logo' src={globalServerStrapi + logo.url}></img>
+                                    <img className='footer-logo' src={globalServerStrapi + logo.url} alt="BTS"></img>
                                 ))}
                             </div>
                         </div>
