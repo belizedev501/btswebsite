@@ -1,6 +1,6 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
-name: Build and deploy Node.js app to Azure Web App - btwweb-strapidev
+name: Build and deploy Node.js app to Azure Web App - btwweb
 on:
   push:
     branches:
@@ -45,6 +45,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'btwweb'
-          slot-name: 'Production'   # o 'Production', según el Publish Profile correcto
+          slot-name: 'development'   # o 'Production', según el Publish Profile correcto
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1FE6803D1FE046DE88D2C649792E2673 }}
           package: '.'               # 👈 Aquí el cambio: el build ya está en el root
