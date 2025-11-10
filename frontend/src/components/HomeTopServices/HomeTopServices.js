@@ -51,7 +51,7 @@ const HomeTopServices = () => {
                         </div>
                         <div className='col home-ts-text-container'>
                             <a href={'/resources/' + resource.Tax_Resource_ID}>
-                                <h6>{resource.Tax_Resource_Theme} / {resource.Tax_Resource_Title}</h6>
+                                <h6>{resource.Tax_Resource_Category} / {resource.Tax_Resource_Title}</h6>
                             </a>
                         </div>
                     </div>
