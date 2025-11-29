@@ -8,7 +8,6 @@ import HomeTopServices from '../components/HomeTopServices/HomeTopServices';
 import '../components/Home.component.css';
 import TaxCalculator from '../components/TaxCalculator/TaxCalculator';
 import TaxCalendar from '../components/TaxCalendar/TaxCalendar';
-import ChatBot from '../components/ChatBot/ChatBot';
 
 const Home = () => {
     const [BtsSEO, setBtsSEO] = useState({});
@@ -114,7 +113,6 @@ const Home = () => {
                     </div>
                     <div className='col-lg-3'>
                         <HomeTopServices />
-                        <ChatBot />
                     </div>
                 </div>
             </div>

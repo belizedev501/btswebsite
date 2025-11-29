@@ -69,10 +69,10 @@ const HomeNews = () => {
         return (
             (newsSummary.News_Summary) ? (
                 <div>
-                    <p>
-                        <span className='home-news-location-time'>{newsSummary.News_Location}, {newsSummary.News_Country}, {formatNewsDate(newsSummary.News_DateTime)}</span>
+                    <span>
+                        <p><span className='home-news-location-time'>{newsSummary.News_Location}, {newsSummary.News_Country}, {formatNewsDate(newsSummary.News_DateTime)}</span></p>
                         <BlocksRenderer content={newsSummary.News_Summary} />
-                    </p>
+                    </span>
                 </div >
             ) : (
                 <p></p>
@@ -88,7 +88,7 @@ const HomeNews = () => {
                     <p className='home-news-subtitle'>{homeNews.Home_News_SubTitle}</p>
                     {(btsNews && btsNews.length > 0) ? (
                         (btsNews.map((newsItem) => (
-                            <div key={newsItem.DocumentId} className='home-news-item'>
+                            <div key={newsItem.documentId} className='home-news-item'>
                                 <div className='row'>
                                     <div className='col-1'>
                                         {(newsItem.News_Type === 'Alert') ? (

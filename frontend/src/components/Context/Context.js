@@ -5,10 +5,12 @@ export const GlobalContext = createContext();
 export function GlobalProvider({ children }) {
   // 🔑 Credenciales y servidor de Strapi
   const [globalTokenStrapi, setglobalTokenStrapi] = useState(
-    "49bc7fde43cfb1ec77893d9afab479d8562960f6be526722d984d0c06b54f523aeed6ddd493baa3710940960b468f3a20fc203c373e1a2b5906b9dcca0b83e199a70523a00369bbeb876b79a2e0eb62f74d4e07cbf907db6a4b9759ee655e7362e48d6b8f2b0638302c6fd2bbb1611ec23d3ffe6211a7911cc544b49c3f4c180"
+    //Llave para strapi en BTS desarrollo AS
+    "2e3357edded339312988141c6ab724bdc403a884a37f8c50e53af56c44c1a01286d9e6d72f8f4c6eb7c4ba0d5f83e6a10538406a4fffd71c7b8bfe507fbfffb553278bde949d99820e381eb7b2f8e7991f79a75c5b98285b978c0ab67dbe1330bccdb147faadafa9d8841061dba4d3ea96296a59aaeeeb580032675683a9796a"
   );
 
   const [globalServerStrapi, setglobalServerStrapi] = useState(
+    //Servidor para strapi en BTS desarrollo AS
     "http://10.147.18.240:1337"
   );
 
