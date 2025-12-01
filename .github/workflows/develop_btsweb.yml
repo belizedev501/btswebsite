@@ -26,6 +26,8 @@ jobs:
       - name: Build React app
         working-directory: ./frontend
         run: npm run build
+        env:
+          CI: false
 
       - name: Prepare app for deployment
         run: |
