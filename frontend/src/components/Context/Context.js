@@ -11,7 +11,9 @@ export function GlobalProvider({ children }) {
 
   const [globalServerStrapi, setglobalServerStrapi] = useState(
     //Servidor para strapi en BTS desarrollo AS
-    "http://10.147.18.240:1337"
+    //"http://10.147.18.240:1337"
+    //Servidor para strapi en BTS desarrollo Azure
+    "http://btwweb-strapidev-b7aggpd6grckgjh0.eastus2-01.azurewebsites.net:1337"
   );
 
   // 🌍 Idioma global (persistente)
