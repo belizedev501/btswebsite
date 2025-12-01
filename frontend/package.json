@@ -2,6 +2,7 @@
   "name": "belize-frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@botpress/webchat": "^4.0.4",
     "@strapi/blocks-react-renderer": "^1.0.2",
