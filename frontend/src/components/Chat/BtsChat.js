@@ -9,7 +9,7 @@ export default function BtsChat() {
   if (loading || !texts) return null;
 
   // Avatar del bot (cargar desde /public o desde Strapi)
-  const botAvatar = "/assets/bts_logo.png";
+  //const botAvatar = "/assets/bts_logo.png";
 
   return (
     <CustomThemeProvider
@@ -25,7 +25,7 @@ export default function BtsChat() {
           clientId: "fc29bd8a-cea0-480f-a1c3-efc5b2d56956",
 
           // Avatar del bot
-          botAvatarUrl: "/assets/bts_logo_circle.png",
+          botAvatarUrl: "/assets/bts_logo.png",
 
           // ===== HEADER =====
           header: {
