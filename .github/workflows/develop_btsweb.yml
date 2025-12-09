@@ -26,7 +26,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site        # ✅ ESTE ES EL NOMBRE REAL AHORA
+          name: frontend-build
           path: frontend/build
 
   deploy:
@@ -37,19 +37,23 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: site        # ✅ MISMO NOMBRE EXACTO
-          path: site
+          name: frontend-build
+          path: ./build
 
-      - name: Debug - List root
+      - name: Debug - Verify build structure
         run: |
-          echo "ROOT:"
-          ls -la
-          echo "CONTENIDO FRONTEND-BUILD:"
-          ls -la frontend-build || true
+          echo "=== Contenido del directorio build ==="
+          ls -la ./build
+          echo ""
+          echo "=== Archivos HTML encontrados ==="
+          find ./build -name "*.html" -type f
+          echo ""
+          echo "=== Estructura completa ==="
+          tree ./build -L 2 || find ./build -type f
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: btsweb
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4F3FCF3824024266AC2221BD7C46AE2B }}
-          package: site
+          package: ./build
