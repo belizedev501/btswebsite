@@ -26,7 +26,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: site
+          name: site        # ✅ ESTE ES EL NOMBRE REAL AHORA
           path: frontend/build
 
   deploy:
@@ -37,8 +37,8 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: frontend-build
-          path: .
+          name: site        # ✅ MISMO NOMBRE EXACTO
+          path: site
 
       - name: Debug - List root
         run: |
@@ -52,4 +52,4 @@ jobs:
         with:
           app-name: btsweb
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4F3FCF3824024266AC2221BD7C46AE2B }}
-          package: ./frontend-build
+          package: site
