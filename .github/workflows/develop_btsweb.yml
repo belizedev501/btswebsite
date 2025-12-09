@@ -50,5 +50,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: btsweb
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4F3FCF3824024266AC2221BD7C46AE2B }}
           package: ./frontend-build
