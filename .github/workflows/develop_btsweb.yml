@@ -51,4 +51,4 @@ jobs:
         with:
           app-name: btsweb
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4F3FCF3824024266AC2221BD7C46AE2B }}
-          package: ./frontend-build
+          package: ./frontend-build/*
