@@ -39,16 +39,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-build
-          path: ./frontend-build
+          path: .
 
-      - name: Verify files
+      - name: Debug - List root
         run: |
-          echo "Contenido a publicar:"
-          ls -R ./frontend-build
+          echo "ROOT:"
+          ls -la
+          echo "CONTENIDO FRONTEND-BUILD:"
+          ls -la frontend-build || true
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: btsweb
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4F3FCF3824024266AC2221BD7C46AE2B }}
-          package: ./frontend-build/*
+          package: ./frontend-build
