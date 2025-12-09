@@ -23,6 +23,22 @@ jobs:
           npm ci
           CI=false npm run build
 
+      - name: Create package.json for static server
+        run: |
+          cat > ./frontend/build/package.json << 'EOF'
+          {
+            "name": "btsweb-static",
+            "version": "1.0.0",
+            "description": "Static server for React app",
+            "scripts": {
+              "start": "npx serve -s . -l 8080"
+            },
+            "dependencies": {
+              "serve": "^14.2.1"
+            }
+          }
+          EOF
+
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -45,11 +61,8 @@ jobs:
           echo "=== Contenido del directorio build ==="
           ls -la ./build
           echo ""
-          echo "=== Archivos HTML encontrados ==="
-          find ./build -name "*.html" -type f
-          echo ""
-          echo "=== Estructura completa ==="
-          tree ./build -L 2 || find ./build -type f
+          echo "=== Verificar package.json ==="
+          cat ./build/package.json
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
