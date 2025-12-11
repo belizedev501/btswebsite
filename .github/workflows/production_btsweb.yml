@@ -52,4 +52,4 @@ jobs:
           app-name: 'btsweb'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8BEB4B85D2C8446DABF2E8D220071ADB }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12DAF9C71D4242F688939147A45F69F2 }}
