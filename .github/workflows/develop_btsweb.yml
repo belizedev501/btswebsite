@@ -68,5 +68,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: btsweb
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4F3FCF3824024266AC2221BD7C46AE2B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_150D4D4F38CF4051804B4966F0A9B4C5 }}
           package: ./build
