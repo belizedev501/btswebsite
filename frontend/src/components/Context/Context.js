@@ -13,7 +13,7 @@ export function GlobalProvider({ children }) {
     //Servidor para strapi en BTS desarrollo AS
     //"http://10.147.18.240:1337"
     //Servidor para strapi en BTS desarrollo Azure
-    "https://btsweb-strapi-development.azurewebsites.net/:1337"
+    "https://btsweb-strapi-development.azurewebsites.net:1337"
   );
 
   // 🌍 Idioma global (persistente)
