@@ -1,0 +1,328 @@
+.newsSearch-section {
+    padding: 20px 20px 30px 20px;
+    background: #ffffff;
+}
+
+.newsSearch-title-container {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.newsSearch-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.newsSearch-input {
+    width: 100%;
+    padding: 16px 48px 16px 16px;
+    font-size: 16px;
+    border: 4px solid #DCAC43;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.newsSearch-input:focus {
+    border-color: #D1661F;
+}
+
+.newsSearch-button {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-40%);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.newsSearch-button:hover .icon-magnifying-glass-solid-full {
+    background-color: #14755C;
+}
+
+.newsSearch-result {
+    margin-top: 80px;
+}
+
+.newsSearch-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+}
+
+.newsSearch-card {
+    width: 340px;
+    background: none;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 420px;
+    border-radius: 6px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #F7D77F;
+}
+
+.newsSearch-card-img-container {
+    position: relative;
+    text-align: center;
+}
+
+.newsSearch-card-img {
+    margin-top: 20px;
+    width: 90%;
+    height: auto;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.newsSearch-card-category {
+    color: #393D3D;
+    font-weight: 800;
+}
+
+.newsSearch-card-content {
+    padding: 18px 18px 12px 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.newsSearch-card-title-link {
+    text-decoration: none;
+}
+
+.newsSearch-card-title {
+    text-decoration: none;
+}
+
+.newsSearch-card-date {
+    font-weight: 600;
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.newsSearch-card-intro {
+    font-size: 15px;
+    margin: 0 0 5px 0;
+    min-height: 44px;
+    line-height: 1.2;
+}
+
+.newsSearch-pagination-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin: 40px 0 0 0;
+}
+
+.newsSearch-card-details-link {
+    color: #109B78;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+    display: inline-block;
+}
+
+.newsSearch-card-details-link:hover {
+    color: #14755C;
+    text-decoration: underline;
+}
+
+.newsSearch-pagination-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+}
+
+/* Íconos de paginación */
+.newsSearch-pagination-btn .icon-backward-solid,
+.newsSearch-pagination-btn .icon-forward-solid {
+    background-color: #109B78;
+}
+
+.newsSearch-pagination-btn:not(.disabled):hover .icon-backward-solid,
+.newsSearch-pagination-btn:not(.disabled):hover .icon-forward-solid {
+    background-color: #14755C;
+}
+
+.newsSearch-pagination-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Números de página */
+.newsSearch-pagination-page {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    padding: 0;
+}
+
+.newsSearch-pagination-page h5 {
+    color: #109B78;
+    margin: 0;
+    transition: color 0.2s;
+}
+
+.newsSearch-pagination-page:hover:not(:disabled) h5 {
+    color: #14755C;
+}
+
+.newsSearch-pagination-page.active h5 {
+    color: #14755C;
+    font-weight: 700;
+}
+
+.newsSearch-pagination-page:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Skeleton Loading Styles */
+.newsSearch-blog-card-skeleton {
+    pointer-events: none;
+}
+
+.newsSearch-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 37%, #f0f0f0 63%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.2s ease-in-out infinite;
+    border-radius: 8px;
+}
+
+@keyframes newsSearch-skeleton-loading {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+
+.newsSearch-skeleton-img {
+    width: 100%;
+    height: 180px;
+    border-radius: 16px 16px 0 0;
+    margin-bottom: 0;
+}
+
+.newsSearch-skeleton-chip {
+    width: 80px;
+    height: 24px;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    border-radius: 8px;
+}
+
+.newsSearch-skeleton-title {
+    width: 70%;
+    height: 28px;
+    margin: 18px 0 10px 0;
+}
+
+.newsSearch-skeleton-text {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 18px;
+}
+
+.newsSearch-skeleton-btn {
+    width: 120px;
+    height: 32px;
+    border-radius: 8px;
+}
+
+/* Filtros de tipo */
+.newsSearch-filters-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 30px auto;
+    max-width: 600px;
+}
+
+.newsSearch-filter-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    gap: 8px;
+}
+
+.newsSearch-checkbox-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.newsSearch-checkbox-custom {
+    position: relative;
+    height: 20px;
+    width: 20px;
+    border: 2px solid #109B78;
+    border-radius: 4px;
+    background-color: #ffffff;
+    transition: all 0.2s;
+}
+
+.newsSearch-filter-checkbox:hover .newsSearch-checkbox-custom {
+    border-color: #14755C;
+}
+
+.newsSearch-checkbox-input:checked ~ .newsSearch-checkbox-custom {
+    background-color: #109B78;
+    border-color: #109B78;
+}
+
+.newsSearch-checkbox-input:checked ~ .newsSearch-checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.newsSearch-checkbox-label {
+    font-family: 'Avenir Next LT Pro';
+    font-size: 14px;
+    color: #393D3D;
+    font-weight: 500;
+}
+
+.newsSearch-card-details-link {
+    color: #109B78;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+    display: inline-block;
+}
+
+.newsSearch-card-details-link:hover {
+    color: #14755C;
+    text-decoration: underline;
+}

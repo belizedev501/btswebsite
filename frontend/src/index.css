@@ -54,6 +54,16 @@ h2 {
   color: #14755C;
 }
 
+h3 {
+  font-family: 'Baloo Chettan';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 33px;
+  line-height: 48px;
+  text-decoration-line: underline;
+  color: #14755C;
+}
+
 h4 {
   font-family: 'Baloo Chettan';
   font-style: normal;
@@ -82,35 +92,35 @@ h6 {
 
 .icon-size_1 {
   width: auto;
-  /* Permitir que se calcule automáticamente */
   height: 28px;
 }
 
 .icon-size_2 {
   width: auto;
-  /* Permitir que se calcule automáticamente */
   height: 24px;
 }
 
 .icon-size_3 {
   width: auto;
-  /* Permitir que se calcule automáticamente */
   height: 18px;
 }
 
 .icon-size_4 {
   width: auto;
-  /* Permitir que se calcule automáticamente */
   height: 20px;
 }
 
 .icon-size_5 {
   width: auto;
-  /* Permitir que se calcule automáticamente */
   height: 16px;
 }
 
-.icon-calculator_solid {
+.icon-size_big {
+  width: auto;
+  height: 30px;
+}
+
+.icon-calculator-solid {
   background-color: #DCAC43;
   mask: url('/public/assets/icons/calculator-solid.svg') no-repeat center;
   -webkit-mask: url('/public/assets/icons/calculator-solid.svg') no-repeat center;
@@ -298,6 +308,16 @@ h6 {
   mask-size: contain;
   -webkit-mask-size: contain;
   aspect-ratio: 20 / 20;
+  display: inline-block;
+}
+
+.icon-magnifying-glass-solid-full {
+  background-color: #109B78;
+  mask: url('/public/assets/icons/magnifying-glass-solid-full.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/magnifying-glass-solid-full.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 16 / 16;
   display: inline-block;
 }
 

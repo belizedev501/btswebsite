@@ -1,0 +1,233 @@
+.blog-tarjeta-container {
+    margin-top: 42px;
+}
+
+.blog-tarjeta-container h3 {
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 46px;
+    text-transform: uppercase;
+    color: #02B1C4;
+}
+
+.blog-tarjeta-img-lr {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 24px;
+    object-fit: cover;
+}
+
+.blog-tarjeta-img-l {
+    width: 45%;
+    min-width: 200px;
+    max-width: 400px;
+    border-radius: 24px;
+    margin: 0 24px 0 0 !important;
+    float: left;
+}
+
+.blog-tarjeta-img-r {
+    width: 45%;
+    min-width: 200px;
+    max-width: 400px;
+    border-radius: 24px;
+    margin: 0 24px 0 0 !important;
+    float: right;
+}
+
+@media (max-width: 992px),
+(max-width: 767px) {
+    .blog-tarjeta-flex-responsive {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+
+    .blog-tarjeta-img-l {
+        display: block;
+        width: 100% !important;
+        max-width: 100%;
+        margin: 24px 0 0 0 !important;
+        float: none;
+        border-radius: 24px;
+        object-fit: cover;
+    }
+
+    .blog-tarjeta-img-r {
+        display: block;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 24px 0 !important;
+        float: none;
+        border-radius: 24px;
+        object-fit: cover;
+    }
+
+    /* Ajuste para el contenedor flex de Izquierda/Derecha */
+    .blog-tarjeta-container-flex {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+
+    /* Ordena el contenido y la imagen para Derecha en mobile */
+    .blog-tarjeta-flex-responsive.mobile-derecha {
+        flex-direction: column !important;
+    }
+
+    .blog-tarjeta-flex-responsive.mobile-derecha>.blog-tarjeta-img-r {
+        order: 2;
+        margin: 0 0 24px 0 !important;
+    }
+
+    .blog-tarjeta-flex-responsive.mobile-derecha>div {
+        order: 1;
+    }
+}
+
+.blog-tarjeta-img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 24px 0 24px 0 !important;
+    border-radius: 24px;
+    object-fit: cover;
+}
+
+.blogPostDetail-section {
+    padding: 160px 80px 30px 80px;
+    background: #f5f6f8;
+}
+
+.blogPostDetail-tarjeta-section {
+    padding: 60px 80px 80px 80px;
+    background: #ffffff;
+}
+
+.blogPostDetail-header {
+    margin-bottom: 40px;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.blogPostDetail-categoria {
+    background: #FF9C00;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 16px;
+    padding: 4px 36px 2px 36px;
+    margin-bottom: 18px;
+    display: inline-block;
+    letter-spacing: 0.5px;
+    font-family: 'Omnes';
+    font-style: normal;
+    font-weight: 400;
+}
+
+.blogPostDetail-titulo {
+    font-size: 34px;
+    line-height: 46px;
+    text-transform: uppercase;
+    color: #027590;
+}
+
+.blogPostDetail-banner {
+    width: 100%;
+    max-width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 18px;
+    margin-bottom: 0;
+    margin-top: 0;
+    box-shadow: none;
+}
+
+.blog-tarjeta-container-banner {
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    margin: 0 -80px 0 -80px;
+}
+
+.blog-tarjeta-img-banner {
+    width: 100% !important;
+    border-radius: 0 !important;
+    margin: 32px 0 !important;
+    display: block;
+    box-shadow: none;
+}
+
+.blogPostDetail-skeleton {
+    padding: 32px 16px;
+}
+
+.skeleton-header {
+    margin-bottom: 32px;
+}
+
+.skeleton-categoria {
+    width: 120px;
+    height: 20px;
+    margin-bottom: 12px;
+}
+
+.skeleton-titulo {
+    width: 60%;
+    height: 32px;
+    margin-bottom: 18px;
+}
+
+.skeleton-banner {
+    width: 100%;
+    max-width: 600px;
+    height: 220px;
+    margin-bottom: 32px;
+}
+
+.skeleton-tarjeta-container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto 24px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skeleton-tarjeta-titulo {
+    width: 40%;
+    height: 24px;
+}
+
+.skeleton-tarjeta-contenido {
+    width: 100%;
+    height: 60px;
+}
+
+.skeleton-box {
+    background: linear-gradient(90deg, #ececec 25%, #f5f5f5 50%, #ececec 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.2s infinite linear;
+    border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (max-width: 700px) {
+    .skeleton-banner {
+        height: 140px;
+    }
+
+    .skeleton-tarjeta-container {
+        max-width: 100%;
+    }
+}

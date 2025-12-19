@@ -114,7 +114,7 @@ ${taxCalculator.Tax_Calculator_Result_Text_4}: $${results.totalTaxPayableYearly}
         (!loading && taxCalculator?.Tax_Calculator_Title) ? (
             <div>
                 <div className="tax-calculator-title-container">
-                    <div className="icon-size_1 tax-calculator-icon icon-calculator_solid" aria-label="Tax Calculator" />
+                    <div className="icon-size_1 tax-calculator-icon icon-calculator-solid" aria-label="Tax Calculator" />
                     <h5 className="tax-calculator-title">{taxCalculator.Tax_Calculator_Title}</h5>
                 </div>
 

@@ -95,3 +95,10 @@
   height: auto;
   margin-bottom: 20px;
 }
+
+.home-news-final-message-area {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

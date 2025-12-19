@@ -219,13 +219,16 @@ const HomeNews = () => {
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         )))
                     ) : (
                         <p>No news available.</p>
                     )}
-
-
+                    <div className='home-news-final-message-area'>
+                        <h6>{homeNews.Home_News_Final_Message}</h6>
+                        <h6><a href={homeNews.Home_News_Final_Message_Link_URL}>{homeNews.Home_News_Final_Message_Link_Text}</a></h6>
+                    </div>
                 </div>
             ) :
             (

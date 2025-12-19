@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GlobalContext } from '../components/Context/Context';
-import { useStrapiSingle } from '../components/Strapi/strapiCollection';
+import { useStrapiSingle, useStrapiCollection } from '../components/Strapi/strapiCollection';
 import { useContext } from 'react';
 import HomeHero from '../components/HomeHero/HomeHero';
 import HomeNews from '../components/HomeNews/HomeNews';
@@ -8,6 +8,7 @@ import HomeTopServices from '../components/HomeTopServices/HomeTopServices';
 import '../components/Home.component.css';
 import TaxCalculator from '../components/TaxCalculator/TaxCalculator';
 import TaxCalendar from '../components/TaxCalendar/TaxCalendar';
+import { useMemo } from 'react';
 
 const Home = () => {
     const [BtsSEO, setBtsSEO] = useState({});
@@ -34,15 +35,28 @@ const Home = () => {
     }, [strapiBtsSEO, strapiBtsSEOLoading, strapiBtsSEOError]);
 
     // Get SEO Data for BTS Home
+
+    const seoFilters = useMemo(
+        () => ({ Page_Id: 'Home' }),
+        []
+    );
+
     const {
         data: strapiHomeSEO,
         loading: strapiHomeSEOLoading,
         error: strapiHomeSEOError
-    } = useStrapiSingle('seo-home');
+    } = useStrapiCollection(
+        'seo-pages',
+        '=*',
+        'id',
+        'asc',
+        1,
+        seoFilters
+    );
 
     useEffect(() => {
         if (strapiHomeSEO) {
-            setHomeSEO(strapiHomeSEO);
+            setHomeSEO(strapiHomeSEO[0]);
         }
         if (strapiHomeSEOError) {
             console.error("Error loading SEO for Home:", strapiHomeSEOError);
