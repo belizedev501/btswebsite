@@ -159,7 +159,7 @@ const HomeNews = () => {
                                         <div className='row'>
                                             <div className='col-3 home-news-link-section'>
                                                 <p>
-                                                    <a href={'/news/n=' + newsItem.News_URL} target="_blank" rel="noopener noreferrer">
+                                                    <a href={'/newsdetails/' + newsItem.News_URL} target="_blank" rel="noopener noreferrer">
                                                         <span className="icon-size_5 home-news-link-icon icon-link-solid" />
                                                         {locale === 'es' ? ' Leer más' : ' Read more'}
                                                     </a>

@@ -246,12 +246,12 @@ const NewsSearch = () => {
                                         </div>
                                         <div className="newsSearch-card-content">
                                             <h6 className='newsSearch-card-category'>[{news_Type}]</h6>
-                                            <Link to={`/news/n=${news_URL_slug}`} className="newsSearch-card-title-link">
+                                            <Link to={`/newsdetails/${news_URL_slug}`} className="newsSearch-card-title-link">
                                                 <h5 className="newsSearch-card-title">{news_Headline}</h5>
                                             </Link>
                                             <p className="newsSearch-card-intro">{summaryShort}</p>
                                             <p className="newsSearch-card-date">{new Date(news_DateTime).toLocaleDateString()}</p>
-                                            <Link to={`/news/n=${news_URL_slug}`} className="newsSearch-card-details-link">
+                                            <Link to={`/newsdetails/${news_URL_slug}`} className="newsSearch-card-details-link">
                                                 {newsSearch.News_Search_Details_Link_Text}
                                             </Link>
                                         </div>
