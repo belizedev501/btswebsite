@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { getCookieConsent } from './useCookieConsent';
 
-const TRACKING_ID = 'G-FGJG1JHERY';
+const TRACKING_ID = 'G-oogleAnalyticsTrackingID'; // Replace with your actual Tracking ID
 
 export const useGoogleAnalytics = () => {
     useEffect(() => {

@@ -137,7 +137,7 @@ const HomeTopServices = () => {
                     </div>
                 </div>
 
-                <h6>Or Chat with Us Now...</h6>
+                <h6>{topServices.Home_TS_Support_Chatbox_Text}</h6>
             </div>
         ) : (
             <p>Loading Home Top Services...</p>
