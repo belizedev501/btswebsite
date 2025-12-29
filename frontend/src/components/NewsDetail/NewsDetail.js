@@ -151,10 +151,10 @@ const NewsDetail = () => {
         <section className="container newsDetail-section">
             <div className="container newsDetail-container">
                 <div className="newsDetail-header">
-                    <h5>{'['+ categoria + ']'}</h5>
+                    <h5>{'[' + categoria + ']'}</h5>
                     <h4 className='newsDetail-headline'>{news.News_Headline}</h4>
                     <span className='newsDetail-summary'>{renderBlocks(news.News_Summary)}</span>
-                    
+
                     <div className="newsDetail-meta">
                         {news.News_Author && <span className="newsDetail-meta-item">{news.News_Author + ' - '}</span>}
                         {news.News_DateTime && (
@@ -177,17 +177,15 @@ const NewsDetail = () => {
                     )}
                 </div>
 
-                <div className="newsDetail-tarjeta-section">
-
-
-                    
-
+                <div className="newsDetail-content-paragraphs">
                     {(news.News_Content && news.News_Content.length > 0) ? (
                         news.News_Content.map((contentItem, idx) => renderContentItem(contentItem, idx))
                     ) : (
                         <p></p>
                     )}
+                </div>
 
+                <div className="newsDetail-content-files">
                     {(news.News_Docs && news.News_Docs.length > 0) ?
                         (
                             news.News_Docs.map((doc) => (
@@ -236,48 +234,48 @@ const NewsDetail = () => {
                             )
                         ) : (null)
                     }
-                    <div className="newsDetail-share" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
-                        <span style={{ marginBottom: 8, fontWeight: 500, fontSize: 16, color: '#02B1C4' }}>Compartir en:</span>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
-                            <a
-                                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title="Compartir en LinkedIn"
-                                className="newsDetail-share-btn"
-                                style={{ color: '#02B1C4', fontSize: 20 }}
-                            >
-                                <FaLinkedinIn />
-                            </a>
-                            <a
-                                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title="Compartir en Facebook"
-                                className="newsDetail-share-btn"
-                                style={{ color: '#02B1C4', fontSize: 20 }}
-                            >
-                                <FaFacebookF />
-                            </a>
-                            <a
-                                href={`https://wa.me/?text=${encodeURIComponent(news.News_Headline + ' ' + window.location.href)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title="Compartir en WhatsApp"
-                                className="newsDetail-share-btn"
-                                style={{ color: '#02B1C4', fontSize: 20 }}
-                            >
-                                <FaWhatsapp />
-                            </a>
-                            <button
-                                onClick={() => { navigator.clipboard.writeText(window.location.href); }}
-                                title="Copiar enlace"
-                                className="newsDetail-share-btn"
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#02B1C4' }}
-                            >
-                                <FaLink />
-                            </button>
-                        </div>
+                </div>
+                <div className="newsDetail-share" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
+                    <span style={{ marginBottom: 8, fontWeight: 500, fontSize: 16, color: '#02B1C4' }}>Compartir en:</span>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
+                        <a
+                            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Compartir en LinkedIn"
+                            className="newsDetail-share-btn"
+                            style={{ color: '#02B1C4', fontSize: 20 }}
+                        >
+                            <FaLinkedinIn />
+                        </a>
+                        <a
+                            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Compartir en Facebook"
+                            className="newsDetail-share-btn"
+                            style={{ color: '#02B1C4', fontSize: 20 }}
+                        >
+                            <FaFacebookF />
+                        </a>
+                        <a
+                            href={`https://wa.me/?text=${encodeURIComponent(news.News_Headline + ' ' + window.location.href)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Compartir en WhatsApp"
+                            className="newsDetail-share-btn"
+                            style={{ color: '#02B1C4', fontSize: 20 }}
+                        >
+                            <FaWhatsapp />
+                        </a>
+                        <button
+                            onClick={() => { navigator.clipboard.writeText(window.location.href); }}
+                            title="Copiar enlace"
+                            className="newsDetail-share-btn"
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#02B1C4' }}
+                        >
+                            <FaLink />
+                        </button>
                     </div>
                 </div>
             </div>

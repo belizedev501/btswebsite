@@ -1,63 +1,76 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { getCookieConsent } from './useCookieConsent';
 
-const TRACKING_ID = 'G-oogleAnalyticsTrackingID'; // Replace with your actual Tracking ID
+const TRACKING_ID = 'G-oogleAnalyticsTrackingID';
 
 export const useGoogleAnalytics = () => {
-    useEffect(() => {
-        const consent = getCookieConsent();
-        if (!consent || !consent.analytics) return;
-        // Function to load Google Analytics
-        const loadGoogleAnalytics = () => {
-            // Check if it's already loaded
-            if (window.gtag) {
-                return;
-            }
+    // Marca si gtag ya se inicializó y guarda eventos pendientes mientras carga
+    const isReadyRef = useRef(false);
+    const pendingEventsRef = useRef([]);
 
-            // Create the gtag script
-            const script = document.createElement('script');
-            script.src = `https://www.googletagmanager.com/gtag/js?id=${TRACKING_ID}`;
-            script.async = true;
-            document.head.appendChild(script);
-
-            // Initialize dataLayer and gtag
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                window.dataLayer.push(arguments);
-            }
-
-            // Make gtag available globally
-            window.gtag = gtag;
-
-            gtag('js', new Date());
-            gtag('config', TRACKING_ID, {
-                send_page_view: false // We disable automatic sending
-            });
-        };
-
-        loadGoogleAnalytics();
+    const flushQueue = useCallback(() => {
+        if (!window.gtag || pendingEventsRef.current.length === 0) return;
+        pendingEventsRef.current.forEach(args => window.gtag(...args));
+        pendingEventsRef.current = [];
     }, []);
 
-    // Function to send page events
-    const trackPageView = (pageTitle, pagePath) => {
-        if (window.gtag) {
-            window.gtag('config', TRACKING_ID, {
-                page_title: pageTitle,
-                page_location: `${window.location.origin}${pagePath || window.location.pathname}`
-            });
+    const pushEvent = useCallback((...args) => {
+        if (window.gtag && isReadyRef.current) {
+            window.gtag(...args);
+        } else {
+            pendingEventsRef.current.push(args);
         }
-    };
+    }, []);
 
-    // Function to send custom events
-    const trackEvent = (action, category, label, value) => {
+    useEffect(() => {
+        const consent = getCookieConsent(); // Solo cargamos GA si aceptó analíticas
+        if (!consent || !consent.analytics) return;
+
         if (window.gtag) {
-            window.gtag('event', action, {
-                event_category: category,
-                event_label: label,
-                value: value
-            });
+            isReadyRef.current = true;
+            flushQueue();
+            return;
         }
-    };
+
+        const script = document.createElement('script');
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${TRACKING_ID}`;
+        script.async = true;
+        script.onload = () => {
+            isReadyRef.current = true;
+            flushQueue();
+        };
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            window.dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', TRACKING_ID, { send_page_view: false });
+
+        document.head.appendChild(script);
+    }, [flushQueue]);
+
+    const trackPageView = useCallback((pageTitle, pagePath) => {
+        const path = pagePath || `${window.location.pathname}${window.location.search}`; // Incluye query string
+        const location = `${window.location.origin}${path}`;
+        const title = pageTitle || document.title || location;
+
+        pushEvent('event', 'page_view', {
+            page_title: title,
+            page_location: location,
+            page_path: path
+        });
+    }, [pushEvent]);
+
+    const trackEvent = useCallback((action, category, label, value) => {
+        if (!action) return;
+        pushEvent('event', action, {
+            ...(category ? { event_category: category } : {}),
+            ...(label ? { event_label: label } : {}),
+            ...(value !== undefined ? { value } : {})
+        });
+    }, [pushEvent]);
 
     return { trackPageView, trackEvent };
 };

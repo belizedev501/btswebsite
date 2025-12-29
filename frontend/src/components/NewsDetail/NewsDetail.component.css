@@ -8,7 +8,6 @@
 }
 
 .newsDetail-header {
-    margin-bottom: 40px;
     text-align: center;
 }
 
@@ -34,6 +33,14 @@
 
 .newsDetail-meta-item {
     margin-right: 8px;
+}
+
+.newsDetail-content-paragraphs {
+    margin-bottom: 40px;
+}
+
+.newsDetail-content-files {
+    margin-bottom: 40px;
 }
 
 .newsDetail-img-l {
