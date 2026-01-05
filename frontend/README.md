@@ -2,6 +2,43 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Configuración por ambientes (Strapi)
+
+El frontend lee variables de entorno en tiempo de *build* con prefijo `REACT_APP_`. Se añadieron:
+
+- `REACT_APP_STRAPI_URL`
+- `REACT_APP_STRAPI_TOKEN`
+
+### Local
+1. Copia `.env.example` a `.env.development` (o `.env.local`) y ajusta los valores.
+2. Ejecuta `npm start` y CRA tomará esas variables automáticamente.
+
+### Build con GitHub Actions hacia Azure App Service
+1. Define secretos por ambiente en GitHub (`STRAPI_URL_DEV`, `STRAPI_TOKEN_DEV`, etc.).
+2. En el job de build, exporta esas variables antes de `npm run build`, por ejemplo:
+
+```yaml
+env:
+  REACT_APP_STRAPI_URL: ${{ secrets.STRAPI_URL_DEV }}
+  REACT_APP_STRAPI_TOKEN: ${{ secrets.STRAPI_TOKEN_DEV }}
+
+steps:
+  - uses: actions/checkout@v4
+  - uses: actions/setup-node@v4
+    with:
+      node-version: 20
+  - run: npm ci
+  - run: npm run build
+  - uses: azure/webapps-deploy@v3
+    with:
+      app-name: <nombre-app-service>
+      package: build
+```
+3. Repite con otros secretos para staging/prod (usando variables de entorno distintas por workflow o por environment).
+
+### Build dentro de Azure App Service
+Si el build se hace en App Service, agrega las mismas claves en **Configuration > Application settings** (`REACT_APP_STRAPI_URL`, `REACT_APP_STRAPI_TOKEN`) para que `npm run build` las tome allí.
+
 ## Available Scripts
 
 In the project directory, you can run:
