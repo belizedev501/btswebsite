@@ -2,17 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { GlobalContext } from '../components/Context/Context';
 import { useStrapiSingle, useStrapiCollection } from '../components/Strapi/strapiCollection';
 import { useContext } from 'react';
+import NewsDetail from '../components/NewsDetail/NewsDetail';
 import HomeHero from '../components/HomeHero/HomeHero';
-import HomeNews from '../components/HomeNews/HomeNews';
-import HomeTopServices from '../components/HomeTopServices/HomeTopServices';
-import '../components/Home.component.css';
 import TaxCalculator from '../components/TaxCalculator/TaxCalculator';
 import TaxCalendar from '../components/TaxCalendar/TaxCalendar';
 import { useMemo } from 'react';
 
-const Home = () => {
+const NewsDetails = () => {
     const [BtsSEO, setBtsSEO] = useState({});
-    const [homeSEO, setHomeSEO] = useState({});
+    const [newsDetailsSEO, setNewsDetailsSEO] = useState({});
     const { globalServerStrapi } = useContext(GlobalContext);
 
     // Google Analytics
@@ -34,17 +32,18 @@ const Home = () => {
         }
     }, [strapiBtsSEO, strapiBtsSEOLoading, strapiBtsSEOError]);
 
-    // Get SEO Data for BTS Home
+
+    // Get SEO Data for News
 
     const seoFilters = useMemo(
-        () => ({ Page_Id: 'Home' }),
+        () => ({ Page_Id: 'NewsDetails' }),
         []
     );
 
     const {
-        data: strapiHomeSEO,
-        loading: strapiHomeSEOLoading,
-        error: strapiHomeSEOError
+        data: strapiNewsDetailsSEO,
+        loading: strapiNewsDetailsSEOLoading,
+        error: strapiNewsDetailsSEOError
     } = useStrapiCollection(
         'seo-pages',
         '=*',
@@ -55,46 +54,37 @@ const Home = () => {
     );
 
     useEffect(() => {
-        if (strapiHomeSEO) {
-            setHomeSEO(strapiHomeSEO[0]);
+        if (strapiNewsDetailsSEO) {
+            setNewsDetailsSEO(strapiNewsDetailsSEO[0]);
         }
-        if (strapiHomeSEOError) {
-            console.error("Error loading SEO for Home:", strapiHomeSEOError);
+        if (strapiNewsDetailsSEOError) {
+            console.error("Error loading SEO for News:", strapiNewsDetailsSEOError);
         }
-    }, [strapiHomeSEO, strapiHomeSEOLoading, strapiHomeSEOError]);
-
-    // Send pageview when loading page and SEO data
-    // useEffect(() => {
-    //     if (homeSEO?.metaTitle) {
-    //         trackPageView(homeSEO.metaTitle, '/');
-    //     }
-    // }, [homeSEO?.metaTitle, trackPageView]);
-
-
+    }, [strapiNewsDetailsSEO, strapiNewsDetailsSEOLoading, strapiNewsDetailsSEOError]);
 
     return (
         <>
             {/* React Document Metadata */}
-            <title>{homeSEO?.metaTitle || 'Belize Tax Service - Home page'}</title>
-            <meta name="description" content={homeSEO?.metaDescription || 'Default description'} />
-            <meta name="keywords" content={homeSEO?.metaKeywords || 'Default keywords'} />
+            <title>{newsDetailsSEO?.metaTitle || 'Belize Tax Service - News Search page'}</title>
+            <meta name="description" content={newsDetailsSEO?.metaDescription || 'Default description'} />
+            <meta name="keywords" content={newsDetailsSEO?.metaKeywords || 'Default keywords'} />
 
             {/* Open Graph */}
-            <meta property="og:title" content={homeSEO?.metaTitle || 'Belize Tax Service'} />
-            <meta property="og:description" content={homeSEO?.metaDescription || 'Default description'} />
+            <meta property="og:title" content={newsDetailsSEO?.metaTitle || 'Belize Tax Service'} />
+            <meta property="og:description" content={newsDetailsSEO?.metaDescription || 'Default description'} />
             <meta property="og:type" content="website" />
             <meta property="og:site_name" content={BtsSEO?.Nombre_Website} />
-            <meta property="og:image" content={globalServerStrapi + homeSEO?.ogImage?.url || '/default-og-image.jpg'} />
-            <meta property="og:image:width" content={homeSEO?.ogImageWidth} />
-            <meta property="og:image:height" content={homeSEO?.ogImageHeight} />
-            <meta property="og:image:alt" content={homeSEO?.ogImageAlt || 'Belize Tax Service'} />
-            <meta property="og:image:type" content={homeSEO?.ogImageType} />
+            <meta property="og:image" content={globalServerStrapi + newsDetailsSEO?.ogImage?.url || '/default-og-image.jpg'} />
+            <meta property="og:image:width" content={newsDetailsSEO?.ogImageWidth} />
+            <meta property="og:image:height" content={newsDetailsSEO?.ogImageHeight} />
+            <meta property="og:image:alt" content={newsDetailsSEO?.ogImageAlt || 'Belize Tax Service'} />
+            <meta property="og:image:type" content={newsDetailsSEO?.ogImageType} />
 
             {/* Twitter Cards */}
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={homeSEO?.metaTitle || 'Belize Tax Service'} />
-            <meta name="twitter:description" content={homeSEO?.metaDescription || 'Default description'} />
-            <meta name="twitter:image" content={globalServerStrapi + homeSEO?.ogImage?.url || '/default-og-image.jpg'} />
+            <meta name="twitter:title" content={newsDetailsSEO?.metaTitle || 'Belize Tax Service'} />
+            <meta name="twitter:description" content={newsDetailsSEO?.metaDescription || 'Default description'} />
+            <meta name="twitter:image" content={globalServerStrapi + newsDetailsSEO?.ogImage?.url || '/default-og-image.jpg'} />
 
             {/* Canonical URL */}
             <link rel="canonical" href={BtsSEO?.Organization_URL} />
@@ -108,8 +98,8 @@ const Home = () => {
                         "@type": "Organization",
                         "name": BtsSEO?.Organization_Name || "Belize Tax Service",
                         "url": BtsSEO?.Organization_URL,
-                        "logo": globalServerStrapi + homeSEO?.logo?.url || "/logo.png",
-                        "description": homeSEO?.metaDescription || "Organization description",
+                        "logo": globalServerStrapi + BtsSEO?.logo?.url || "/logo.png",
+                        "description": BtsSEO?.metaDescription || "Organization description",
                         "sameAs": BtsSEO?.Social_Networks?.map(red => red.URL).filter(url => url) || []
                     })
                 }}
@@ -122,11 +112,8 @@ const Home = () => {
                         <TaxCalculator />
                         <TaxCalendar />
                     </div>
-                    <div className='col-lg-6 home-news-bordered' >
-                        <HomeNews />
-                    </div>
-                    <div className='col-lg-3'>
-                        <HomeTopServices />
+                    <div className='col-lg-9 home-news-left-bordered' >
+                        <NewsDetail />
                     </div>
                 </div>
             </div>
@@ -134,5 +121,5 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default NewsDetails;
 

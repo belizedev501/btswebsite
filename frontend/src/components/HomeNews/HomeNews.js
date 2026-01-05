@@ -159,7 +159,7 @@ const HomeNews = () => {
                                         <div className='row'>
                                             <div className='col-3 home-news-link-section'>
                                                 <p>
-                                                    <a href={'/news/n=' + newsItem.News_URL} target="_blank" rel="noopener noreferrer">
+                                                    <a href={'/newsdetails/' + newsItem.News_URL} target="_blank" rel="noopener noreferrer">
                                                         <span className="icon-size_5 home-news-link-icon icon-link-solid" />
                                                         {locale === 'es' ? ' Leer más' : ' Read more'}
                                                     </a>
@@ -219,13 +219,16 @@ const HomeNews = () => {
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         )))
                     ) : (
                         <p>No news available.</p>
                     )}
-
-
+                    <div className='home-news-final-message-area'>
+                        <h6>{homeNews.Home_News_Final_Message}</h6>
+                        <h6><a href={homeNews.Home_News_Final_Message_Link_URL}>{homeNews.Home_News_Final_Message_Link_Text}</a></h6>
+                    </div>
                 </div>
             ) :
             (
