@@ -23,7 +23,7 @@ jobs:
           npm ci
           CI=false npm run build
 
-      - name: Create package.json for static server
+      - name: Create package.json for static  server
         run: |
           cat > ./frontend/build/package.json << 'EOF'
           {
