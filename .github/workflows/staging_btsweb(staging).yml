@@ -76,5 +76,5 @@ jobs:
         with:
           app-name: btsweb
           slot-name: staging
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3817A6A21B5E4AAAB52B351186DA6F99 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BTSWEB_STAGING }}
           package: ./build
