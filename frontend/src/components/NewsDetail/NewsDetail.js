@@ -1,51 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import { FaFacebookF, FaLinkedinIn, FaWhatsapp, FaLink } from 'react-icons/fa';
+import { useStrapiCollection } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context';
 import './NewsDetail.component.css';
 
 const NewsDetail = () => {
     const { slug } = useParams();
-    const { locale, globalServerStrapi, globalTokenStrapi } = useContext(GlobalContext);
-    const [news, setNews] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchNews = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const cleanedSlug = (slug || '').replace(/^n=/, '');
-                const url =
-                    `${globalServerStrapi}/api/newss?` +
-                    `filters[News_URL][$eq]=${encodeURIComponent(cleanedSlug)}` +
-                    `&pagination[limit]=1` +
-                    `&populate[News_Image][populate]=*` +
-                    `&populate[News_Docs][populate]=*` +
-                    `&populate[News_Content][populate][News_Content_Image][populate]=*`;
-
-                const res = await fetch(url, {
-                    headers: {
-                        Authorization: `Bearer ${globalTokenStrapi}`
-                    }
-                });
-                if (!res.ok) throw new Error('Error from Strapi API');
-                const data = await res.json();
-                const item = data?.data?.[0];
-                setNews(item ? item.attributes || item : null);
-            } catch (err) {
-                setError('Error loading the news.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (globalServerStrapi && globalTokenStrapi) {
-            fetchNews();
-        }
-    }, [slug, globalServerStrapi, globalTokenStrapi]);
+    const { locale, globalServerStrapi } = useContext(GlobalContext);
+    const cleanedSlug = (slug || '').replace(/^n=/, '');
+    const slugFilter = useMemo(
+        () => (cleanedSlug ? { News_URL: cleanedSlug } : null),
+        [cleanedSlug]
+    );
+    const {
+        data: newsData,
+        loading,
+        error
+    } = useStrapiCollection(
+        'newss',
+        '[News_Image][populate]=*&populate[News_Docs][populate]=*&populate[News_Content][populate][News_Content_Image][populate]=*',
+        'id',
+        'asc',
+        1,
+        slugFilter
+    );
+    const newsItemRaw = Array.isArray(newsData) ? newsData[0] : null;
+    const news = newsItemRaw?.attributes || newsItemRaw || null;
 
     const renderBlocks = (content) => {
         if (!content) return null;
