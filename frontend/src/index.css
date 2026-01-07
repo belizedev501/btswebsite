@@ -321,6 +321,16 @@ h6 {
   display: inline-block;
 }
 
+.icon-angle-down-solid-full {
+  background-color: #109B78;
+  mask: url('/public/assets/icons/angle-down-solid-full.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/angle-down-solid-full.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 16 / 16;
+  display: inline-block;
+}
+
 .btn-primary {
   background: #D1661F;
   border: none;
