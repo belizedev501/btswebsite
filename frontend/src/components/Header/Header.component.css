@@ -256,6 +256,13 @@
     font-weight: 700;
 }
 
+@media (max-width: 1200px) {
+    .header-menu a {
+        padding-right: 8px !important;
+        padding-left: 8px !important;
+    }
+}
+
 @media (max-width: 991px) {
 
     .header-container {
@@ -545,7 +552,7 @@
         height: 80px;
         width: 80px;
     }
-    
+
     .header-title {
         font-size: 32px;
         font-weight: bold;

@@ -2,9 +2,20 @@
     margin-bottom: 20px;
 }
 
-.home-ts-tax-titles {
-    margin-top: 20px;
+.home-top-services-container .row {
+    margin-top: 10px;
+}
+
+.home-ts-tax-first-title {
+    margin-top: 10px;
     text-align: left;
+    margin-bottom: 10px;
+}
+
+.home-ts-tax-titles {
+    margin-top: 25px;
+    text-align: left;
+    margin-bottom: 10px;
 }
 
 .home-ts-icon-container {
@@ -12,6 +23,7 @@
     justify-content: center;
     text-align: center;
     margin-left: 6px;
+    margin-right: 6px;
     margin-top: 3px;
 }
 
@@ -25,7 +37,6 @@
 }
 
 .home-ts-text-container a {
-    
     color: #393D3D;
 }
 
@@ -40,4 +51,12 @@
     height: auto;
     padding-left: 10px;
     margin: 10px;
+}
+
+@media (max-width: 991px) {
+    .home-top-services-container {
+        border-top: 4px solid #929294;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
 }

@@ -49,5 +49,15 @@
 }
 
 .copyright-container h6 {
-     color: #DCAC43;
+    color: #DCAC43;
+}
+
+@media (max-width: 1200px) {
+    .footer-logo {
+        height: 60px;
+        width: auto;
+        margin: 30px 15px;
+    }
+
+
 }

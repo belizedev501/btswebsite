@@ -28,9 +28,9 @@ const HomeTopServices = () => {
 
     return (
         (!loading && topServices?.Home_TS_Tax_Resources_Title) ? (
-            <div className='home-top-services-container'>
+            <div className='container home-top-services-container'>
                 {/* ===================== TAX RESOURCES ===================== */}
-                <h5 className='home-ts-tax-titles'>
+                <h5 className='home-ts-tax-first-title'>
                     {topServices.Home_TS_Tax_Resources_Title}
                 </h5>
 
