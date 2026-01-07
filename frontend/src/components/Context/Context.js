@@ -5,8 +5,7 @@ export const GlobalContext = createContext();
 export function GlobalProvider({ children }) {
   // Valores de Strapi tomados del entorno de build (ver .env.*)
   const defaultStrapiToken = process.env.REACT_APP_STRAPI_TOKEN || '';
-  const defaultStrapiUrl =
-    process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337';
+  const defaultStrapiUrl = process.env.REACT_APP_STRAPI_URL || 'http://localhost:1337';
 
   const [globalTokenStrapi, setglobalTokenStrapi] = useState(defaultStrapiToken);
   const [globalServerStrapi, setglobalServerStrapi] = useState(defaultStrapiUrl);

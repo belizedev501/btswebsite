@@ -18,6 +18,8 @@ coverage/
 # Environment variables
 .env
 .env.*.local
+.env.local
+.env.example
 
 # IDE / Editor configs
 .DS_Store

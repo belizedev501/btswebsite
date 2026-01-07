@@ -52,6 +52,14 @@
      color: #DCAC43;
 }
 
+@media (max-width: 1200px) {
+    .footer-logo {
+    height: 60px;
+    width: auto;
+    margin: 20px 15px;
+}
+}
+
 /* ============================================================
    NUEVOS ESTILOS EXCLUSIVOS PARA MÓVIL (RESPONSIVE)
    Esto solo aplica cuando el ancho es menor a 991px (Tablet/Celular)
