@@ -83,7 +83,7 @@ const Home = () => {
             <meta property="og:title" content={homeSEO?.metaTitle || 'Belize Tax Service'} />
             <meta property="og:description" content={homeSEO?.metaDescription || 'Default description'} />
             <meta property="og:type" content="website" />
-            <meta property="og:site_name" content={BtsSEO?.Nombre_Website} />
+            <meta property="og:site_name" content={BtsSEO?.Website_Name} />
             <meta property="og:image" content={globalServerStrapi + homeSEO?.ogImage?.url || '/default-og-image.jpg'} />
             <meta property="og:image:width" content={homeSEO?.ogImageWidth} />
             <meta property="og:image:height" content={homeSEO?.ogImageHeight} />
@@ -108,7 +108,7 @@ const Home = () => {
                         "@type": "Organization",
                         "name": BtsSEO?.Organization_Name || "Belize Tax Service",
                         "url": BtsSEO?.Organization_URL,
-                        "logo": globalServerStrapi + homeSEO?.logo?.url || "/logo.png",
+                        "logo": globalServerStrapi + BtsSEO?.Organization_Logo?.url || "/logo.png",
                         "description": homeSEO?.metaDescription || "Organization description",
                         "sameAs": BtsSEO?.Social_Networks?.map(red => red.URL).filter(url => url) || []
                     })

@@ -73,7 +73,7 @@ const NewsDetails = () => {
             <meta property="og:title" content={newsDetailsSEO?.metaTitle || 'Belize Tax Service'} />
             <meta property="og:description" content={newsDetailsSEO?.metaDescription || 'Default description'} />
             <meta property="og:type" content="website" />
-            <meta property="og:site_name" content={BtsSEO?.Nombre_Website} />
+            <meta property="og:site_name" content={BtsSEO?.Website_Name} />
             <meta property="og:image" content={globalServerStrapi + newsDetailsSEO?.ogImage?.url || '/default-og-image.jpg'} />
             <meta property="og:image:width" content={newsDetailsSEO?.ogImageWidth} />
             <meta property="og:image:height" content={newsDetailsSEO?.ogImageHeight} />
@@ -98,8 +98,8 @@ const NewsDetails = () => {
                         "@type": "Organization",
                         "name": BtsSEO?.Organization_Name || "Belize Tax Service",
                         "url": BtsSEO?.Organization_URL,
-                        "logo": globalServerStrapi + BtsSEO?.logo?.url || "/logo.png",
-                        "description": BtsSEO?.metaDescription || "Organization description",
+                        "logo": globalServerStrapi + BtsSEO?.Organization_Logo?.url || "/logo.png",
+                        "description": newsDetailsSEO?.metaDescription || "Organization description",
                         "sameAs": BtsSEO?.Social_Networks?.map(red => red.URL).filter(url => url) || []
                     })
                 }}
