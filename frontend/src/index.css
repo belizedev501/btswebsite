@@ -87,7 +87,7 @@ h6 {
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 20px;
 }
 
 .icon-size_1 {
@@ -315,6 +315,16 @@ h6 {
   background-color: #109B78;
   mask: url('/public/assets/icons/magnifying-glass-solid-full.svg') no-repeat center;
   -webkit-mask: url('/public/assets/icons/magnifying-glass-solid-full.svg') no-repeat center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  aspect-ratio: 16 / 16;
+  display: inline-block;
+}
+
+.icon-angle-down-solid-full {
+  background-color: #109B78;
+  mask: url('/public/assets/icons/angle-down-solid-full.svg') no-repeat center;
+  -webkit-mask: url('/public/assets/icons/angle-down-solid-full.svg') no-repeat center;
   mask-size: contain;
   -webkit-mask-size: contain;
   aspect-ratio: 16 / 16;

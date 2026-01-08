@@ -13,3 +13,11 @@
 .home-news-left-bordered {
     border-left: 4px solid #929294;
 }
+
+
+@media (max-width: 991px) {
+    .home-news-bordered {
+        border-left: none;
+        border-right: none;
+    }
+}

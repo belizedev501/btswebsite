@@ -51,3 +51,158 @@
 .copyright-container h6 {
      color: #DCAC43;
 }
+
+@media (max-width: 1200px) {
+    .footer-logo {
+    height: 60px;
+    width: auto;
+    margin: 20px 15px;
+}
+}
+
+/* ============================================================
+   NUEVOS ESTILOS EXCLUSIVOS PARA MÓVIL (RESPONSIVE)
+   Esto solo aplica cuando el ancho es menor a 991px (Tablet/Celular)
+   ============================================================ */
+@media (max-width: 991px) {
+    
+    .footer-container {
+        /* Padding lateral ajustado (24px) para no pegar al borde */
+        padding: 40px 24px !important;
+        overflow-x: hidden; /* Evita scroll horizontal */
+    }
+
+    /* 1. Header (Logo + Titulo Verde) */
+    .mobile-top-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .mobile-top-logo {
+        width: 100px; /* Tamaño del logo local */
+        height: auto;
+        object-fit: contain;
+        margin-bottom: 5px;
+    }
+
+    .mobile-site-title {
+        color: #14755C !important;
+        font-family: 'Baloo Chettan', sans-serif;
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 1.1;
+        margin: 0;
+        text-align: center;
+    }
+
+    /* 2. Acordeones */
+    .mobile-accordion-item {
+        margin-top: 15px;
+        width: 100%;
+    }
+
+    .mobile-accordion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 5px 0;
+        /* IMPORTANTE: Sin bordes */
+        border: none !important;
+    }
+
+    .mobile-accordion-title {
+        font-family: 'Baloo Chettan', sans-serif;
+        font-weight: 400;
+        font-size: 21px; /* Tamaño solicitado */
+        color: #DCAC43;
+    }
+
+    .mobile-arrow-icon {
+        width: 20px !important;
+        height: 20px !important;
+        background-color: #DCAC43 !important;
+        transition: transform 0.3s ease;
+        transform: rotate(180deg); /* Abierto por defecto */
+    }
+
+    .mobile-accordion-header.collapsed .mobile-arrow-icon {
+        transform: rotate(0deg); /* Cerrado */
+    }
+
+    .mobile-links-container {
+        text-align: left;
+        padding: 5px 0 10px 0;
+    }
+
+    .mobile-footer-option {
+        display: block;
+        color: #DCAC43;
+        font-family: 'Baloo Chettan 2', sans-serif;
+        font-size: 16px;
+        text-decoration: none;
+        margin-bottom: 8px;
+    }
+
+    /* 3. Idioma */
+    .mobile-lang-section {
+        margin-top: 20px;
+        text-align: center;
+        color: #DCAC43;
+        font-family: 'Baloo Chettan', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .mobile-lang-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        color: #DCAC43;
+        font: inherit;
+        cursor: pointer;
+        margin: 0 5px;
+    }
+
+    .mobile-lang-btn.active {
+        text-decoration: underline;
+    }
+
+    /* 4. Iconos (Una Sola Línea) */
+    .mobile-icons-row {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap; /* Fuerza una sola línea */
+        gap: 12px; /* Espacio entre iconos */
+    }
+
+    .mobile-social-icon {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+
+    .mobile-cert-logo {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+    }
+
+    /* 5. Copyright */
+    .mobile-copyright {
+        margin-top: 20px;
+    }
+    
+    .mobile-copyright h6 {
+        font-size: 12px;
+        opacity: 0.9;
+    }
+}
