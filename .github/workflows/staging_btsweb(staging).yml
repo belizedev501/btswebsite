@@ -23,15 +23,38 @@ jobs:
           npm ci
           CI=false npm run build
 
-      - name: Create package.json for static  server
+      - name: Create package.json for static server
         run: |
+          cat > ./frontend/build/server.js << 'EOF'
+          const { spawn } = require('child_process');
+          const fs = require('fs');
+          const path = require('path');
+
+          const env = {
+            REACT_APP_STRAPI_URL: process.env.REACT_APP_STRAPI_URL || '',
+            REACT_APP_STRAPI_TOKEN: process.env.REACT_APP_STRAPI_TOKEN || ''
+          };
+
+          fs.writeFileSync(
+            path.join(__dirname, 'env.js'),
+            `window.__ENV__ = ${JSON.stringify(env)};`
+          );
+
+          const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+          const child = spawn(npxCmd, ['serve', '-s', '.', '-l', '8080'], {
+            stdio: 'inherit'
+          });
+
+          child.on('exit', (code) => process.exit(code ?? 0));
+          EOF
+
           cat > ./frontend/build/package.json << 'EOF'
           {
             "name": "btsweb-static",
             "version": "1.0.0",
             "description": "Static server for React app",
             "scripts": {
-              "start": "npx serve -s . -l 8080"
+              "start": "node server.js"
             },
             "dependencies": {
               "serve": "^14.2.1"
