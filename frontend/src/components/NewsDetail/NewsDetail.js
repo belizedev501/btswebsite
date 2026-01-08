@@ -1,5 +1,5 @@
-import React, { useContext, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import { FaFacebookF, FaLinkedinIn, FaWhatsapp, FaLink } from 'react-icons/fa';
 import { useStrapiCollection } from '../Strapi/strapiCollection';
@@ -8,7 +8,10 @@ import './NewsDetail.component.css';
 
 const NewsDetail = () => {
     const { slug } = useParams();
-    const { locale, globalServerStrapi } = useContext(GlobalContext);
+    const navigate = useNavigate();
+    const { locale, globalServerStrapi, globalTokenStrapi } = useContext(GlobalContext);
+    const [fallbackTried, setFallbackTried] = useState(false);
+    const [cachedNews, setCachedNews] = useState(null);
     const cleanedSlug = (slug || '').replace(/^n=/, '');
     const slugFilter = useMemo(
         () => (cleanedSlug ? { News_URL: cleanedSlug } : null),
@@ -28,6 +31,117 @@ const NewsDetail = () => {
     );
     const newsItemRaw = Array.isArray(newsData) ? newsData[0] : null;
     const news = newsItemRaw?.attributes || newsItemRaw || null;
+
+    useEffect(() => {
+        if (news) {
+            setCachedNews(news);
+        }
+    }, [news]);
+
+    useEffect(() => {
+        setFallbackTried(false);
+    }, [cleanedSlug, locale]);
+
+    useEffect(() => {
+        if (!cachedNews || !locale || !globalServerStrapi) return;
+
+        const cachedLocale = cachedNews?.locale || cachedNews?.attributes?.locale;
+        if (cachedLocale && cachedLocale === locale) return;
+
+        const documentId = cachedNews?.documentId || cachedNews?.attributes?.documentId;
+        if (!documentId) return;
+
+        const headers = {};
+        if (globalTokenStrapi) headers['Authorization'] = `Bearer ${globalTokenStrapi}`;
+
+        const baseUrl = globalServerStrapi.replace(/\/+$/, '');
+        const url = `${baseUrl}/api/newss?filters[documentId][$eq]=${encodeURIComponent(documentId)}&pagination[limit]=1&locale=${locale}`;
+
+        let cancelled = false;
+        const fetchLocalized = async () => {
+            try {
+                const response = await fetch(url, { headers });
+                if (!response.ok) return;
+                const result = await response.json();
+                if (cancelled) return;
+
+                const localizedItem = Array.isArray(result?.data) ? result.data[0] : null;
+                const localizedAttrs = localizedItem?.attributes || localizedItem;
+                const localizedSlug = localizedAttrs?.News_URL;
+
+                if (localizedSlug && localizedSlug !== cleanedSlug) {
+                    navigate(`/NewsDetails/${localizedSlug}`, { replace: true });
+                }
+            } catch (fetchError) {
+                console.error('Error fetching localized news by documentId:', fetchError);
+            }
+        };
+
+        fetchLocalized();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [cachedNews, cleanedSlug, globalServerStrapi, globalTokenStrapi, locale, navigate]);
+
+    useEffect(() => {
+        if (loading || error || news || !cleanedSlug || fallbackTried || !globalServerStrapi) return;
+
+        const headers = {};
+        if (globalTokenStrapi) headers['Authorization'] = `Bearer ${globalTokenStrapi}`;
+
+        const baseUrl = globalServerStrapi.replace(/\/+$/, '');
+        const url = `${baseUrl}/api/newss?filters[News_URL][$eq]=${encodeURIComponent(cleanedSlug)}&pagination[limit]=1&locale=all`;
+
+        let cancelled = false;
+        const fetchFallback = async () => {
+            try {
+                const response = await fetch(url, { headers });
+                if (!response.ok) return;
+                const result = await response.json();
+                if (cancelled) return;
+
+                const otherItem = Array.isArray(result?.data) ? result.data[0] : null;
+                const attrs = otherItem?.attributes || otherItem;
+                const documentId = attrs?.documentId;
+
+                if (!documentId) return;
+
+                const localizedUrl = `${baseUrl}/api/newss?filters[documentId][$eq]=${encodeURIComponent(documentId)}&pagination[limit]=1&locale=${locale}`;
+                const localizedResponse = await fetch(localizedUrl, { headers });
+                if (!localizedResponse.ok) return;
+                const localizedResult = await localizedResponse.json();
+                if (cancelled) return;
+
+                const localizedItem = Array.isArray(localizedResult?.data) ? localizedResult.data[0] : null;
+                const localizedAttrs = localizedItem?.attributes || localizedItem;
+                const localizedSlug = localizedAttrs?.News_URL;
+
+                if (localizedSlug && localizedSlug !== cleanedSlug) {
+                    navigate(`/NewsDetails/${localizedSlug}`, { replace: true });
+                }
+            } catch (fetchError) {
+                console.error('Error fetching fallback news locale:', fetchError);
+            }
+        };
+
+        setFallbackTried(true);
+        fetchFallback();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        cleanedSlug,
+        error,
+        fallbackTried,
+        globalServerStrapi,
+        globalTokenStrapi,
+        loading,
+        locale,
+        navigate,
+        news
+    ]);
 
     const renderBlocks = (content) => {
         if (!content) return null;
