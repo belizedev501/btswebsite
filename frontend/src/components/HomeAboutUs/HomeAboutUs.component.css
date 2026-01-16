@@ -1,0 +1,282 @@
+.about-us-container {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 80px 24px 90px;
+}
+
+.about-loading {
+    text-align: center;
+    padding: 80px;
+    font-size: 1.5rem;
+    color: #006D77;
+}
+
+.main-title {
+    text-align: center;
+    margin-bottom: 72px;
+}
+
+.content-section {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.text-block {
+    margin-bottom: 72px;
+}
+
+.section-title {
+    margin-bottom: 22px;
+    margin-top: 64px;
+}
+
+.text-block:first-of-type .section-title {
+    margin-top: 0;
+}
+
+.section-body {
+    margin-bottom: 0;
+}
+
+.block-paragraph {
+    margin-bottom: 1.6rem;
+}
+
+.block-list {
+    padding-left: 20px;
+    margin-bottom: 1.5rem;
+}
+
+.block-list li {
+    margin-bottom: 10px;
+}
+
+.pride-section {
+    margin-top: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.pride-intro-text {
+    font-size: 1.125rem;
+    margin-bottom: 40px;
+    color: #1a1a1a;
+    font-family: "Playfair Display", serif;
+}
+
+.pride-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    max-width: 1080px;
+    width: 100%;
+}
+
+.pride-top-container {
+    background: linear-gradient(135deg, #f3d9cf 0%, #e6c6ba 100%);
+    border: 3px solid #a5887c;
+    border-radius: 26px;
+    padding: 34px 28px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 0;
+    box-shadow: 0 12px 26px rgba(0,0,0,0.12);
+}
+
+.pride-bottom-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 1080px;
+    margin-top: 6px;
+}
+
+.pride-card {
+    flex: 1 1 180px;
+    max-width: 195px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pride-card-top {
+    background: linear-gradient(180deg, #f8e9df 0%, #f2dcd0 100%);
+    border: 2.5px solid #bba59b;
+    border-radius: 16px;
+    padding: 26px 18px 20px 18px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 170px;
+    box-shadow: inset 0 0 0 4px #f7ede7, 0 6px 14px rgba(0,0,0,0.12);
+}
+
+.pride-letter-container {
+    position: relative;
+    height: 82px;
+    width: 100%;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg, #f1d6c8 0%, #e9cbbd 100%);
+    border: 2px solid #bca79d;
+    border-radius: 12px;
+    box-shadow: inset 0 0 0 4px #f9eee8;
+}
+
+.pride-letter {
+    font-family: "Playfair Display", serif;
+    color: #d37636;
+    font-size: 4.8rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 2;
+    line-height: 0.9;
+    text-shadow: -2px 2px 0 #f6eee9, 0 0 8px rgba(0,0,0,0.12);
+}
+
+.pride-letter-shadow {
+    font-family: "Playfair Display", serif;
+    color: #efe5de;
+    font-size: 4.95rem;
+    font-weight: 700;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    line-height: 0.9;
+}
+
+.pride-word {
+    color: #d26f36;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    font-family: Arial, Helvetica, "Playfair Display", serif;
+}
+
+.pride-card-bottom {
+    color: white;
+    padding: 28px 18px;
+    text-align: center;
+    border-radius: 12px;
+    width: 100%;
+    min-height: 205px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.2), inset 0 0 0 2px rgba(255,255,255,0.12);
+    border: 2px solid rgba(0,0,0,0.12);
+}
+
+.pride-card:nth-child(1) .pride-card-bottom {
+    background: linear-gradient(180deg, #e78a2f 0%, #d67224 100%);
+}
+
+.pride-card:nth-child(2) .pride-card-bottom {
+    background: linear-gradient(180deg, #d9885b 0%, #c7794c 100%);
+}
+
+.pride-card:nth-child(3) .pride-card-bottom {
+    background: linear-gradient(180deg, #b87870 0%, #a86a63 100%);
+}
+
+.pride-card:nth-child(4) .pride-card-bottom {
+    background: linear-gradient(180deg, #b09088 0%, #9f7f76 100%);
+}
+
+.pride-card:nth-child(5) .pride-card-bottom {
+    background: linear-gradient(180deg, #a0a0a0 0%, #8f8f8f 100%);
+}
+
+.pride-text {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.6;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, "Playfair Display", serif;
+    letter-spacing: 0.6px;
+}
+
+@media (max-width: 992px) {
+    .content-section {
+        max-width: 100%;
+    }
+    .section-title {
+        margin-top: 48px;
+    }
+    .pride-top-container,
+    .pride-bottom-container {
+        gap: 10px;
+    }
+    .pride-card {
+        max-width: 170px;
+    }
+    .pride-card-top {
+        height: 150px;
+        padding: 22px 14px 18px 14px;
+    }
+    .pride-letter-container {
+        height: 76px;
+        margin-bottom: 14px;
+    }
+    .pride-letter {
+        font-size: 4.3rem;
+    }
+    .pride-letter-shadow {
+        font-size: 4.45rem;
+        top: 7px;
+    }
+    .pride-card-bottom {
+        min-height: 180px;
+        padding: 24px 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-us-container {
+        padding: 40px 20px;
+    }
+    .main-title {
+        margin-bottom: 50px;
+    }
+    .section-title {
+        margin-top: 42px;
+    }
+    .text-block {
+        margin-bottom: 52px;
+    }
+    .pride-top-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 25px 20px;
+    }
+    .pride-bottom-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .pride-card {
+        width: 100%;
+        max-width: 320px;
+        margin-bottom: 15px;
+    }
+    .pride-card-top {
+        height: 145px;
+    }
+    .pride-card-bottom {
+        margin-top: 12px;
+    }
+}
