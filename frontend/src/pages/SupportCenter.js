@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { GlobalContext } from '../components/Context/Context';
 import { useStrapiSingle, useStrapiCollection } from '../components/Strapi/strapiCollection';
 import { useContext } from 'react';
-import AboutUsContent from '../components/AboutUsContent/AboutUsContent';
 import { useMemo } from 'react';
+import SupportCenterContent from '../components/SupportCenterContent/SupportCenterContent';
 
-const AboutUs = () => {
+const SupportCenter = () => {
     const [BtsSEO, setBtsSEO] = useState({});
-    const [aboutUsSEO, setAboutUsSEO] = useState({});
+    const [supportCenterSEO, setSupportCenterSEO] = useState({});
     const { globalServerStrapi } = useContext(GlobalContext);
 
     // Google Analytics
@@ -33,14 +33,14 @@ const AboutUs = () => {
     // Get SEO Data for News
 
     const seoFilters = useMemo(
-        () => ({ Page_Id: 'AboutUs' }),
+        () => ({ Page_Id: 'SupportCenter' }),
         []
     );
 
     const {
-        data: strapiAboutUsSEO,
-        loading: strapiAboutUsSEOLoading,
-        error: strapiAboutUsSEOError
+        data: strapiSupportCenterSEO,
+        loading: strapiSupportCenterSEOLoading,
+        error: strapiSupportCenterSEOError
     } = useStrapiCollection(
         'seo-pages',
         '=*',
@@ -51,39 +51,46 @@ const AboutUs = () => {
     );
 
     useEffect(() => {
-        if (strapiAboutUsSEO) {
-            setAboutUsSEO(strapiAboutUsSEO[0]);
+        if (strapiSupportCenterSEO) {
+            setSupportCenterSEO(strapiSupportCenterSEO[0]);
         }
-        if (strapiAboutUsSEOError) {
-            console.error("Error loading SEO for AboutUs:", strapiAboutUsSEOError);
+        if (strapiSupportCenterSEOError) {
+            console.error("Error loading SEO for Support Center:", strapiSupportCenterSEOError);
         }
-    }, [strapiAboutUsSEO, strapiAboutUsSEOLoading, strapiAboutUsSEOError]);
+    }, [strapiSupportCenterSEO, strapiSupportCenterSEOLoading, strapiSupportCenterSEOError]);
+
+    // Send pageview when loading page and SEO data
+    // useEffect(() => {
+    //     if (newsSEO?.metaTitle) {
+    //         trackPageView(newsSEO.metaTitle, '/');
+    //     }
+    // }, [newsSEO?.metaTitle, trackPageView]);
 
 
 
     return (
         <>
             {/* React Document Metadata */}
-            <title>{aboutUsSEO?.metaTitle || 'BTS - About Us'}</title>
-            <meta name="description" content={aboutUsSEO?.metaDescription || 'Default description'} />
-            <meta name="keywords" content={aboutUsSEO?.metaKeywords || 'Default keywords'} />
+            <title>{SupportCenterContent?.metaTitle || 'BTS - Support Center'}</title>
+            <meta name="description" content={supportCenterSEO?.metaDescription || 'Default description'} />
+            <meta name="keywords" content={supportCenterSEO?.metaKeywords || 'Default keywords'} />
 
             {/* Open Graph */}
-            <meta property="og:title" content={aboutUsSEO?.metaTitle || 'Belize Tax Service'} />
-            <meta property="og:description" content={aboutUsSEO?.metaDescription || 'Default description'} />
+            <meta property="og:title" content={supportCenterSEO?.metaTitle || 'Belize Tax Service'} />
+            <meta property="og:description" content={supportCenterSEO?.metaDescription || 'Default description'} />
             <meta property="og:type" content="website" />
             <meta property="og:site_name" content={BtsSEO?.Website_Name} />
-            <meta property="og:image" content={globalServerStrapi + aboutUsSEO?.ogImage?.url || '/default-og-image.jpg'} />
-            <meta property="og:image:width" content={aboutUsSEO?.ogImageWidth} />
-            <meta property="og:image:height" content={aboutUsSEO?.ogImageHeight} />
-            <meta property="og:image:alt" content={aboutUsSEO?.ogImageAlt || 'Belize Tax Service'} />
-            <meta property="og:image:type" content={aboutUsSEO?.ogImageType} />
+            <meta property="og:image" content={globalServerStrapi + supportCenterSEO?.ogImage?.url || '/default-og-image.jpg'} />
+            <meta property="og:image:width" content={supportCenterSEO?.ogImageWidth} />
+            <meta property="og:image:height" content={supportCenterSEO?.ogImageHeight} />
+            <meta property="og:image:alt" content={supportCenterSEO?.ogImageAlt || 'Belize Tax Service'} />
+            <meta property="og:image:type" content={supportCenterSEO?.ogImageType} />
 
             {/* Twitter Cards */}
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={aboutUsSEO?.metaTitle || 'Belize Tax Service'} />
-            <meta name="twitter:description" content={aboutUsSEO?.metaDescription || 'Default description'} />
-            <meta name="twitter:image" content={globalServerStrapi + aboutUsSEO?.ogImage?.url || '/default-og-image.jpg'} />
+            <meta name="twitter:title" content={supportCenterSEO?.metaTitle || 'Belize Tax Service'} />
+            <meta name="twitter:description" content={supportCenterSEO?.metaDescription || 'Default description'} />
+            <meta name="twitter:image" content={globalServerStrapi + supportCenterSEO?.ogImage?.url || '/default-og-image.jpg'} />
 
             {/* Canonical URL */}
             <link rel="canonical" href={BtsSEO?.Organization_URL} />
@@ -98,7 +105,7 @@ const AboutUs = () => {
                         "name": BtsSEO?.Organization_Name || "Belize Tax Service",
                         "url": BtsSEO?.Organization_URL,
                         "logo": globalServerStrapi + BtsSEO?.Organization_Logo?.url || "/logo.png",
-                        "description": aboutUsSEO?.metaDescription || "Organization description",
+                        "description": supportCenterSEO?.metaDescription || "Organization description",
                         "sameAs": BtsSEO?.Social_Networks?.map(red => red.URL).filter(url => url) || []
                     })
                 }}
@@ -107,7 +114,7 @@ const AboutUs = () => {
             <div className='container boxed-container home-area'>
                 <div className='row'>
                     <div className='col-lg-12'>
-                        <AboutUsContent />
+                        <SupportCenterContent />
                     </div>
                 </div>
             </div>
@@ -115,5 +122,5 @@ const AboutUs = () => {
     );
 };
 
-export default AboutUs;
+export default SupportCenter;
 

@@ -54,7 +54,7 @@ const Header = () => {
             <div className="header-top d-none d-lg-block"> {/* Añadido d-none d-lg-block */}
                 <div className="row align-items-center">
                     <div className="col-md-2 text-center">
-                        <a href="/" className='header-carousel-big-link'>IRIS Belize</a>
+                        <a href="/iris_belize" className='header-carousel-big-link'>IRIS Belize</a>
                     </div>
                     <div className="col-md-8 text-center">
                         <div className='header-carousel'>

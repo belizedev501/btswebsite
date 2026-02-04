@@ -1,0 +1,65 @@
+.iris-belize-container {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+}
+
+.iris-belize-hero {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.iris-belize-title {
+    margin-bottom: 8px;
+}
+
+.iris-belize-subtitle {
+    margin-top: 0;
+}
+
+.iris-belize-text {
+    max-width: 820px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+}
+
+.iris-belize-text p {
+    margin-bottom: 12px;
+}
+
+.iris-belize-text p:last-child {
+    margin-bottom: 0;
+}
+
+.iris-belize-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.iris-belize-actions .btn-primary {
+    padding: 20px;
+}
+
+.iris-belize-actions .btn-secondary {
+    padding: 20px;
+}
+
+.iris-belize-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+}
+
+.iris-belize-button-text {
+    line-height: 1;
+}
+
+@media (max-width: 720px) {
+    .iris-belize-container {
+        padding: 40px 20px 56px;
+    }
+}

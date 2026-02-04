@@ -1,0 +1,58 @@
+.about-us-container {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 40px 24px 40px;
+}
+
+.about-us-main-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.about-us-content-section {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.about-us-content-section-body {
+    text-align: justify;
+}
+
+.about-us-text-block {
+    margin-bottom: 50px;
+}
+
+.about-us-section-title {
+    margin-bottom: 22px;
+    margin-top: 50px;
+}
+
+
+.about-us-block-paragraph {
+    margin-bottom: 1.6rem;
+}
+
+.about-us-pride-section {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.about-us-pride-section .col-md {
+    padding: 5px;
+}
+
+.about-us-pride-section h4 {
+    font-size: 50px;
+}
+
+.about-us-pride-letter-section {
+    border: 1px solid #929294;
+    border-radius: 6px;
+    padding: 5px;
+    height: 100%;
+}

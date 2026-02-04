@@ -251,7 +251,7 @@ const NewsSearch = () => {
                                             </Link>
                                             <p className="newsSearch-card-intro">{summaryShort}</p>
                                             <p className="newsSearch-card-date">{new Date(news_DateTime).toLocaleDateString()}</p>
-                                            <Link to={`/newsdetails/${news_URL_slug}`} className="newsSearch-card-details-link">
+                                            <Link to={`/news_details/${news_URL_slug}`} className="newsSearch-card-details-link">
                                                 {newsSearch.News_Search_Details_Link_Text}
                                             </Link>
                                         </div>
