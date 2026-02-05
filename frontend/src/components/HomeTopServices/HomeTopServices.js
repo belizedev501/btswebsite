@@ -133,7 +133,7 @@ const HomeTopServices = () => {
                         <span className='icon-size_4 icon-envelope-solid' />
                     </div>
                     <div className="col home-ts-text-container">
-                        <a href='/gat'><h6>{topServices.Home_TS_Support_Email_Contact_Text}</h6></a>
+                        <a href='/support_center'><h6>{topServices.Home_TS_Support_Email_Contact_Text}</h6></a>
                     </div>
                 </div>
 
