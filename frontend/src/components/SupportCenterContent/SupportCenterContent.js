@@ -152,7 +152,7 @@ const SupportCenterContent = () => {
             if (globalTokenStrapi) headers.Authorization = `Bearer ${globalTokenStrapi}`;
 
             const response = await fetch(
-                buildApiUrl(globalServerStrapi, 'api/support-request/submit'),
+                buildApiUrl(globalServerStrapi, 'api/support-requests/submit'),
                 {
                     method: 'POST',
                     headers,
