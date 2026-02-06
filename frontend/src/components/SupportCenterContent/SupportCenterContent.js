@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import './SupportCenterContent.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context';
 
-const SupportCenterContent = () => {
+const SupportCenterContentBase = ({ executeRecaptcha }) => {
     const { globalTokenStrapi, globalServerStrapi } = useContext(GlobalContext);
     const [formValues, setFormValues] = useState({
         firstName: '',
@@ -99,6 +100,10 @@ const SupportCenterContent = () => {
         : blocksToMarkdown(submitTextRaw);
     const errorStrapiText = attributes.Support_Center_Contact_Form_Error_Strapi || 'Strapi server is not configured.';
     const errorSendingText = attributes.Support_Center_Contact_Form_Error_Sending || 'The message could not be sent. Please try again.';
+    const recaptchaErrorText = attributes.Support_Center_Contact_Form_Error_Recaptcha || 'Por favor completa el reCAPTCHA.';
+    const recaptchaConfigErrorText = attributes.Support_Center_Contact_Form_Error_Recaptcha_Config
+        || 'reCAPTCHA no está configurado. Por favor intenta más tarde.';
+    const recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY || '';
 
     const subjectOptions = subjectValueList
         .map((item) => item?.Subject_Value || item?.attributes?.Subject_Value || '')
@@ -120,8 +125,22 @@ const SupportCenterContent = () => {
             return;
         }
 
+        if (!recaptchaSiteKey) {
+            setFormStatus({ state: 'error', message: recaptchaConfigErrorText });
+            return;
+        }
+
         try {
             setIsSubmitting(true);
+            if (!executeRecaptcha) {
+                setFormStatus({ state: 'error', message: recaptchaErrorText });
+                return;
+            }
+            const recaptchaToken = await executeRecaptcha('support_center_submit');
+            if (!recaptchaToken) {
+                setFormStatus({ state: 'error', message: recaptchaErrorText });
+                return;
+            }
             const fullName = `${formValues.firstName} ${formValues.lastName}`.trim();
             const subjectValue = formValues.subject || 'Support Center Form Submission';
             const textLines = [
@@ -145,7 +164,8 @@ const SupportCenterContent = () => {
                 subject: subjectValue,
                 text: textLines.join('\n'),
                 html: `<p>${htmlLines.join('</p><p>')}</p>`,
-                form: { ...formValues }
+                form: { ...formValues },
+                recaptchaToken
             };
 
             const headers = { 'Content-Type': 'application/json' };
@@ -324,6 +344,28 @@ const SupportCenterContent = () => {
                 </div>
             </div>
         </section>
+    );
+};
+
+const SupportCenterContentWithRecaptcha = () => {
+    const { executeRecaptcha } = useGoogleReCaptcha();
+    return <SupportCenterContentBase executeRecaptcha={executeRecaptcha} />;
+};
+
+const SupportCenterContent = () => {
+    const recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY || '';
+
+    if (!recaptchaSiteKey) {
+        return <SupportCenterContentBase executeRecaptcha={null} />;
+    }
+
+    return (
+        <GoogleReCaptchaProvider
+            reCaptchaKey={recaptchaSiteKey}
+            scriptProps={{ async: true, defer: true, appendTo: 'head' }}
+        >
+            <SupportCenterContentWithRecaptcha />
+        </GoogleReCaptchaProvider>
     );
 };
 
