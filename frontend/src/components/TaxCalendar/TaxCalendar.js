@@ -393,9 +393,9 @@ const TaxCalendar = () => {
                                     <div className='col-10'>
                                         <p className='tax-calendar-coming-event-text'>
                                             {event.Event_Deadline_Description}
-                                            {event.Event_Deadline_Link_URL && (
+                                            {event.Event_Deadline_Link_URL && event.Event_Deadline_Link_Text?.trim() && (
                                                 <> <a href={event.Event_Deadline_Link_URL} target="_blank" rel="noreferrer">
-                                                    {event.Event_Deadline_Link_Text || 'Link'}
+                                                    {event.Event_Deadline_Link_Text}
                                                 </a></>
                                             )}
                                         </p>
@@ -417,9 +417,9 @@ const TaxCalendar = () => {
                                     <div className='col-10'>
                                         <p className='tax-calendar-expired-event-text'>
                                             {event.Event_Deadline_Description}
-                                            {event.Event_Deadline_Link_URL && (
+                                            {event.Event_Deadline_Link_URL && event.Event_Deadline_Link_Text?.trim() && (
                                                 <> <a href={event.Event_Deadline_Link_URL} target="_blank" rel="noreferrer">
-                                                    {event.Event_Deadline_Link_Text || 'Link'}
+                                                    {event.Event_Deadline_Link_Text}
                                                 </a></>
                                             )}
                                         </p>

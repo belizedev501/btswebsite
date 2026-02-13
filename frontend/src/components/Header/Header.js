@@ -7,6 +7,11 @@ const Header = () => {
     const [newsCarousel, setNewsCarousel] = useState(null);
     const [menuOption, setMenuOption] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isDesktopMenu, setIsDesktopMenu] = useState(
+        typeof window !== 'undefined' ? window.innerWidth >= 992 : true
+    );
+    const [openMobileMenus, setOpenMobileMenus] = useState({});
+    const [openMobileSubMenus, setOpenMobileSubMenus] = useState({});
 
     const { locale, setLocale } = useContext(GlobalContext);
 
@@ -35,6 +40,30 @@ const Header = () => {
         if (strapiNewsCarouselError) console.error('Error fetching News Carousel:', strapiNewsCarouselError);
         if (strapiMenuOptionError) console.error('Error fetching Menu Options:', strapiMenuOptionError);
     }, [strapiNewsCarousel, strapiMenuOption, strapiNewsCarouselLoading, strapiMenuOptionLoading, strapiNewsCarouselError, strapiMenuOptionError]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const desktop = window.innerWidth >= 992;
+            setIsDesktopMenu(desktop);
+            if (desktop) {
+                setOpenMobileMenus({});
+                setOpenMobileSubMenus({});
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const getNodeId = (item) => item?.documentId || item?.id || item?.Option_Name || '';
+
+    const toggleMobileMenu = (menuId) => {
+        setOpenMobileMenus((prev) => ({ ...prev, [menuId]: !prev[menuId] }));
+    };
+
+    const toggleMobileSubMenu = (menuId) => {
+        setOpenMobileSubMenus((prev) => ({ ...prev, [menuId]: !prev[menuId] }));
+    };
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -130,40 +159,79 @@ const Header = () => {
                             {loading && <span>Loading Menu...</span>}
                             {!loading && menuOption?.menu_options && (
                                 <ul className="navbar-nav mx-auto">
-                                    {menuOption.menu_options.map((item) => (
-                                        (item.menu_options && item.menu_options.length > 0) ? (
-                                            <li key={item.documentId} className="nav-item dropdown">
-                                                <a className="nav-link dropdown-toggle" href={item.Option_URL} role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                                    {item.Option_Name}
-                                                </a>
-                                                <ul className="dropdown-menu">
-                                                    {item.menu_options.map((itemSubMenu) => (
-                                                        (itemSubMenu.menu_options && itemSubMenu.menu_options.length > 0) ? (
-                                                            <li key={itemSubMenu.documentId} className="dropend">
-                                                                <a className="dropdown-item dropdown-toggle" href={itemSubMenu.Option_URL} data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                                                    {itemSubMenu.Option_Name}
-                                                                </a>
-                                                                <ul className="dropdown-menu">
-                                                                    {itemSubMenu.menu_options.map((itemSubSubMenu) => (
-                                                                        <li key={itemSubSubMenu.documentId}>
-                                                                            <a className="dropdown-item" href={itemSubSubMenu.Option_URL}>{itemSubSubMenu.Option_Name}</a>
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
-                                                            </li>
-                                                        ) : (
-                                                            <li key={itemSubMenu.documentId} className="nav-item">
-                                                                <a className="dropdown-item" aria-current="page" href={itemSubMenu.Option_URL}>{itemSubMenu.Option_Name}</a>
-                                                            </li>
-                                                        )
-                                                    ))}
-                                                </ul>
-                                            </li>
-                                        ) : (
+                                    {menuOption.menu_options.map((item) => {
+                                        const topId = getNodeId(item);
+                                        const hasChildren = item.menu_options && item.menu_options.length > 0;
+                                        const isTopOpen = !!openMobileMenus[topId];
+
+                                        if (hasChildren) {
+                                            return (
+                                                <li key={item.documentId} className="nav-item dropdown">
+                                                    <div className="header-menu-link-row">
+                                                        <a className={`nav-link ${isDesktopMenu ? 'header-link-with-children' : ''}`} href={item.Option_URL}>
+                                                            {item.Option_Name}
+                                                        </a>
+                                                        {!isDesktopMenu && (
+                                                            <button
+                                                                type="button"
+                                                                className={`header-submenu-toggle ${isTopOpen ? 'show' : ''}`}
+                                                                aria-expanded={isTopOpen}
+                                                                aria-label={`Toggle submenu for ${item.Option_Name}`}
+                                                                onClick={() => toggleMobileMenu(topId)}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    <ul className={`dropdown-menu ${!isDesktopMenu && isTopOpen ? 'show' : ''}`}>
+                                                        {item.menu_options.map((itemSubMenu) => {
+                                                            const subId = getNodeId(itemSubMenu);
+                                                            const hasSubChildren = itemSubMenu.menu_options && itemSubMenu.menu_options.length > 0;
+                                                            const isSubOpen = !!openMobileSubMenus[subId];
+
+                                                            if (hasSubChildren) {
+                                                                return (
+                                                                    <li key={itemSubMenu.documentId} className="dropend">
+                                                                        <div className="header-dropdown-link-row">
+                                                                            <a className={`dropdown-item ${isDesktopMenu ? 'header-submenu-link-with-children' : ''}`} href={itemSubMenu.Option_URL}>
+                                                                                {itemSubMenu.Option_Name}
+                                                                            </a>
+                                                                            {!isDesktopMenu && (
+                                                                                <button
+                                                                                    type="button"
+                                                                                    className={`header-submenu-toggle header-submenu-toggle-nested ${isSubOpen ? 'show' : ''}`}
+                                                                                    aria-expanded={isSubOpen}
+                                                                                    aria-label={`Toggle submenu for ${itemSubMenu.Option_Name}`}
+                                                                                    onClick={() => toggleMobileSubMenu(subId)}
+                                                                                />
+                                                                            )}
+                                                                        </div>
+                                                                        <ul className={`dropdown-menu ${!isDesktopMenu && isSubOpen ? 'show' : ''}`}>
+                                                                            {itemSubMenu.menu_options.map((itemSubSubMenu) => (
+                                                                                <li key={itemSubSubMenu.documentId}>
+                                                                                    <a className="dropdown-item" href={itemSubSubMenu.Option_URL}>{itemSubSubMenu.Option_Name}</a>
+                                                                                </li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    </li>
+                                                                );
+                                                            }
+
+                                                            return (
+                                                                <li key={itemSubMenu.documentId} className="nav-item">
+                                                                    <a className="dropdown-item" aria-current="page" href={itemSubMenu.Option_URL}>{itemSubMenu.Option_Name}</a>
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+                                                </li>
+                                            );
+                                        }
+
+                                        return (
                                             <li key={item.documentId} className="nav-item">
                                                 <a className="nav-link" aria-current="page" href={item.Option_URL}>{item.Option_Name}</a>
-                                            </li>)
-                                    ))}
+                                            </li>
+                                        );
+                                    })}
                                     <li className="nav-item d-lg-none w-100"> {/* Añadido d-lg-none */}
                                         <div className="header-lang-mobile-wrapper">
                                             <button className={`nav-link header-english ${locale === 'en' ? 'active-lang' : ''}`} onClick={() => changeLanguage('en')}>English</button>

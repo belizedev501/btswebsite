@@ -36,6 +36,10 @@ p {
   color: #393D3D;
 }
 
+a {
+  color: #393D3D;
+}
+
 h1 {
   font-family: 'Baloo Chettan';
   font-style: normal;
@@ -385,9 +389,35 @@ h6 {
   line-height: 17px;
 }
 
-@media (width:393px) {
+@media (max-width:991px) {
   h1 {
     font-size: 33px;
     line-height: 48px;
+  }
+
+  h2 {
+    font-size: 26px;
+    line-height: 39px;
+  }
+
+  h3 {
+
+    font-size: 22px;
+    line-height: 33px;
+  }
+
+  h4 {
+    font-size: 18px;
+    line-height: 27px;
+  }
+
+  h5 {
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  h6 {
+    font-size: 12px;
+    line-height: 14px;
   }
 }

@@ -1,0 +1,137 @@
+.trc-content {
+    padding: 10px 50px 25px 50px;
+}
+
+.trc-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.trc-breadcrumb a {
+    text-decoration: underline;
+}
+
+.trc-header h2 {
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.trc-description {
+    margin-top: 30px;
+}
+
+.trc-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 8px;
+    margin: 30px 100px 25px 100px;
+}
+
+.trc-list {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
+}
+
+.trc-item {
+    border: 1px solid #f0d58b;
+    border-radius: 8px;
+    background: #fffdf6;
+    padding: 14px;
+}
+
+.trc-item-title {
+    margin: 0;
+}
+
+.trc-item-title a {
+    color: #109B78;
+    text-decoration-color: #109B78;
+}
+
+.trc-item-title h5 {
+    margin: 0;
+}
+
+.trc-item-badges {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.trc-type-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #DCAC43;
+    color: #637215;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.trc-category-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #D1661F;
+    color: #ffffff;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.trc-date-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #e9f4ef;
+    color: #14755C;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.trc-item-summary {
+    margin-top: 10px;
+}
+
+.trc-item-summary p,
+.trc-item-summary li {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 17px;
+    color: #393D3D;
+}
+
+.trc-item-summary p:last-child,
+.trc-item-summary li:last-child {
+    margin-bottom: 0;
+}
+
+.trc-attachment-link {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+@media (max-width: 991px) {
+    .trc-content {
+        padding: 10px 16px 25px 16px;
+    }
+
+    .trc-filters {
+        grid-template-columns: 1fr;
+        margin: 20px 0 20px 0;
+    }
+
+    .trc-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 20px;
+    }
+}

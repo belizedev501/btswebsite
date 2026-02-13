@@ -15,7 +15,7 @@ const HomeTopServices = () => {
         error: strapiTopServicesError
     } = useStrapiSingle(
         `home-top-services`,
-        `[tax_resources]=true&populate[guides_and_tutorials]=true&populate[banks][populate]=Bank_Image`
+        `[tax_resources][populate]=Tax_Resource_Category&populate[guides_and_tutorials]=true&populate[banks][populate]=Bank_Image`
     );
 
     useEffect(() => {
@@ -50,8 +50,10 @@ const HomeTopServices = () => {
                             )}
                         </div>
                         <div className='col home-ts-text-container'>
-                            <a href={'/resources/' + resource.Tax_Resource_ID}>
-                                <h6>{resource.Tax_Resource_Category} / {resource.Tax_Resource_Title}</h6>
+                            <a href={'/tax_resources/' + resource.Tax_Resource_ID}>
+                                <h6>
+                                    {resource?.Tax_Resource_Category?.Tax_Resource_Category_Name} / {resource.Tax_Resource_Title}
+                                </h6>
                             </a>
                         </div>
                     </div>
@@ -60,7 +62,7 @@ const HomeTopServices = () => {
                 <div className='row' key='more-tax-resources'>
                     <div className="col-1"></div>
                     <div className="col home-ts-text-container">
-                        <a href='/resources'><h6>More here...</h6></a>
+                        <a href='/tax_resources'><h6>More here...</h6></a>
                     </div>
                 </div>
 

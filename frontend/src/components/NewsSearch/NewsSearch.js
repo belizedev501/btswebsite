@@ -1,12 +1,28 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { GlobalContext } from '../Context/Context';
 import './NewsSearch.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
 
+const extractTypesFromParams = (params) => {
+    const rawValues = params.getAll('type');
+
+    return rawValues
+        .flatMap(value => value.split(','))
+        .map(value => value.trim())
+        .filter(Boolean);
+};
+
+const sameStringArray = (a, b) => {
+    if (a.length !== b.length) return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((value, index) => value === sortedB[index]);
+};
 
 const NewsSearch = () => {
     const { globalServerStrapi, globalTokenStrapi } = useContext(GlobalContext);
+    const [searchParams, setSearchParams] = useSearchParams();
     const [search, setSearch] = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -15,7 +31,7 @@ const NewsSearch = () => {
     const [totalPages, setTotalPages] = useState(1);
     const pageSize = 6;
     const [newsSearch, setNewsSeacrh] = useState([]);
-    const [selectedTypes, setSelectedTypes] = useState([]);
+    const [selectedTypes, setSelectedTypes] = useState(() => extractTypesFromParams(searchParams));
     const [newsTypes, setNewsTypes] = useState([]);
 
     // Obtener los tipos de noticias únicos
@@ -53,12 +69,22 @@ const NewsSearch = () => {
         }
     }, [globalServerStrapi, globalTokenStrapi]);
 
+    useEffect(() => {
+        const urlTypes = extractTypesFromParams(searchParams);
+        setSelectedTypes((prev) => sameStringArray(prev, urlTypes) ? prev : urlTypes);
+    }, [searchParams]);
+
     const handleTypeChange = (type) => {
-        setSelectedTypes(prev =>
-            prev.includes(type)
-                ? prev.filter(t => t !== type)
-                : [...prev, type]
-        );
+        const nextSelectedTypes = selectedTypes.includes(type)
+            ? selectedTypes.filter(t => t !== type)
+            : [...selectedTypes, type];
+
+        setSelectedTypes(nextSelectedTypes);
+
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete('type');
+        nextSelectedTypes.forEach((value) => nextParams.append('type', value));
+        setSearchParams(nextParams, { replace: true });
     };
 
     const handleSearch = async (e, page = 1) => {
