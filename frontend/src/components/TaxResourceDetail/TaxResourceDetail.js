@@ -83,6 +83,9 @@ const renderResourcePreview = (url) => {
         );
     }
 
+    const googleViewerUrl = `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
+    const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+
     if (/\.(pdf)(\?|#|$)/.test(lowerUrl)) {
         if (isLocalhostUrl(url)) {
             return (
@@ -94,7 +97,7 @@ const renderResourcePreview = (url) => {
 
         return (
             <div className='trd-preview-frame'>
-                <iframe src={url} title='Tax resource document' />
+                <iframe src={googleViewerUrl} title='Tax resource document' />
             </div>
         );
     }
@@ -108,10 +111,9 @@ const renderResourcePreview = (url) => {
             );
         }
 
-        const gviewUrl = `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
         return (
             <div className='trd-preview-frame'>
-                <iframe src={gviewUrl} title='Tax resource document' />
+                <iframe src={officeViewerUrl} title='Tax resource document' />
             </div>
         );
     }
