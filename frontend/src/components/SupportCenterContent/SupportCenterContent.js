@@ -353,7 +353,8 @@ const SupportCenterContentWithRecaptcha = () => {
 };
 
 const SupportCenterContent = () => {
-    const recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY || '';
+    const runtimeEnv = typeof window !== 'undefined' && window.__ENV__ ? window.__ENV__ : {};
+    const recaptchaSiteKey = runtimeEnv.REACT_APP_RECAPTCHA_SITE_KEY || process.env.REACT_APP_RECAPTCHA_SITE_KEY || '';
     if (!recaptchaSiteKey) {
         return <SupportCenterContentBase executeRecaptcha={null} />;
     }
