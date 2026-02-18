@@ -354,7 +354,6 @@ const SupportCenterContentWithRecaptcha = () => {
 
 const SupportCenterContent = () => {
     const recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY || '';
-    console.log("recaptchaSiteKey", "**" + recaptchaSiteKey + "**");
     if (!recaptchaSiteKey) {
         return <SupportCenterContentBase executeRecaptcha={null} />;
     }
