@@ -41,7 +41,81 @@ const getVimeoEmbed = (url) => {
     return match?.[1] ? `https://player.vimeo.com/video/${match[1]}` : '';
 };
 
-const renderResourcePreview = (url) => {
+const ResourcePreview = ({ url }) => {
+    const [pdfBlobUrl, setPdfBlobUrl] = useState('');
+    const [fileCheckDone, setFileCheckDone] = useState(false);
+    const [fileAvailable, setFileAvailable] = useState(true);
+    const [pdfReady, setPdfReady] = useState(true);
+
+    useEffect(() => {
+        setPdfBlobUrl('');
+        setFileCheckDone(false);
+        setFileAvailable(true);
+        setPdfReady(true);
+    }, [url]);
+
+    useEffect(() => {
+        if (!url) return;
+        const lowerUrl = url.toLowerCase();
+        const isDocLike = /\.(pdf|doc|docx|xls|xlsx|ppt|pptx)(\?|#|$)/.test(lowerUrl);
+        if (!isDocLike || isLocalhostUrl(url)) return;
+
+        let cancelled = false;
+        const checkAvailability = async () => {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                if (!cancelled) {
+                    setFileAvailable(response.ok);
+                    setFileCheckDone(true);
+                }
+            } catch {
+                if (!cancelled) {
+                    setFileAvailable(false);
+                    setFileCheckDone(true);
+                }
+            }
+        };
+
+        checkAvailability();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [url]);
+
+    useEffect(() => {
+        if (!url) return;
+        const lowerUrl = url.toLowerCase();
+        const isPdf = /\.(pdf)(\?|#|$)/.test(lowerUrl);
+        if (!isPdf || isLocalhostUrl(url) || (fileCheckDone && !fileAvailable)) return;
+
+        let cancelled = false;
+        let objectUrl = '';
+
+        const loadPdf = async () => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('PDF not accessible');
+                const blob = await response.blob();
+                objectUrl = URL.createObjectURL(blob);
+                if (!cancelled) {
+                    setPdfBlobUrl(objectUrl);
+                }
+            } catch {
+                if (!cancelled) {
+                    setPdfReady(false);
+                }
+            }
+        };
+
+        loadPdf();
+
+        return () => {
+            cancelled = true;
+            if (objectUrl) URL.revokeObjectURL(objectUrl);
+        };
+    }, [fileAvailable, fileCheckDone, url]);
+
     if (!url) return null;
 
     const youtubeEmbed = getYoutubeEmbed(url);
@@ -83,9 +157,6 @@ const renderResourcePreview = (url) => {
         );
     }
 
-    const googleViewerUrl = `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
-    const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
-
     if (/\.(pdf)(\?|#|$)/.test(lowerUrl)) {
         if (isLocalhostUrl(url)) {
             return (
@@ -95,9 +166,33 @@ const renderResourcePreview = (url) => {
             );
         }
 
+        if (fileCheckDone && !fileAvailable) {
+            return (
+                <p className='trd-preview-unavailable'>
+                    Preview unavailable. File was not found on the server. Open in a new tab.
+                </p>
+            );
+        }
+
+        if (!pdfReady) {
+            return (
+                <p className='trd-preview-unavailable'>
+                    Preview unavailable for this file. Open in a new tab.
+                </p>
+            );
+        }
+
+        if (!pdfBlobUrl) {
+            return (
+                <p className='trd-preview-unavailable'>
+                    Loading preview...
+                </p>
+            );
+        }
+
         return (
             <div className='trd-preview-frame'>
-                <iframe src={googleViewerUrl} title='Tax resource document' />
+                <iframe src={pdfBlobUrl} title='Tax resource document' />
             </div>
         );
     }
@@ -111,6 +206,15 @@ const renderResourcePreview = (url) => {
             );
         }
 
+        if (fileCheckDone && !fileAvailable) {
+            return (
+                <p className='trd-preview-unavailable'>
+                    Preview unavailable. File was not found on the server. Open in a new tab.
+                </p>
+            );
+        }
+
+        const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
         return (
             <div className='trd-preview-frame'>
                 <iframe src={officeViewerUrl} title='Tax resource document' />
@@ -215,7 +319,6 @@ const TaxResourceDetail = () => {
     const resourceCategories = normalizeCategories(resource);
     const primaryCategory = resourceCategories[0] || null;
     const resourceUrl = toAbsoluteUrl(resource?.Tax_Resurce_Url || resource?.Tax_Resource_Url, globalServerStrapi);
-    const preview = renderResourcePreview(resourceUrl);
     const summaryContent = renderRichContent(resource?.Tax_Resource_Summary);
     const bodyContent = renderRichContent(resource?.Tax_Resource_Body);
     const resourceTypes = parseResourceTypes(resource?.Tax_Resource_Type);
@@ -395,7 +498,7 @@ const TaxResourceDetail = () => {
             {resourceUrl && (
                 <div className='trd-external'>
                     <h5>Reference</h5>
-                    {preview}
+                    <ResourcePreview url={resourceUrl} />
                     <p>
                         <a href={resourceUrl} target='_blank' rel='noreferrer'>
                             Open resource in a new tab
@@ -409,14 +512,12 @@ const TaxResourceDetail = () => {
                     {resource.Tax_Resource_Attachments.map((file) => {
                         const fileUrl = toAbsoluteUrl(file?.url, globalServerStrapi);
                         if (!fileUrl) return null;
-                        const filePreview = renderResourcePreview(fileUrl);
-
                         return (
                             <div className='trd-attachment-item' key={file.documentId || file.id || fileUrl}>
                                 <a href={fileUrl} target='_blank' rel='noreferrer'>
                                     {file.alternativeText || file.name || 'Download file'}
                                 </a>
-                                {filePreview}
+                                <ResourcePreview url={fileUrl} />
                             </div>
                         );
                     })}
