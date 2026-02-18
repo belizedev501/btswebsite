@@ -126,19 +126,11 @@ const ResourcePreview = ({ url }) => {
 
     if (/\.(pdf)(\?|#|$)/.test(lowerUrl)) {
         if (isLocalhostUrl(url)) {
-            return (
-                <p className='trd-preview-unavailable'>
-                    Preview unavailable in local environment. Open in a new tab.
-                </p>
-            );
+            return null;
         }
 
         if (!pdfReady) {
-            return (
-                <p className='trd-preview-unavailable'>
-                    Preview unavailable for this file. Open in a new tab.
-                </p>
-            );
+            return null;
         }
 
         if (!pdfBlobUrl) {
@@ -157,20 +149,7 @@ const ResourcePreview = ({ url }) => {
     }
 
     if (/\.(doc|docx|xls|xlsx|ppt|pptx)(\?|#|$)/.test(lowerUrl)) {
-        if (isLocalhostUrl(url)) {
-            return (
-                <p className='trd-preview-unavailable'>
-                    Preview unavailable in local environment. Open in a new tab.
-                </p>
-            );
-        }
-
-        const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
-        return (
-            <div className='trd-preview-frame'>
-                <iframe src={officeViewerUrl} title='Tax resource document' />
-            </div>
-        );
+        return null;
     }
 
     if (/\.(jpg|jpeg|png|gif|webp|svg)(\?|#|$)/.test(lowerUrl)) {
