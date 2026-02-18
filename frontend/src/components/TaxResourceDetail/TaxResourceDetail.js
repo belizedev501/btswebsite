@@ -43,51 +43,18 @@ const getVimeoEmbed = (url) => {
 
 const ResourcePreview = ({ url }) => {
     const [pdfBlobUrl, setPdfBlobUrl] = useState('');
-    const [fileCheckDone, setFileCheckDone] = useState(false);
-    const [fileAvailable, setFileAvailable] = useState(true);
     const [pdfReady, setPdfReady] = useState(true);
 
     useEffect(() => {
         setPdfBlobUrl('');
-        setFileCheckDone(false);
-        setFileAvailable(true);
         setPdfReady(true);
     }, [url]);
 
     useEffect(() => {
         if (!url) return;
         const lowerUrl = url.toLowerCase();
-        const isDocLike = /\.(pdf|doc|docx|xls|xlsx|ppt|pptx)(\?|#|$)/.test(lowerUrl);
-        if (!isDocLike || isLocalhostUrl(url)) return;
-
-        let cancelled = false;
-        const checkAvailability = async () => {
-            try {
-                const response = await fetch(url, { method: 'HEAD' });
-                if (!cancelled) {
-                    setFileAvailable(response.ok);
-                    setFileCheckDone(true);
-                }
-            } catch {
-                if (!cancelled) {
-                    setFileAvailable(false);
-                    setFileCheckDone(true);
-                }
-            }
-        };
-
-        checkAvailability();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [url]);
-
-    useEffect(() => {
-        if (!url) return;
-        const lowerUrl = url.toLowerCase();
         const isPdf = /\.(pdf)(\?|#|$)/.test(lowerUrl);
-        if (!isPdf || isLocalhostUrl(url) || (fileCheckDone && !fileAvailable)) return;
+        if (!isPdf || isLocalhostUrl(url)) return;
 
         let cancelled = false;
         let objectUrl = '';
@@ -114,7 +81,7 @@ const ResourcePreview = ({ url }) => {
             cancelled = true;
             if (objectUrl) URL.revokeObjectURL(objectUrl);
         };
-    }, [fileAvailable, fileCheckDone, url]);
+    }, [url]);
 
     if (!url) return null;
 
@@ -166,14 +133,6 @@ const ResourcePreview = ({ url }) => {
             );
         }
 
-        if (fileCheckDone && !fileAvailable) {
-            return (
-                <p className='trd-preview-unavailable'>
-                    Preview unavailable. File was not found on the server. Open in a new tab.
-                </p>
-            );
-        }
-
         if (!pdfReady) {
             return (
                 <p className='trd-preview-unavailable'>
@@ -202,14 +161,6 @@ const ResourcePreview = ({ url }) => {
             return (
                 <p className='trd-preview-unavailable'>
                     Preview unavailable in local environment. Open in a new tab.
-                </p>
-            );
-        }
-
-        if (fileCheckDone && !fileAvailable) {
-            return (
-                <p className='trd-preview-unavailable'>
-                    Preview unavailable. File was not found on the server. Open in a new tab.
                 </p>
             );
         }
