@@ -41,20 +41,66 @@ const getVimeoEmbed = (url) => {
     return match?.[1] ? `https://player.vimeo.com/video/${match[1]}` : '';
 };
 
-const ResourcePreview = ({ url }) => {
+const normalizeAttachments = (value) => {
+    if (Array.isArray(value)) return value.filter(Boolean);
+    if (Array.isArray(value?.data)) {
+        return value.data.map((item) => item?.attributes || item).filter(Boolean);
+    }
+    return [];
+};
+
+const ResourcePreview = ({ url, mime }) => {
     const [pdfBlobUrl, setPdfBlobUrl] = useState('');
+    const [fileCheckDone, setFileCheckDone] = useState(false);
+    const [fileAvailable, setFileAvailable] = useState(true);
     const [pdfReady, setPdfReady] = useState(true);
 
     useEffect(() => {
         setPdfBlobUrl('');
+        setFileCheckDone(false);
+        setFileAvailable(true);
         setPdfReady(true);
-    }, [url]);
+    }, [url, mime]);
 
     useEffect(() => {
         if (!url) return;
         const lowerUrl = url.toLowerCase();
-        const isPdf = /\.(pdf)(\?|#|$)/.test(lowerUrl);
-        if (!isPdf || isLocalhostUrl(url)) return;
+        const mimeLower = (mime || '').toLowerCase();
+        const isDocLike =
+            /\.(pdf|doc|docx|xls|xlsx|ppt|pptx)(\?|#|$)/.test(lowerUrl) ||
+            /(application\/(pdf|msword|vnd\.openxmlformats\-officedocument\.(wordprocessingml|spreadsheetml|presentationml)\.document|vnd\.ms\-excel|vnd\.ms\-powerpoint))/i.test(mimeLower);
+        if (!isDocLike) return;
+
+        let cancelled = false;
+        const checkAvailability = async () => {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                if (!cancelled) {
+                    setFileAvailable(response.ok);
+                    setFileCheckDone(true);
+                }
+            } catch {
+                if (!cancelled) {
+                    // If HEAD fails (CORS/network), allow preview to proceed with a GET.
+                    setFileAvailable(true);
+                    setFileCheckDone(true);
+                }
+            }
+        };
+
+        checkAvailability();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [mime, url]);
+
+    useEffect(() => {
+        if (!url) return;
+        const lowerUrl = url.toLowerCase();
+        const mimeLower = (mime || '').toLowerCase();
+        const isPdf = /\.(pdf)(\?|#|$)/.test(lowerUrl) || mimeLower === 'application/pdf';
+        if (!isPdf || (fileCheckDone && !fileAvailable)) return;
 
         let cancelled = false;
         let objectUrl = '';
@@ -81,7 +127,7 @@ const ResourcePreview = ({ url }) => {
             cancelled = true;
             if (objectUrl) URL.revokeObjectURL(objectUrl);
         };
-    }, [url]);
+    }, [fileAvailable, fileCheckDone, mime, url]);
 
     if (!url) return null;
 
@@ -114,8 +160,13 @@ const ResourcePreview = ({ url }) => {
     }
 
     const lowerUrl = url.toLowerCase();
+    const mimeLower = (mime || '').toLowerCase();
 
-    if (/\.(mp4|webm|ogg)(\?|#|$)/.test(lowerUrl)) {
+    const isVideo =
+        /\.(mp4|webm|ogg)(\?|#|$)/.test(lowerUrl) ||
+        mimeLower.startsWith('video/');
+
+    if (isVideo) {
         return (
             <video className='trd-video' controls>
                 <source src={url} />
@@ -124,13 +175,22 @@ const ResourcePreview = ({ url }) => {
         );
     }
 
-    if (/\.(pdf)(\?|#|$)/.test(lowerUrl)) {
-        if (isLocalhostUrl(url)) {
-            return null;
+    const isPdf = /\.(pdf)(\?|#|$)/.test(lowerUrl) || mimeLower === 'application/pdf';
+    if (isPdf) {
+        if (fileCheckDone && !fileAvailable) {
+            return (
+                <p className='trd-preview-unavailable'>
+                    Preview unavailable. File was not found on the server. Open in a new tab.
+                </p>
+            );
         }
 
         if (!pdfReady) {
-            return null;
+            return (
+                <p className='trd-preview-unavailable'>
+                    Preview unavailable for this file. Open in a new tab.
+                </p>
+            );
         }
 
         if (!pdfBlobUrl) {
@@ -148,17 +208,63 @@ const ResourcePreview = ({ url }) => {
         );
     }
 
-    if (/\.(doc|docx|xls|xlsx|ppt|pptx)(\?|#|$)/.test(lowerUrl)) {
-        return null;
+    const isOfficeDoc =
+        /\.(doc|docx|xls|xlsx|ppt|pptx)(\?|#|$)/.test(lowerUrl) ||
+        /(application\/(msword|vnd\.ms\-word|vnd\.openxmlformats\-officedocument\.wordprocessingml\.document|vnd\.ms\-excel|vnd\.openxmlformats\-officedocument\.spreadsheetml\.sheet|vnd\.ms\-powerpoint|vnd\.openxmlformats\-officedocument\.presentationml\.presentation))/i.test(mimeLower);
+    if (isOfficeDoc) {
+        if (isLocalhostUrl(url)) {
+            return (
+                <p className='trd-preview-unavailable'>
+                    Excel/Word/PowerPoint preview not available with a local URL. Download and open it on your device.
+                </p>
+            );
+        }
+
+        if (fileCheckDone && !fileAvailable) {
+            return (
+                <p className='trd-preview-unavailable'>
+                    Preview unavailable. File was not found on the server. Open in a new tab.
+                </p>
+            );
+        }
+
+        const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+        return (
+            <div className='trd-preview-frame'>
+                <iframe src={officeViewerUrl} title='Tax resource document' />
+            </div>
+        );
     }
 
-    if (/\.(jpg|jpeg|png|gif|webp|svg)(\?|#|$)/.test(lowerUrl)) {
+    const isImage =
+        /\.(jpg|jpeg|png|gif|webp|svg)(\?|#|$)/.test(lowerUrl) ||
+        mimeLower.startsWith('image/');
+    if (isImage) {
         return (
             <img className='trd-image' src={url} alt='Tax resource attachment preview' />
         );
     }
 
-    return null;
+    const isTextLike =
+        /\.(txt|csv|tsv|json)(\?|#|$)/.test(lowerUrl) ||
+        mimeLower.startsWith('text/') ||
+        mimeLower === 'application/json' ||
+        mimeLower === 'text/csv';
+
+    if (isTextLike) {
+        return (
+            <div className='trd-preview-frame'>
+                <iframe src={url} title='Tax resource text preview' />
+            </div>
+        );
+    }
+
+    // Fallback: try generic iframe so at least some file types render or prompt the browser download UI.
+    return (
+        <div className='trd-preview-frame'>
+            <iframe src={url} title='Tax resource attachment' />
+        </div>
+    );
 };
 
 const renderRichContent = (content) => {
@@ -395,6 +501,8 @@ const TaxResourceDetail = () => {
         resourceId
     ]);
 
+    const attachments = normalizeAttachments(resource?.Tax_Resource_Attachments);
+
     if (loading) return <p>Loading Tax Resource...</p>;
     if (error) return <p>Error loading Tax Resource.</p>;
     if (!resource) return <p>Tax Resource not found.</p>;
@@ -459,9 +567,9 @@ const TaxResourceDetail = () => {
                 </div>
             )}
 
-            {Array.isArray(resource?.Tax_Resource_Attachments) && resource.Tax_Resource_Attachments.length > 0 && (
+            {attachments.length > 0 && (
                 <div className='trd-attachments'>
-                    {resource.Tax_Resource_Attachments.map((file) => {
+                    {attachments.map((file) => {
                         const fileUrl = toAbsoluteUrl(file?.url, globalServerStrapi);
                         if (!fileUrl) return null;
                         return (
@@ -469,7 +577,7 @@ const TaxResourceDetail = () => {
                                 <a href={fileUrl} target='_blank' rel='noreferrer'>
                                     {file.alternativeText || file.name || 'Download file'}
                                 </a>
-                                <ResourcePreview url={fileUrl} />
+                                <ResourcePreview url={fileUrl} mime={file?.mime} />
                             </div>
                         );
                     })}
