@@ -62,8 +62,22 @@
 .trd-summary,
 .trd-body,
 .trd-external,
-.trd-attachments {
+.trd-attachments,
+.trd-related-tags {
     margin-top: 16px;
+}
+
+.trd-related-tags-list {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.trd-tag-related {
+    background: #eef3ff;
+    color: #1f3f7a;
+    font-weight: 600;
 }
 
 .trd-preview-frame {

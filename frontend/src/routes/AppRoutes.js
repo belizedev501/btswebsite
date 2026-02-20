@@ -13,6 +13,7 @@ import Calendar from "../pages/Calendar";
 import TaxResources from "../pages/TaxResources";
 import TaxResourcesCategory from "../pages/TaxResourcesCategory";
 import TaxResource from "../pages/TaxResource";
+import IrisBelizeTutorials from "../pages/IrisBelizeTutorials";
 import { useGoogleAnalytics } from '../components/hooks/useGoogleAnalytics';
 
 const AnalyticsListener = () => {
@@ -45,6 +46,7 @@ const AppRoutes = () => {
                 <Route path="/tax_resources" element={<TaxResources />} />
                 <Route path="/tax_resources/category/:categoryId" element={<TaxResourcesCategory />} />
                 <Route path="/tax_resources/:resourceId" element={<TaxResource />} />
+                <Route path="/iris_belize_tutorials" element={<IrisBelizeTutorials />} />
             </Routes>
             <Footer />
         </Router>

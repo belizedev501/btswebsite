@@ -221,6 +221,27 @@ const normalizeCategories = (resource) => {
     return singleRelation ? [singleRelation] : [];
 };
 
+const normalizeTags = (resource) => {
+    const relation = resource?.Tax_Resource_Tags;
+    if (Array.isArray(relation)) return relation.filter(Boolean);
+    if (Array.isArray(relation?.data)) {
+        return relation.data.map((item) => item?.attributes || item).filter(Boolean);
+    }
+    return [];
+};
+
+const getTagLabel = (tag) => {
+    if (!tag) return '';
+    return (
+        tag.Tag_Name
+        || tag.tag_name
+        || tag.Name
+        || tag.name
+        || tag.Title
+        || ''
+    );
+};
+
 const TaxResourceDetail = () => {
     const { resourceId } = useParams();
     const navigate = useNavigate();
@@ -238,7 +259,7 @@ const TaxResourceDetail = () => {
         error
     } = useStrapiCollection(
         'tax-resources',
-        '[tax_resource_categories][fields][0]=Tax_Resource_Category_ID&populate[tax_resource_categories][fields][1]=Tax_Resource_Category_Name&populate[Tax_Resource_Attachments][fields][0]=url&populate[Tax_Resource_Attachments][fields][1]=name&populate[Tax_Resource_Attachments][fields][2]=alternativeText&populate[Tax_Resource_Attachments][fields][3]=mime',
+        '[tax_resource_categories][fields][0]=Tax_Resource_Category_ID&populate[tax_resource_categories][fields][1]=Tax_Resource_Category_Name&populate[Tax_Resource_Attachments][fields][0]=url&populate[Tax_Resource_Attachments][fields][1]=name&populate[Tax_Resource_Attachments][fields][2]=alternativeText&populate[Tax_Resource_Attachments][fields][3]=mime&populate[Tax_Resource_Tags][fields][0]=Tag_Name',
         'Tax_Resource_Effective_Date',
         'desc',
         1,
@@ -252,6 +273,7 @@ const TaxResourceDetail = () => {
     const summaryContent = renderRichContent(resource?.Tax_Resource_Summary);
     const bodyContent = renderRichContent(resource?.Tax_Resource_Body);
     const resourceTypes = parseResourceTypes(resource?.Tax_Resource_Type);
+    const resourceTags = normalizeTags(resource);
     const categoryId = primaryCategory?.Tax_Resource_Category_ID || primaryCategory?.documentId || primaryCategory?.id;
     const fromPath = (searchParams.get('from') || '').trim();
     const fromCategoryName = (searchParams.get('fromCategoryName') || '').trim();
@@ -451,6 +473,24 @@ const TaxResourceDetail = () => {
                             </div>
                         );
                     })}
+                </div>
+            )}
+
+            {resourceTags.length > 0 && (
+                <div className='trd-related-tags'>
+                    <h5>Tags</h5>
+                    <div className='trd-related-tags-list'>
+                        {resourceTags.map((tag, index) => {
+                            const label = getTagLabel(tag);
+                            if (!label) return null;
+
+                            return (
+                                <span className='trd-tag trd-tag-related' key={`${label}-${tag.documentId || tag.id || index}`}>
+                                    {label}
+                                </span>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
         </section>
