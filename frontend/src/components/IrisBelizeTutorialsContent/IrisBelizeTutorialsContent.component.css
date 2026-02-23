@@ -42,6 +42,10 @@
     box-shadow: 0 6px 18px rgba(25, 42, 70, 0.08);
 }
 
+.iris-tutorial-card-body {
+    padding-bottom: 30px;
+}
+
 .iris-tutorial-card-title {
     margin-bottom: 12px;
     
@@ -49,6 +53,7 @@
 
 .iris-tutorial-card-summary {
     line-height: 1.5;
+    margin-bottom: 0;
 }
 
 .iris-tutorial-card-summary p:last-child {
@@ -59,7 +64,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 14px;
+    margin-top: 30px;
 }
 
 .iris-tutorial-category {
@@ -75,7 +80,7 @@
 
 .iris-tutorial-video {
     margin-top: auto;
-    padding-top: 16px;
+    padding-top: 0;
     border-radius: 10px;
     overflow: hidden;
     background: #111827;
@@ -91,7 +96,7 @@
 .iris-tutorial-link {
     display: inline-block;
     margin-top: auto;
-    padding-top: 14px;
+    padding-top: 0;
     color: #0d6efd;
     text-decoration: none;
     font-weight: 600;

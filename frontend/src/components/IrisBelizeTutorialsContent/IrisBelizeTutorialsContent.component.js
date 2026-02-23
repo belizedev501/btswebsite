@@ -78,23 +78,25 @@ const IrisBelizeTutorialsContentComponent = ({
 
                     return (
                         <article className='iris-tutorial-card' key={tutorial.id}>
-                            <h3 className='iris-tutorial-card-title'>{tutorial.title}</h3>
+                            <div className='iris-tutorial-card-body'>
+                                <h3 className='iris-tutorial-card-title'>{tutorial.title}</h3>
 
-                            {tutorial.summary && (
-                                <ReactMarkdown className='iris-tutorial-card-summary'>
-                                    {tutorial.summary}
-                                </ReactMarkdown>
-                            )}
+                                {tutorial.summary && (
+                                    <ReactMarkdown className='iris-tutorial-card-summary'>
+                                        {tutorial.summary}
+                                    </ReactMarkdown>
+                                )}
 
-                            {tutorial.categories.length > 0 && (
-                                <div className='iris-tutorial-card-categories'>
-                                    {tutorial.categories.map((category) => (
-                                        <span className='iris-tutorial-category' key={`${tutorial.id}-${category}`}>
-                                            {category}
-                                        </span>
-                                    ))}
-                                </div>
-                            )}
+                                {tutorial.categories.length > 0 && (
+                                    <div className='iris-tutorial-card-categories'>
+                                        {tutorial.categories.map((category) => (
+                                            <span className='iris-tutorial-category' key={`${tutorial.id}-${category}`}>
+                                                {category}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
                             {embedUrl ? (
                                 <div className='iris-tutorial-video'>
