@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import './IrisBelizeCotent.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
+import { GlobalContext } from '../Context/Context';
 
 const IrisBelizeCotent = () => {
+    const { locale } = useContext(GlobalContext);
     const { data: irisBelizeData, loading } = useStrapiSingle('iris-belize', '=*');
 
     if (loading) return <div className="iris-belize-loading">Loading...</div>;
@@ -45,7 +47,8 @@ const IrisBelizeCotent = () => {
     const textRaw = attributes.IRIS_Belize_Text || '';
     const text = typeof textRaw === 'string' ? textRaw : blocksToMarkdown(textRaw);
 
-    const loginText = attributes.IRIS_Belize_Login_Button_Text || 'Login to IRIS Belize';
+    const loginText = attributes.IRIS_Belize_Login_Button_Text
+        || (locale === 'es' ? 'Iniciar sesión en IRIS Belize' : 'Login to IRIS Belize');
     const loginUrl = attributes.IRIS_Belize_Login_Button_URL || '#';
     const registerText = attributes.IRIS_Belize_Register_Button_Text || 'Register for an online user account';
     const registerUrl = attributes.IRIS_Belize_Register_Button_URL || '#';
