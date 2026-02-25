@@ -1,11 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import './IrisBelizeCotent.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
-import { GlobalContext } from '../Context/Context';
 
 const IrisBelizeCotent = () => {
-    const { locale } = useContext(GlobalContext);
     const { data: irisBelizeData, loading } = useStrapiSingle('iris-belize', '=*');
 
     if (loading) return <div className="iris-belize-loading">Loading...</div>;
@@ -42,16 +40,15 @@ const IrisBelizeCotent = () => {
         }).filter(Boolean).join('\n\n');
     };
 
-    const title = attributes.IRIS_Belize_Title || 'IRIS Belize';
-    const subTitle = attributes.IRIS_Belize_SubTitle || '';
-    const textRaw = attributes.IRIS_Belize_Text || '';
+    const title = attributes.IRIS_Belize_Title;
+    const subTitle = attributes.IRIS_Belize_SubTitle;
+    const textRaw = attributes.IRIS_Belize_Text;
     const text = typeof textRaw === 'string' ? textRaw : blocksToMarkdown(textRaw);
 
-    const loginText = attributes.IRIS_Belize_Login_Button_Text
-        || (locale === 'es' ? 'Iniciar sesión en IRIS Belize' : 'Login to IRIS Belize');
-    const loginUrl = attributes.IRIS_Belize_Login_Button_URL || '#';
-    const registerText = attributes.IRIS_Belize_Register_Button_Text || 'Register for an online user account';
-    const registerUrl = attributes.IRIS_Belize_Register_Button_URL || '#';
+    const loginText = attributes.IRIS_Belize_Login_Button_text;
+    const loginUrl = attributes.IRIS_Belize_Login_Button_URL;
+    const registerText = attributes.IRIS_Belize_Register_Button_Text;
+    const registerUrl = attributes.IRIS_Belize_Register_Button_URL;
 
     return (
         <section className="iris-belize-container">
@@ -67,12 +64,12 @@ const IrisBelizeCotent = () => {
             )}
 
             <div className="iris-belize-actions">
-                {loginUrl && (
+                {loginText && loginUrl && (
                     <a className="btn btn-primary iris-belize-button" href={loginUrl} target='_blank'>
                         <span className="iris-belize-button-text">{loginText}</span>
                     </a>
                 )}
-                {registerUrl && (
+                {registerText && registerUrl && (
                     <a className="btn btn-secondary iris-belize-button" href={registerUrl} target='_blank'>
                         <span className="iris-belize-button-text">{registerText}</span>
                     </a>
@@ -83,3 +80,4 @@ const IrisBelizeCotent = () => {
 };
 
 export default IrisBelizeCotent;
+
