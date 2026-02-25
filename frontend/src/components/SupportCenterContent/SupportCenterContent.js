@@ -103,7 +103,8 @@ const SupportCenterContentBase = ({ executeRecaptcha }) => {
     const recaptchaErrorText = attributes.Support_Center_Contact_Form_Error_Recaptcha || 'Por favor completa el reCAPTCHA.';
     const recaptchaConfigErrorText = attributes.Support_Center_Contact_Form_Error_Recaptcha_Config
         || 'reCAPTCHA no está configurado. Por favor intenta más tarde.';
-    const recaptchaSiteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY || '';
+    const runtimeEnv = typeof window !== 'undefined' && window.__ENV__ ? window.__ENV__ : {};
+    const recaptchaSiteKey = runtimeEnv.REACT_APP_RECAPTCHA_SITE_KEY || process.env.REACT_APP_RECAPTCHA_SITE_KEY || '';
 
     const subjectOptions = subjectValueList
         .map((item) => item?.Subject_Value || item?.attributes?.Subject_Value || '')
