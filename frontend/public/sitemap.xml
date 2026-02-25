@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/</loc>
+  </url>
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/about_us</loc>
+  </url>
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/support_center</loc>
+  </url>
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/iris_belize</loc>
+  </url>
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/news</loc>
+  </url>
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/faq</loc>
+  </url>
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/calendar</loc>
+  </url>
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/tax_resources</loc>
+  </url>
+  <url>
+    <loc>https://btsweb-staging.azurewebsites.net/iris_belize_tutorials</loc>
+  </url>
+</urlset>
