@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import './HomeNews.component.css';
 import { useStrapiSingle, useStrapiCollection } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context'; // ⬅️ importar contexto
-import { BlocksRenderer } from '@strapi/blocks-react-renderer';
+import { renderRichText } from '../utils/richText';
 
 const HomeNews = () => {
     const [homeNews, setHomeNews] = useState(null);
@@ -71,7 +71,7 @@ const HomeNews = () => {
                 <div>
                     <span>
                         <p><span className='home-news-location-time'>{newsSummary.News_Location}, {newsSummary.News_Country}, {formatNewsDate(newsSummary.News_DateTime)}</span></p>
-                        <BlocksRenderer content={newsSummary.News_Summary} />
+                        {renderRichText(newsSummary.News_Summary)}
                     </span>
                 </div >
             ) : (

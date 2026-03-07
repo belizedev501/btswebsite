@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import { FaFacebookF, FaLinkedinIn, FaWhatsapp, FaLink } from 'react-icons/fa';
 import { useStrapiCollection } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context';
 import './NewsDetail.component.css';
+import { renderRichText } from '../utils/richText';
 
 const NewsDetail = () => {
     const { slug } = useParams();
@@ -144,8 +144,7 @@ const NewsDetail = () => {
     ]);
 
     const renderBlocks = (content) => {
-        if (!content) return null;
-        return <BlocksRenderer content={content} />;
+        return renderRichText(content);
     };
 
     const renderContentItem = (contentItem, idx) => {

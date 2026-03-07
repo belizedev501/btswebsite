@@ -1,7 +1,15 @@
 .support-center-container {
+    --brand-dark-teal: #14755C;
+    --brand-teal: #109B78;
+    --brand-gold: #DCAC43;
+    --cta-burnt-orange: #D1661F;
+    --neutral-dark-gray: #393D3D;
+    --neutral-light-gray: #929294;
+    --neutral-cream: #F7D77F;
     max-width: 1150px;
     margin: 0 auto;
-    padding: 48px 24px 64px;
+    padding: 10px 50px 25px 50px;
+    color: var(--neutral-dark-gray);
 }
 
 .support-center-hero {
@@ -12,11 +20,12 @@
 .support-center-main-title {
     font-size: 2.4rem;
     margin-bottom: 12px;
+    color: var(--brand-dark-teal);
 }
 
 .support-center-subtitle {
     font-size: 1.1rem;
-    color: #5b5b5b;
+    color: var(--neutral-dark-gray);
     margin-bottom: 20px;
 }
 
@@ -46,35 +55,39 @@
 }
 
 .support-center-card {
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--neutral-light-gray);
     border-radius: 8px;
     padding: 24px;
-    background: #fafafa;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.04);
+    background: #fffdf6;
+    box-shadow: 0 12px 24px rgba(20, 117, 92, 0.1);
 }
 
 .support-center-card-title {
     margin-bottom: 12px;
     font-size: 1.35rem;
+    color: var(--brand-dark-teal);
 }
 
 .support-center-card-text {
     line-height: 1.6;
+    color: var(--neutral-dark-gray);
 }
 
 .support-center-contact {
-    border-top: 1px solid #e6e6e6;
+    border-top: 1px solid var(--neutral-light-gray);
     padding-top: 36px;
 }
 
 .support-center-contact-title {
     font-size: 1.5rem;
     margin-bottom: 10px;
+    color: var(--brand-dark-teal);
 }
 
 .support-center-contact-text {
     margin-bottom: 24px;
     line-height: 1.6;
+    color: var(--neutral-dark-gray);
 }
 
 .support-center-form {
@@ -98,17 +111,25 @@
 
 .support-center-field span {
     font-weight: 600;
-    color: #2b2b2b;
+    color: var(--brand-dark-teal);
 }
 
 .support-center-field input,
 .support-center-field select,
 .support-center-field textarea {
-    border: 1px solid #c9c9c9;
+    border: 1px solid var(--neutral-light-gray);
     border-radius: 6px;
     padding: 10px 12px;
     font-size: 0.95rem;
     font-family: inherit;
+    color: var(--neutral-dark-gray);
+}
+
+.support-center-field input:focus,
+.support-center-field select:focus,
+.support-center-field textarea:focus {
+    outline: 2px solid var(--brand-teal);
+    outline-offset: 1px;
 }
 
 .support-center-field textarea {
@@ -125,14 +146,20 @@
     padding: 10px 24px;
     border-radius: 6px;
     border: none;
-    background: #0b2a5b;
+    background: var(--brand-teal);
     color: #fff;
     font-weight: 600;
     cursor: pointer;
 }
 
 .support-center-submit:hover {
-    background: #103a7a;
+    background: var(--brand-dark-teal);
+}
+
+.support-center-submit:disabled {
+    background: var(--neutral-light-gray);
+    color: #fff;
+    cursor: not-allowed;
 }
 
 .grecaptcha-badge {
@@ -143,6 +170,12 @@
 @media (max-width: 900px) {
     .support-center-feature-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 991px) {
+    .support-center-container {
+        padding: 10px 16px 25px 16px;
     }
 }
 

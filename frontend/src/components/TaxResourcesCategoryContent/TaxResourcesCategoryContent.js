@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStrapiCollection } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context';
 import './TaxResourcesCategoryContent.component.css';
+import { renderRichText } from '../utils/richText';
 
 const normalizeItems = (value) => {
     if (Array.isArray(value)) return value;
@@ -67,18 +66,6 @@ const toAbsoluteUrl = (rawUrl, serverUrl) => {
     if (!rawUrl || typeof rawUrl !== 'string' || !serverUrl) return '';
     if (/^https?:\/\//i.test(rawUrl)) return rawUrl;
     return `${serverUrl}${rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}`}`;
-};
-
-const renderRichContent = (content) => {
-    if (Array.isArray(content) && content.length > 0) {
-        return <BlocksRenderer content={content} />;
-    }
-
-    if (typeof content === 'string' && content.trim()) {
-        return <ReactMarkdown>{content}</ReactMarkdown>;
-    }
-
-    return null;
 };
 
 const TaxResourcesCategoryContent = () => {
@@ -272,7 +259,7 @@ const TaxResourcesCategoryContent = () => {
 
             {category?.Tax_Resource_Category_Text && (
                 <div className='trc-description'>
-                    <ReactMarkdown>{category.Tax_Resource_Category_Text}</ReactMarkdown>
+                    {renderRichText(category.Tax_Resource_Category_Text)}
                 </div>
             )}
 
@@ -301,7 +288,7 @@ const TaxResourcesCategoryContent = () => {
                     <p>No related Tax Resources found for the selected filters.</p>
                 )}
                 {filteredResources.map((resource) => {
-                    const summaryContent = renderRichContent(resource?.Tax_Resource_Summary);
+                    const summaryContent = renderRichText(resource?.Tax_Resource_Summary);
                     const effectiveDate = resource?.Tax_Resource_Effective_Date
                         ? new Date(resource.Tax_Resource_Effective_Date).toLocaleDateString()
                         : '';

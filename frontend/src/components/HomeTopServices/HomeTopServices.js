@@ -23,6 +23,36 @@ const getResourceCategories = (resource) => {
     return singleRelation ? [singleRelation] : [];
 };
 
+const getGuideCategories = (guide) => {
+    const manyRelation = normalizeRelationArray(guide?.tax_resource_categories);
+    if (manyRelation.length > 0) return manyRelation;
+
+    const legacyManyRelation = normalizeRelationArray(guide?.Tax_Resource_Categories);
+    if (legacyManyRelation.length > 0) return legacyManyRelation;
+
+    return [];
+};
+
+const getTutorialCategories = (tutorial) => {
+    const manyRelation = normalizeRelationArray(tutorial?.Tutorial_Categories);
+    if (manyRelation.length > 0) return manyRelation;
+
+    const lowerManyRelation = normalizeRelationArray(tutorial?.tutorial_categories);
+    if (lowerManyRelation.length > 0) return lowerManyRelation;
+
+    return [];
+};
+
+const mergeUniqueById = (items) => {
+    const seen = new Set();
+    return items.filter((item) => {
+        const key = item?.id || item?.documentId || JSON.stringify(item);
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+};
+
 const HomeTopServices = () => {
     const [topServices, setTopServices] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -34,7 +64,7 @@ const HomeTopServices = () => {
         error: strapiTopServicesError
     } = useStrapiSingle(
         'home-top-services',
-        '[tax_resources][populate][tax_resource_categories][fields][0]=Tax_Resource_Category_Name&populate[guides_and_tutorials]=true&populate[banks][populate]=Bank_Image'
+        '[tax_resources][populate]=*&populate[guides][populate]=*&populate[tutorials][populate]=*&populate[banks][populate]=*'
     );
 
     useEffect(() => {
@@ -94,33 +124,66 @@ const HomeTopServices = () => {
                     {topServices.Home_TS_Guides_Tutorials}
                 </h5>
 
-                {Array.isArray(topServices.guides_and_tutorials) && topServices.guides_and_tutorials.map((gat) => (
-                    <div className='row' key={gat.id}>
-                        <div className='col-1 home-ts-icon-container'>
-                            {(gat.GAT_Type === 'Forms & Downloads') ? (
-                                <span className='icon-size_4 icon-clipboard-list-solid' />
-                            ) : (gat.GAT_Type === 'Publication') ? (
-                                <span className='icon-size_4 icon-newspaper-solid' />
-                            ) : (gat.GAT_Type === 'Legal') ? (
-                                <span className='icon-size_4 icon-scale-balanced-solid' />
-                            ) : (gat.GAT_Type === 'Guidelines') ? (
-                                <span className='icon-size_4 icon-list-check-solid' />
-                            ) : (
+                {(() => {
+                    const guidesList = mergeUniqueById([
+                        ...normalizeRelationArray(topServices?.guides),
+                        ...normalizeRelationArray(topServices?.guide),
+                        ...normalizeRelationArray(topServices?.Guide),
+                        ...normalizeRelationArray(topServices?.Guides)
+                    ]);
+
+                    const tutorialsList = mergeUniqueById([
+                        ...normalizeRelationArray(topServices?.tutorials),
+                        ...normalizeRelationArray(topServices?.tutorial),
+                        ...normalizeRelationArray(topServices?.Tutorial),
+                        ...normalizeRelationArray(topServices?.Tutorials)
+                    ]);
+
+                    return [
+                        ...guidesList.map((rawGuide) => {
+                            const guide = rawGuide?.attributes || rawGuide;
+                            const categories = getGuideCategories(guide);
+                            const categoryLabel = categories
+                                .map((category) => category?.Tax_Resource_Category_Name)
+                                .filter(Boolean)
+                                .join(', ');
+
+                            return {
+                                id: `guide-${guide?.id || guide?.documentId || guide?.Guide_Title}`,
+                                title: guide?.Guide_Title,
+                                prefix: categoryLabel || 'Guide'
+                            };
+                        }),
+                        ...tutorialsList.map((rawTutorial) => {
+                            const tutorial = rawTutorial?.attributes || rawTutorial;
+                            const categories = getTutorialCategories(tutorial);
+                            const categoryLabel = categories
+                                .map((category) => category?.Tax_Resource_Category_Name)
+                                .filter(Boolean)
+                                .join(', ');
+
+                            return {
+                                id: `tutorial-${tutorial?.id || tutorial?.documentId || tutorial?.Tutorial_Title}`,
+                                title: tutorial?.Tutorial_Title,
+                                prefix: categoryLabel || 'Tutorial'
+                            };
+                        })
+                    ].filter((item) => item?.title).map((item) => (
+                        <div className='row' key={item.id}>
+                            <div className='col-1 home-ts-icon-container'>
                                 <span className='icon-size_4 icon-book-solid' />
-                            )}
+                            </div>
+                            <div className='col home-ts-text-container'>
+                                <h6>{item.prefix} / {item.title}</h6>
+                            </div>
                         </div>
-                        <div className='col home-ts-text-container'>
-                            <a href={`/gat/${gat.GAT_ID}`}>
-                                <h6>{gat.GAT_Theme} / {gat.GAT_Title}</h6>
-                            </a>
-                        </div>
-                    </div>
-                ))}
+                    ));
+                })()}
 
                 <div className='row' key='more-GAT'>
                     <div className='col-1'></div>
                     <div className='col home-ts-text-container'>
-                        <a href='/gat'><h6>More here...</h6></a>
+                        <a href='/iris_belize_tutorials'><h6>More here...</h6></a>
                     </div>
                 </div>
 

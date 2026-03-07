@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import './SupportCenterContent.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context';
+import { normalizeRichText, renderRichText } from '../utils/richText';
 
 const SupportCenterContentBase = ({ executeRecaptcha }) => {
     const { globalTokenStrapi, globalServerStrapi } = useContext(GlobalContext);
@@ -32,59 +32,22 @@ const SupportCenterContentBase = ({ executeRecaptcha }) => {
         || [];
     const subjectValueList = Array.isArray(subjectValueRaw) ? subjectValueRaw : [];
 
-    const blocksToMarkdown = (blocks) => {
-        if (!Array.isArray(blocks)) return '';
-        const renderInline = (children = []) => children.map((child) => {
-            const text = child.text || '';
-            if (child.bold) return `**${text}**`;
-            if (child.italic) return `*${text}*`;
-            if (child.underline) return `__${text}__`;
-            return text;
-        }).join('');
-
-        return blocks.map((block) => {
-            if (block.type === 'paragraph') {
-                return renderInline(block.children);
-            }
-            if (block.type === 'heading') {
-                const level = Math.min(Math.max(block.level || 2, 1), 6);
-                return `${'#'.repeat(level)} ${renderInline(block.children)}`;
-            }
-            if (block.type === 'list') {
-                const ordered = block.format === 'ordered';
-                return (block.children || []).map((item, idx) => {
-                    const prefix = ordered ? `${idx + 1}. ` : '- ';
-                    return `${prefix}${renderInline(item.children)}`;
-                }).join('\n');
-            }
-            return '';
-        }).filter(Boolean).join('\n\n');
-    };
-
     const title = attributes.Support_Center_Title || 'Support Center';
     const subTitle = attributes.Support_Center_SubTitle || '';
     const introTextRaw = attributes.Support_Center_Text || '';
-    const introText = typeof introTextRaw === 'string'
-        ? introTextRaw
-        : blocksToMarkdown(introTextRaw);
+    const introText = normalizeRichText(introTextRaw);
 
     const faqTitle = attributes.Support_Center_FAQ_Title || '';
     const faqTextRaw = attributes.Support_Center_FAQ_Text || '';
-    const faqText = typeof faqTextRaw === 'string'
-        ? faqTextRaw
-        : blocksToMarkdown(faqTextRaw);
+    const faqText = normalizeRichText(faqTextRaw);
 
     const chatBotTitle = attributes.Support_Center_ChatBot_Title || '';
     const chatBotTextRaw = attributes.Support_Center_ChatBot_Text || '';
-    const chatBotText = typeof chatBotTextRaw === 'string'
-        ? chatBotTextRaw
-        : blocksToMarkdown(chatBotTextRaw);
+    const chatBotText = normalizeRichText(chatBotTextRaw);
 
     const contactTitle = attributes.Support_Center_Contact_Form_Title || '';
     const contactTextRaw = attributes.Support_Center_Contact_Form_Text || '';
-    const contactText = typeof contactTextRaw === 'string'
-        ? contactTextRaw
-        : blocksToMarkdown(contactTextRaw);
+    const contactText = normalizeRichText(contactTextRaw);
 
     const firstNameLabel = attributes.Support_Center_Contact_Form_First_Name || 'First Name';
     const lastNameLabel = attributes.Support_Center_Contact_Form_Last_Name || 'Last Name';
@@ -95,9 +58,7 @@ const SupportCenterContentBase = ({ executeRecaptcha }) => {
     const submitButtonText = attributes.Support_Center_Contact_Form_Submit_Button_Text || 'Send Message';
     const submitButtonSendingText = attributes.Support_Center_Contact_Form_Submit_Button_Sending_Text || 'Sending...';
     const submitTextRaw = attributes.Support_Center_Contact_Form_Submit_Text || '';
-    const submitText = typeof submitTextRaw === 'string'
-        ? submitTextRaw
-        : blocksToMarkdown(submitTextRaw);
+    const submitText = normalizeRichText(submitTextRaw);
     const errorStrapiText = attributes.Support_Center_Contact_Form_Error_Strapi || 'Strapi server is not configured.';
     const errorSendingText = attributes.Support_Center_Contact_Form_Error_Sending || 'The message could not be sent. Please try again.';
     const recaptchaErrorText = attributes.Support_Center_Contact_Form_Error_Recaptcha || 'Por favor completa el reCAPTCHA.';
@@ -211,44 +172,28 @@ const SupportCenterContentBase = ({ executeRecaptcha }) => {
                 <div className="support-center-hero">
                     <h2 className="support-center-main-title">{title}</h2>
                     {subTitle && <p className="support-center-subtitle">{subTitle}</p>}
-                    {introText && (
-                        <ReactMarkdown className="support-center-intro-text">
-                            {introText}
-                        </ReactMarkdown>
-                    )}
+                    {renderRichText(introText, { className: 'support-center-intro-text' })}
                 </div>
 
                 <div className="support-center-feature-grid">
                     {(faqTitle || faqText) && (
                         <article className="support-center-card">
                             {faqTitle && <h3 className="support-center-card-title">{faqTitle}</h3>}
-                            {faqText && (
-                                <ReactMarkdown className="support-center-card-text">
-                                    {faqText}
-                                </ReactMarkdown>
-                            )}
+                            {renderRichText(faqText, { className: 'support-center-card-text' })}
                         </article>
                     )}
 
                     {(chatBotTitle || chatBotText) && (
                         <article className="support-center-card">
                             {chatBotTitle && <h3 className="support-center-card-title">{chatBotTitle}</h3>}
-                            {chatBotText && (
-                                <ReactMarkdown className="support-center-card-text">
-                                    {chatBotText}
-                                </ReactMarkdown>
-                            )}
+                            {renderRichText(chatBotText, { className: 'support-center-card-text' })}
                         </article>
                     )}
                 </div>
 
                 <div className="support-center-contact">
                     {contactTitle && <h3 className="support-center-contact-title">{contactTitle}</h3>}
-                    {contactText && (
-                        <ReactMarkdown className="support-center-contact-text">
-                            {contactText}
-                        </ReactMarkdown>
-                    )}
+                    {renderRichText(contactText, { className: 'support-center-contact-text' })}
 
                     <form className="support-center-form" onSubmit={handleSubmit}>
                         <div className="support-center-form-row">
@@ -331,9 +276,7 @@ const SupportCenterContentBase = ({ executeRecaptcha }) => {
                         </button>
 
                         {formStatus.state === 'success' && (submitText ? (
-                            <ReactMarkdown className="support-center-contact-text">
-                                {submitText}
-                            </ReactMarkdown>
+                            renderRichText(submitText, { className: 'support-center-contact-text' })
                         ) : (
                             <p className="support-center-contact-text">Mensaje enviado correctamente.</p>
                         ))}

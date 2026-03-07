@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams, useParams } from 'react-router-dom';
-import { BlocksRenderer } from '@strapi/blocks-react-renderer';
-import ReactMarkdown from 'react-markdown';
 import { useStrapiCollection } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context';
 import './TaxResourceDetail.component.css';
+import { renderRichText } from '../utils/richText';
 
 const toAbsoluteUrl = (rawUrl, serverUrl) => {
     if (!rawUrl || typeof rawUrl !== 'string') return '';
@@ -267,18 +266,6 @@ const ResourcePreview = ({ url, mime }) => {
     );
 };
 
-const renderRichContent = (content) => {
-    if (Array.isArray(content) && content.length > 0) {
-        return <BlocksRenderer content={content} />;
-    }
-
-    if (typeof content === 'string' && content.trim()) {
-        return <ReactMarkdown>{content}</ReactMarkdown>;
-    }
-
-    return null;
-};
-
 const parseResourceTypes = (value) => {
     if (Array.isArray(value)) {
         return Array.from(new Set(value.map((item) => (typeof item === 'string' ? item.trim() : '')).filter(Boolean)));
@@ -376,8 +363,8 @@ const TaxResourceDetail = () => {
     const resourceCategories = normalizeCategories(resource);
     const primaryCategory = resourceCategories[0] || null;
     const resourceUrl = toAbsoluteUrl(resource?.Tax_Resurce_Url || resource?.Tax_Resource_Url, globalServerStrapi);
-    const summaryContent = renderRichContent(resource?.Tax_Resource_Summary);
-    const bodyContent = renderRichContent(resource?.Tax_Resource_Body);
+    const summaryContent = renderRichText(resource?.Tax_Resource_Summary);
+    const bodyContent = renderRichText(resource?.Tax_Resource_Body);
     const resourceTypes = parseResourceTypes(resource?.Tax_Resource_Type);
     const resourceTags = normalizeTags(resource);
     const categoryId = primaryCategory?.Tax_Resource_Category_ID || primaryCategory?.documentId || primaryCategory?.id;

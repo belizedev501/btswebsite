@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import { useStrapiCollection, useStrapiSingle } from '../Strapi/strapiCollection';
 import './TaxResourcesContent.component.css';
+import { renderRichText } from '../utils/richText';
 
 const TYPE_ICON = {
     'Legal': 'icon-book-solid',
@@ -161,9 +161,7 @@ const TaxResourcesContent = () => {
                             </Link>
 
                             <div className='tr-card-description'>
-                                <ReactMarkdown>
-                                    {category?.Tax_Resource_Category_Text || ''}
-                                </ReactMarkdown>
+                                {renderRichText(category?.Tax_Resource_Category_Text || '')}
                             </div>
 
                             <div className='tr-card-types'>

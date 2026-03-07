@@ -3,6 +3,25 @@ body {
   background-color: lightgray;
 }
 
+:root {
+  --rich-text-blank-line-px: 8px;
+}
+
+.rich-text-blankline {
+  width: 100%;
+  height: calc(var(--rich-text-blank-line-px) * var(--blank-lines, 1));
+}
+
+.rich-text-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.rich-text-content figure,
+.rich-text-content picture {
+  max-width: 100%;
+}
+
 @font-face {
   font-family: 'Avenir Next LT Pro';
   src: url('../public/assets/fonts/AvenirNextLTPro-Regular.woff2') format('woff2'),

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useStrapiCollection, useStrapiSingle } from '../Strapi/strapiCollection';
 import IrisBelizeTutorialsContentComponent from './IrisBelizeTutorialsContent.component';
+import { normalizeRichText } from '../utils/richText';
 
 const TARGET_TAG = 'iris belize';
 const TARGET_FAQ_SECTIONS = new Set(['iris belize', 'iris belice']);
@@ -19,42 +20,6 @@ const toArray = (value) => {
     if (Array.isArray(value.data)) return value.data;
     if (value.data) return [value.data];
     return [];
-};
-
-const blocksToMarkdown = (blocks) => {
-    if (!Array.isArray(blocks)) return '';
-
-    const renderInline = (children = []) => children.map((child) => {
-        const text = child.text || '';
-        if (child.bold) return `**${text}**`;
-        if (child.italic) return `*${text}*`;
-        if (child.underline) return `__${text}__`;
-        return text;
-    }).join('');
-
-    return blocks.map((block) => {
-        if (block.type === 'paragraph') {
-            return renderInline(block.children);
-        }
-        if (block.type === 'heading') {
-            const level = Math.min(Math.max(block.level || 2, 1), 6);
-            return `${'#'.repeat(level)} ${renderInline(block.children)}`;
-        }
-        if (block.type === 'list') {
-            const ordered = block.format === 'ordered';
-            return (block.children || []).map((item, idx) => {
-                const prefix = ordered ? `${idx + 1}. ` : '- ';
-                return `${prefix}${renderInline(item.children)}`;
-            }).join('\n');
-        }
-        return '';
-    }).filter(Boolean).join('\n\n');
-};
-
-const normalizeText = (value) => {
-    if (!value) return '';
-    if (typeof value === 'string') return value;
-    return blocksToMarkdown(value);
 };
 
 const getTagValue = (tag) => {
@@ -141,7 +106,7 @@ const IrisBelizeTutorialsContent = () => {
                 return {
                     id: tutorial.id || tutorial.documentId || tutorial.Tutorial_Title,
                     title: tutorial.Tutorial_Title || '',
-                    summary: normalizeText(tutorial.Tutorial_Summary),
+                    summary: normalizeRichText(tutorial.Tutorial_Summary),
                     videoUrl: tutorial.Tutorial_Video_URL || '',
                     categories
                 };
@@ -169,7 +134,7 @@ const IrisBelizeTutorialsContent = () => {
                     .map((faq) => ({
                         id: faq.id || faq.documentId || faq.FAQ_Question,
                         question: faq.FAQ_Question || '',
-                        answer: normalizeText(faq.FAQ_Answer)
+                        answer: normalizeRichText(faq.FAQ_Answer)
                     }))
                     .filter((faq) => faq.question || faq.answer);
 
@@ -183,15 +148,15 @@ const IrisBelizeTutorialsContent = () => {
 
         return {
             name: targetSection?.FAQ_Section_Name || 'FAQs',
-            text: normalizeText(targetSection?.FAQ_Section_Text),
+            text: normalizeRichText(targetSection?.FAQ_Section_Text),
             themes
         };
     }, [faqSectionsRows]);
 
     const pageAttributes = normalizeItem(pageData) || {};
     const title = pageAttributes.IRIS_Belize_Tutorials_Page_Title || 'IRIS Belize Tutorials';
-    const topText = normalizeText(pageAttributes.IRIS_Belize_Tutorials_Page_TopText);
-    const bottomText = normalizeText(pageAttributes.IRIS_Belize_Tutorials_Page_Bottom_Text);
+    const topText = normalizeRichText(pageAttributes.IRIS_Belize_Tutorials_Page_TopText);
+    const bottomText = normalizeRichText(pageAttributes.IRIS_Belize_Tutorials_Page_Bottom_Text);
 
     return (
         <IrisBelizeTutorialsContentComponent

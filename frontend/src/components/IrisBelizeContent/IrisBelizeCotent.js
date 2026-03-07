@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
 import './IrisBelizeCotent.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
+import { normalizeRichText, renderRichText } from '../utils/richText';
 
 const IrisBelizeCotent = () => {
     const { data: irisBelizeData, loading } = useStrapiSingle('iris-belize', '=*');
@@ -11,39 +11,10 @@ const IrisBelizeCotent = () => {
 
     const attributes = irisBelizeData.attributes || irisBelizeData;
 
-    const blocksToMarkdown = (blocks) => {
-        if (!Array.isArray(blocks)) return '';
-        const renderInline = (children = []) => children.map((child) => {
-            const text = child.text || '';
-            if (child.bold) return `**${text}**`;
-            if (child.italic) return `*${text}*`;
-            if (child.underline) return `__${text}__`;
-            return text;
-        }).join('');
-
-        return blocks.map((block) => {
-            if (block.type === 'paragraph') {
-                return renderInline(block.children);
-            }
-            if (block.type === 'heading') {
-                const level = Math.min(Math.max(block.level || 2, 1), 6);
-                return `${'#'.repeat(level)} ${renderInline(block.children)}`;
-            }
-            if (block.type === 'list') {
-                const ordered = block.format === 'ordered';
-                return (block.children || []).map((item, idx) => {
-                    const prefix = ordered ? `${idx + 1}. ` : '- ';
-                    return `${prefix}${renderInline(item.children)}`;
-                }).join('\n');
-            }
-            return '';
-        }).filter(Boolean).join('\n\n');
-    };
-
     const title = attributes.IRIS_Belize_Title;
     const subTitle = attributes.IRIS_Belize_SubTitle;
     const textRaw = attributes.IRIS_Belize_Text;
-    const text = typeof textRaw === 'string' ? textRaw : blocksToMarkdown(textRaw);
+    const text = normalizeRichText(textRaw);
 
     const loginText = attributes.IRIS_Belize_Login_Button_text;
     const loginUrl = attributes.IRIS_Belize_Login_Button_URL;
@@ -57,11 +28,7 @@ const IrisBelizeCotent = () => {
                 {subTitle && <h3 className="iris-belize-subtitle">{subTitle}</h3>}
             </div>
 
-            {text && (
-                <ReactMarkdown className="iris-belize-text">
-                    {text}
-                </ReactMarkdown>
-            )}
+            {renderRichText(text, { className: 'iris-belize-text' })}
 
             <div className="iris-belize-actions">
                 {loginText && loginUrl && (

@@ -1,0 +1,119 @@
+.guides-tutorials {
+    --brand-dark-teal: #14755C;
+    --brand-teal: #109B78;
+    --brand-gold: #DCAC43;
+    --cta-burnt-orange: #D1661F;
+    --neutral-dark-gray: #393D3D;
+    --neutral-light-gray: #929294;
+    --neutral-cream: #F7D77F;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 10px 50px 25px 50px;
+    color: var(--neutral-dark-gray);
+}
+
+.guides-tutorials__header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+}
+
+.guides-tutorials__title {
+    margin: 0;
+    color: var(--brand-dark-teal);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.guides-tutorials__text {
+    color: var(--neutral-dark-gray);
+    line-height: 1.6;
+}
+
+.guides-tutorials__columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.guides-tutorials__column {
+    background: var(--neutral-cream);
+    border: 1px solid var(--neutral-light-gray);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.guides-tutorials__column-title {
+    margin: 0;
+    color: var(--brand-dark-teal);
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.guides-tutorials__cards {
+    display: grid;
+    gap: 12px;
+}
+
+.guides-tutorials__card {
+    border: 1px solid var(--neutral-light-gray);
+    border-radius: 10px;
+    background: #fffdf6;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.guides-tutorials__card-link {
+    color: var(--brand-teal);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.guides-tutorials__card-link:focus-visible {
+    outline: 2px solid var(--brand-teal);
+    outline-offset: 2px;
+}
+
+.guides-tutorials__card-link:hover {
+    color: var(--brand-dark-teal);
+    text-decoration: underline;
+}
+
+.guides-tutorials__card-count {
+    margin: 0;
+    color: var(--neutral-dark-gray);
+    font-size: 0.92rem;
+}
+
+.guides-tutorials__empty,
+.guides-tutorials-feedback {
+    margin: 0;
+    color: var(--neutral-dark-gray);
+}
+
+.guides-tutorials-feedback--error {
+    color: var(--cta-burnt-orange);
+}
+
+@media (max-width: 991px) {
+    .guides-tutorials {
+        padding: 10px 16px 25px 16px;
+    }
+
+    .guides-tutorials__columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767px) {
+    .guides-tutorials__title {
+        font-size: 1.6rem;
+    }
+}

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import ReactMarkdown from 'react-markdown';
 import './FAQsContent.component.css';
 import { useStrapiCollection, useStrapiSingle } from '../Strapi/strapiCollection';
+import { normalizeRichText, renderRichText } from '../utils/richText';
 
 const normalizeItem = (item) => {
     if (!item) return null;
@@ -17,35 +17,6 @@ const toArray = (value) => {
     if (Array.isArray(value.data)) return value.data;
     if (value.data) return [value.data];
     return [];
-};
-
-const blocksToMarkdown = (blocks) => {
-    if (!Array.isArray(blocks)) return '';
-    const renderInline = (children = []) => children.map((child) => {
-        const text = child.text || '';
-        if (child.bold) return `**${text}**`;
-        if (child.italic) return `*${text}*`;
-        if (child.underline) return `__${text}__`;
-        return text;
-    }).join('');
-
-    return blocks.map((block) => {
-        if (block.type === 'paragraph') {
-            return renderInline(block.children);
-        }
-        if (block.type === 'heading') {
-            const level = Math.min(Math.max(block.level || 2, 1), 6);
-            return `${'#'.repeat(level)} ${renderInline(block.children)}`;
-        }
-        if (block.type === 'list') {
-            const ordered = block.format === 'ordered';
-            return (block.children || []).map((item, idx) => {
-                const prefix = ordered ? `${idx + 1}. ` : '- ';
-                return `${prefix}${renderInline(item.children)}`;
-            }).join('\n');
-        }
-        return '';
-    }).filter(Boolean).join('\n\n');
 };
 
 const FAQsContent = () => {
@@ -115,25 +86,19 @@ const FAQsContent = () => {
     const pageAttributes = normalizeItem(faqPageData) || {};
     const pageTitle = pageAttributes.FAQ_Page_Title || 'Frequently Asked Questions (FAQs)';
     const pageTextRaw = pageAttributes.FAQ_Page_Text || '';
-    const pageText = typeof pageTextRaw === 'string' ? pageTextRaw : blocksToMarkdown(pageTextRaw);
+    const pageText = normalizeRichText(pageTextRaw);
 
     return (
         <section className="faqs-container">
             <div className="faqs-header">
                 <h2 className="faqs-title">{pageTitle}</h2>
-                {pageText && (
-                    <ReactMarkdown className="faqs-page-text">
-                        {pageText}
-                    </ReactMarkdown>
-                )}
+                {renderRichText(pageText, { className: 'faqs-page-text' })}
             </div>
 
             {sections.map((section) => {
                 const sectionName = section.FAQ_Section_Name || '';
                 const sectionTextRaw = section.FAQ_Section_Text || '';
-                const sectionText = typeof sectionTextRaw === 'string'
-                    ? sectionTextRaw
-                    : blocksToMarkdown(sectionTextRaw);
+                const sectionText = normalizeRichText(sectionTextRaw);
 
                 const themes = toArray(section.faq_themes)
                     .map(normalizeItem)
@@ -153,11 +118,7 @@ const FAQsContent = () => {
                             <h3 className="faqs-section-name">{sectionName}</h3>
                         )}
 
-                        {sectionText && (
-                            <ReactMarkdown className="faqs-section-info">
-                                {sectionText}
-                            </ReactMarkdown>
-                        )}
+                        {renderRichText(sectionText, { className: 'faqs-section-info' })}
 
                         <div className="faqs-section-body">
                             <div className="faqs-theme-list">
@@ -184,9 +145,7 @@ const FAQsContent = () => {
                                 {faqs.map((faq) => {
                                     const faqQuestion = faq.FAQ_Question || '';
                                     const answerRaw = faq.FAQ_Answer || '';
-                                    const answer = typeof answerRaw === 'string'
-                                        ? answerRaw
-                                        : blocksToMarkdown(answerRaw);
+                                    const answer = normalizeRichText(answerRaw);
                                     const isOpen = openFaqByTheme[selectedThemeId] === faq.id;
 
                                     return (
@@ -204,9 +163,7 @@ const FAQsContent = () => {
                                             </button>
                                             {isOpen && (
                                                 <div className="faqs-accordion-body">
-                                                    <ReactMarkdown>
-                                                        {answer}
-                                                    </ReactMarkdown>
+                                                    {renderRichText(answer)}
                                                 </div>
                                             )}
                                         </div>

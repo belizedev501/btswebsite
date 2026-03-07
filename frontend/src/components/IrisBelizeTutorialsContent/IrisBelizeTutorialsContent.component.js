@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import './IrisBelizeTutorialsContent.component.css';
+import { renderRichText } from '../utils/richText';
 
 const getYoutubeEmbed = (url = '') => {
     const patterns = [
@@ -65,11 +65,7 @@ const IrisBelizeTutorialsContentComponent = ({
         <section className='iris-tutorials'>
             <div className='iris-tutorials-header'>
                 <h2 className='iris-tutorials-title'>{title}</h2>
-                {topText && (
-                    <ReactMarkdown className='iris-tutorials-top-text'>
-                        {topText}
-                    </ReactMarkdown>
-                )}
+                {renderRichText(topText, { className: 'iris-tutorials-top-text' })}
             </div>
 
             <div className='iris-tutorials-list'>
@@ -82,9 +78,7 @@ const IrisBelizeTutorialsContentComponent = ({
                                 <h3 className='iris-tutorial-card-title'>{tutorial.title}</h3>
 
                                 {tutorial.summary && (
-                                    <ReactMarkdown className='iris-tutorial-card-summary'>
-                                        {tutorial.summary}
-                                    </ReactMarkdown>
+                                    renderRichText(tutorial.summary, { className: 'iris-tutorial-card-summary' })
                                 )}
 
                                 {tutorial.categories.length > 0 && (
@@ -131,11 +125,7 @@ const IrisBelizeTutorialsContentComponent = ({
             {faqSection && faqSection.themes.length > 0 && (
                 <section className='iris-tutorials-faq'>
                     <h3 className='iris-tutorials-faq-title'>FAQs - {faqSection.name || 'FAQs'}</h3>
-                    {faqSection.text && (
-                        <ReactMarkdown className='iris-tutorials-faq-text'>
-                            {faqSection.text}
-                        </ReactMarkdown>
-                    )}
+                    {renderRichText(faqSection.text, { className: 'iris-tutorials-faq-text' })}
 
                     <div className='iris-tutorials-faq-body'>
                         <div className='iris-tutorials-faq-theme-list'>
@@ -169,7 +159,7 @@ const IrisBelizeTutorialsContentComponent = ({
                                         </button>
                                         {isOpen && faq.answer && (
                                             <div className='iris-tutorials-faq-answer'>
-                                                <ReactMarkdown>{faq.answer}</ReactMarkdown>
+                                                {renderRichText(faq.answer)}
                                             </div>
                                         )}
                                     </div>
@@ -180,11 +170,7 @@ const IrisBelizeTutorialsContentComponent = ({
                 </section>
             )}
             <div className='iris-tutorials-bottom-area'>
-                {bottomText && (
-                    <ReactMarkdown className='iris-tutorials-bottom-text'>
-                        {bottomText}
-                    </ReactMarkdown>
-                )}
+                {renderRichText(bottomText, { className: 'iris-tutorials-bottom-text' })}
             </div>
         </section>
     );

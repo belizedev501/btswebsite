@@ -1,7 +1,15 @@
 .iris-belize-container {
+    --brand-dark-teal: #14755C;
+    --brand-teal: #109B78;
+    --brand-gold: #DCAC43;
+    --cta-burnt-orange: #D1661F;
+    --neutral-dark-gray: #393D3D;
+    --neutral-light-gray: #929294;
+    --neutral-cream: #F7D77F;
     max-width: 1150px;
     margin: 0 auto;
-    padding: 48px 24px 64px;
+    padding: 10px 50px 25px 50px;
+    color: var(--neutral-dark-gray);
 }
 
 .iris-belize-hero {
@@ -11,16 +19,19 @@
 
 .iris-belize-title {
     margin-bottom: 8px;
+    color: var(--brand-dark-teal);
 }
 
 .iris-belize-subtitle {
     margin-top: 0;
+    color: var(--neutral-dark-gray);
 }
 
 .iris-belize-text {
     max-width: 820px;
     margin: 0 auto 32px;
     line-height: 1.6;
+    color: var(--neutral-dark-gray);
 }
 
 .iris-belize-text p {
@@ -40,10 +51,16 @@
 
 .iris-belize-actions .btn-primary {
     padding: 20px;
+    background: var(--brand-teal);
+    border: 1px solid var(--brand-teal);
+    color: #fff;
 }
 
 .iris-belize-actions .btn-secondary {
     padding: 20px;
+    background: var(--brand-gold);
+    border: 1px solid var(--brand-gold);
+    color: var(--neutral-dark-gray);
 }
 
 .iris-belize-button {
@@ -52,14 +69,30 @@
     justify-content: center;
     text-align: center;
     text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.iris-belize-actions .btn-primary:hover,
+.iris-belize-actions .btn-primary:focus-visible {
+    background: var(--brand-dark-teal);
+    border-color: var(--brand-dark-teal);
+    color: #fff;
+}
+
+.iris-belize-actions .btn-secondary:hover,
+.iris-belize-actions .btn-secondary:focus-visible {
+    background: var(--neutral-cream);
+    border-color: var(--neutral-light-gray);
+    color: var(--brand-dark-teal);
 }
 
 .iris-belize-button-text {
     line-height: 1;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 991px) {
     .iris-belize-container {
-        padding: 40px 20px 56px;
+        padding: 10px 16px 25px 16px;
     }
 }
