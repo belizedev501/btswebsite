@@ -41,7 +41,7 @@
 .guides-tutorials__column {
     background: var(--neutral-cream);
     border: 1px solid var(--neutral-light-gray);
-    border-radius: 14px;
+    border-radius: 8px;
     padding: 16px;
     display: flex;
     flex-direction: column;
@@ -62,7 +62,7 @@
 
 .guides-tutorials__card {
     border: 1px solid var(--neutral-light-gray);
-    border-radius: 10px;
+    border-radius: 8px;
     background: #fffdf6;
     padding: 12px 14px;
     display: flex;

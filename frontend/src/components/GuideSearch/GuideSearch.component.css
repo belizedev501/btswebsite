@@ -43,7 +43,7 @@
     gap: 18px;
     padding: 18px;
     border: 1px solid var(--neutral-light-gray);
-    border-radius: 12px;
+    border-radius: 8px;
     background: var(--neutral-cream);
 }
 
@@ -116,7 +116,7 @@
     gap: 14px;
     height: 100%;
     border: 1px solid var(--neutral-light-gray);
-    border-radius: 14px;
+    border-radius: 8px;
     background: #fffdf6;
     box-shadow: 0 1px 6px rgba(20, 117, 92, 0.12);
     padding: 16px;
@@ -160,7 +160,7 @@
     background: var(--neutral-cream);
     color: var(--brand-dark-teal);
     border: 1px solid var(--neutral-light-gray);
-    border-radius: 20px;
+    border-radius: 8px;
     padding: 4px 10px;
     font-size: 0.8rem;
     font-weight: 600;
