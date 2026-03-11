@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useStrapiCollection, useStrapiSingle } from '../Strapi/strapiCollection';
+import { GlobalContext } from '../Context/Context';
 import { normalizeRichText, renderRichText } from '../utils/richText';
 import './GuideSearch.component.css';
 
@@ -57,14 +58,89 @@ const extractCategoriesFromParams = (params) => {
 };
 
 const GuideSearch = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [searchParams] = useSearchParams();
     const [titleQuery, setTitleQuery] = useState('');
     const [selectedCategories, setSelectedCategories] = useState(() => extractCategoriesFromParams(searchParams));
     const [selectedTags, setSelectedTags] = useState([]);
+    const { globalServerStrapi, globalTokenStrapi, locale } = useContext(GlobalContext);
 
     useEffect(() => {
         setSelectedCategories(extractCategoriesFromParams(searchParams));
     }, [searchParams]);
+
+    useEffect(() => {
+        const requestedCategories = extractCategoriesFromParams(searchParams);
+        if (!locale || !globalServerStrapi || requestedCategories.length === 0) return;
+
+        const baseUrl = globalServerStrapi.replace(/\/+$/, '');
+        const headers = {};
+        if (globalTokenStrapi) headers.Authorization = `Bearer ${globalTokenStrapi}`;
+
+        const supportedLocales = ['en', 'es'];
+        const orderedLookupLocales = [locale, ...supportedLocales.filter((item) => item !== locale)];
+
+        let cancelled = false;
+        const redirectToLocalizedCategories = async () => {
+            try {
+                const localizedCategories = [];
+
+                for (const categoryName of requestedCategories) {
+                    let matchedCategory = null;
+
+                    for (const lookupLocale of orderedLookupLocales) {
+                        const byNameUrl = `${baseUrl}/api/tax-resource-categories?filters[Tax_Resource_Category_Name][$eq]=${encodeURIComponent(categoryName)}&pagination[limit]=1&locale=${lookupLocale}`;
+                        const byNameResponse = await fetch(byNameUrl, { headers });
+                        if (!byNameResponse.ok) continue;
+
+                        const byNameResult = await byNameResponse.json();
+                        const foundItem = Array.isArray(byNameResult?.data) ? byNameResult.data[0] : null;
+                        if (foundItem) {
+                            matchedCategory = normalizeItem(foundItem);
+                            break;
+                        }
+                    }
+
+                    if (!matchedCategory?.documentId) {
+                        localizedCategories.push(categoryName);
+                        continue;
+                    }
+
+                    const localizedUrl = `${baseUrl}/api/tax-resource-categories?filters[documentId][$eq]=${encodeURIComponent(matchedCategory.documentId)}&pagination[limit]=1&locale=${locale}`;
+                    const localizedResponse = await fetch(localizedUrl, { headers });
+
+                    if (!localizedResponse.ok) {
+                        localizedCategories.push(categoryName);
+                        continue;
+                    }
+
+                    const localizedResult = await localizedResponse.json();
+                    const localizedItem = Array.isArray(localizedResult?.data) ? localizedResult.data[0] : null;
+                    const localizedCategory = normalizeItem(localizedItem);
+                    localizedCategories.push(localizedCategory?.Tax_Resource_Category_Name || categoryName);
+                }
+
+                if (cancelled) return;
+
+                const changed = localizedCategories.some((categoryName, index) => categoryName !== requestedCategories[index]);
+                if (!changed) return;
+
+                const nextParams = new URLSearchParams(searchParams);
+                nextParams.delete('category');
+                localizedCategories.forEach((categoryName) => nextParams.append('category', categoryName));
+                navigate(`${location.pathname}?${nextParams.toString()}`, { replace: true });
+            } catch (fetchError) {
+                console.error('Error localizing guide search categories:', fetchError);
+            }
+        };
+
+        redirectToLocalizedCategories();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [globalServerStrapi, globalTokenStrapi, locale, location.pathname, navigate, searchParams]);
 
     const {
         data: guideSearchData,

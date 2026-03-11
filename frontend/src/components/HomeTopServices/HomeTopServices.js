@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import './HomeTopServices.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context';
@@ -151,7 +152,8 @@ const HomeTopServices = () => {
                             return {
                                 id: `guide-${guide?.id || guide?.documentId || guide?.Guide_Title}`,
                                 title: guide?.Guide_Title,
-                                prefix: categoryLabel || 'Guide'
+                                prefix: categoryLabel || 'Guide',
+                                link: guide?.Guide_URL ? `/guide/${guide.Guide_URL}` : null
                             };
                         }),
                         ...tutorialsList.map((rawTutorial) => {
@@ -165,7 +167,8 @@ const HomeTopServices = () => {
                             return {
                                 id: `tutorial-${tutorial?.id || tutorial?.documentId || tutorial?.Tutorial_Title}`,
                                 title: tutorial?.Tutorial_Title,
-                                prefix: categoryLabel || 'Tutorial'
+                                prefix: categoryLabel || 'Tutorial',
+                                link: tutorial?.Tutorial_Title ? `/tutorials?title=${encodeURIComponent(tutorial.Tutorial_Title)}` : '/tutorials'
                             };
                         })
                     ].filter((item) => item?.title).map((item) => (
@@ -174,7 +177,13 @@ const HomeTopServices = () => {
                                 <span className='icon-size_4 icon-book-solid' />
                             </div>
                             <div className='col home-ts-text-container'>
-                                <h6>{item.prefix} / {item.title}</h6>
+                                {item.link ? (
+                                    <Link to={item.link}>
+                                        <h6>{item.prefix} / {item.title}</h6>
+                                    </Link>
+                                ) : (
+                                    <h6>{item.prefix} / {item.title}</h6>
+                                )}
                             </div>
                         </div>
                     ));
