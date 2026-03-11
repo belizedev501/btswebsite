@@ -1,15 +1,15 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { GlobalContext } from '../Context/Context';
 import './NewsSearch.component.css';
-import { useStrapiSingle } from '../Strapi/strapiCollection';
+import { useStrapiCollection, useStrapiSingle } from '../Strapi/strapiCollection';
 
-const extractTypesFromParams = (params) => {
-    const rawValues = params.getAll('type');
+const extractValuesFromParams = (params, key) => {
+    const rawValues = params.getAll(key);
 
     return rawValues
-        .flatMap(value => value.split(','))
-        .map(value => value.trim())
+        .flatMap((value) => value.split(','))
+        .map((value) => value.trim())
         .filter(Boolean);
 };
 
@@ -20,264 +20,446 @@ const sameStringArray = (a, b) => {
     return sortedA.every((value, index) => value === sortedB[index]);
 };
 
+const normalizeItem = (item) => {
+    if (!item) return null;
+    if (item.attributes) return { id: item.id, ...item.attributes };
+    return item;
+};
+
+const normalizeRelationArray = (value) => {
+    if (Array.isArray(value)) return value.map(normalizeItem).filter(Boolean);
+    if (Array.isArray(value?.data)) return value.data.map(normalizeItem).filter(Boolean);
+    if (value?.data) {
+        const item = normalizeItem(value.data);
+        return item ? [item] : [];
+    }
+    return [];
+};
+
+const getCategoryLabel = (item) => {
+    if (typeof item === 'string') return item.trim();
+    const normalizedItem = normalizeItem(item) || {};
+
+    return (
+        normalizedItem.Tax_Resource_Category_Name ||
+        normalizedItem.News_Category_Name ||
+        normalizedItem.News_Categories_Name ||
+        normalizedItem.Tutorial_Category_Name ||
+        normalizedItem.Category_Name ||
+        normalizedItem.Category ||
+        normalizedItem.Categories ||
+        normalizedItem.name ||
+        normalizedItem.Name ||
+        normalizedItem.title ||
+        normalizedItem.Title ||
+        ''
+    ).trim();
+};
+
+const getNewsCategories = (newsItem) => {
+    const normalizedNewsItem = normalizeItem(newsItem) || {};
+    const possibleSources = [
+        normalizedNewsItem.News_Categories,
+        normalizedNewsItem.News_Category,
+        normalizedNewsItem.tax_resource_categories,
+        normalizedNewsItem.Tax_Resource_Categories,
+        normalizedNewsItem.categories,
+        normalizedNewsItem.category,
+        normalizedNewsItem.Categories,
+        normalizedNewsItem.Category
+    ];
+
+    const categories = possibleSources.flatMap((source) => {
+        if (typeof source === 'string') return [source.trim()];
+        return normalizeRelationArray(source).map(getCategoryLabel);
+    });
+
+    return Array.from(new Set(categories.filter(Boolean)));
+};
+
+const sortNewsItems = (items) => {
+    return [...items].sort((a, b) => {
+        const first = new Date((normalizeItem(a)?.News_DateTime) || 0).getTime();
+        const second = new Date((normalizeItem(b)?.News_DateTime) || 0).getTime();
+        return second - first;
+    });
+};
+
 const NewsSearch = () => {
-    const { globalServerStrapi, globalTokenStrapi } = useContext(GlobalContext);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { globalServerStrapi, globalTokenStrapi, locale } = useContext(GlobalContext);
     const [searchParams, setSearchParams] = useSearchParams();
     const [search, setSearch] = useState('');
+    const [appliedSearch, setAppliedSearch] = useState('');
     const [results, setResults] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const pageSize = 6;
     const [newsSearch, setNewsSeacrh] = useState([]);
-    const [selectedTypes, setSelectedTypes] = useState(() => extractTypesFromParams(searchParams));
-    const [newsTypes, setNewsTypes] = useState([]);
+    const [selectedTypes, setSelectedTypes] = useState(() => extractValuesFromParams(searchParams, 'type'));
+    const [selectedCategories, setSelectedCategories] = useState(() => extractValuesFromParams(searchParams, 'category'));
 
-    // Obtener los tipos de noticias únicos
     useEffect(() => {
-        const fetchNewsTypes = async () => {
+        const requestedTypes = extractValuesFromParams(searchParams, 'type');
+        const requestedCategories = extractValuesFromParams(searchParams, 'category');
+        const hasRequestedFilters = requestedTypes.length > 0 || requestedCategories.length > 0;
+
+        if (!locale || !globalServerStrapi || !hasRequestedFilters) return;
+
+        const baseUrl = globalServerStrapi.replace(/\/+$/, '');
+        const headers = {};
+        if (globalTokenStrapi) headers.Authorization = `Bearer ${globalTokenStrapi}`;
+
+        const supportedLocales = ['en', 'es'];
+        const orderedLookupLocales = [locale, ...supportedLocales.filter((item) => item !== locale)];
+
+        let cancelled = false;
+
+        const fetchFirstLocalizedItem = async (endpoint, nameField, value) => {
+            for (const lookupLocale of orderedLookupLocales) {
+                const byNameUrl = `${baseUrl}/api/${endpoint}?filters[${nameField}][$eq]=${encodeURIComponent(value)}&pagination[limit]=1&locale=${lookupLocale}`;
+                const byNameResponse = await fetch(byNameUrl, { headers });
+                if (!byNameResponse.ok) continue;
+
+                const byNameResult = await byNameResponse.json();
+                const foundItem = Array.isArray(byNameResult?.data) ? byNameResult.data[0] : null;
+                if (foundItem) return normalizeItem(foundItem);
+            }
+
+            return null;
+        };
+
+        const fetchLocalizedValue = async (endpoint, documentId, localizedField, fallbackValue) => {
+            const localizedUrl = `${baseUrl}/api/${endpoint}?filters[documentId][$eq]=${encodeURIComponent(documentId)}&pagination[limit]=1&locale=${locale}`;
+            const localizedResponse = await fetch(localizedUrl, { headers });
+            if (!localizedResponse.ok) return fallbackValue;
+
+            const localizedResult = await localizedResponse.json();
+            const localizedItem = Array.isArray(localizedResult?.data) ? localizedResult.data[0] : null;
+            const normalizedLocalizedItem = normalizeItem(localizedItem);
+            return normalizedLocalizedItem?.[localizedField] || fallbackValue;
+        };
+
+        const redirectToLocalizedFilters = async () => {
             try {
-                const url = `${globalServerStrapi}/api/newss?populate=*`;
-                const res = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${globalTokenStrapi}`
+                const localizedTypes = [];
+                const localizedCategories = [];
+
+                for (const typeName of requestedTypes) {
+                    const matchedType = await fetchFirstLocalizedItem('newss', 'News_Type', typeName);
+
+                    if (!matchedType?.documentId) {
+                        localizedTypes.push(typeName);
+                        continue;
                     }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    //console.log('Fetched news data:', data); // Debug
 
-                    // Extraer tipos únicos
-                    const types = [...new Set(
-                        data.data
-                            .map(item => item.News_Type)
-                            .filter(type => typeof type === 'string' && type.trim() !== '')
-                    )];
-
-
-                    //console.log('Unique types:', types); // Debug
-                    setNewsTypes(types.sort());
+                    const localizedType = await fetchLocalizedValue('newss', matchedType.documentId, 'News_Type', typeName);
+                    localizedTypes.push(localizedType);
                 }
-            } catch (err) {
-                console.error('Error fetching news types:', err);
+
+                for (const categoryName of requestedCategories) {
+                    const matchedCategory = await fetchFirstLocalizedItem('tax-resource-categories', 'Tax_Resource_Category_Name', categoryName);
+
+                    if (!matchedCategory?.documentId) {
+                        localizedCategories.push(categoryName);
+                        continue;
+                    }
+
+                    const localizedCategory = await fetchLocalizedValue(
+                        'tax-resource-categories',
+                        matchedCategory.documentId,
+                        'Tax_Resource_Category_Name',
+                        categoryName
+                    );
+                    localizedCategories.push(localizedCategory);
+                }
+
+                if (cancelled) return;
+
+                const typesChanged = localizedTypes.some((typeName, index) => typeName !== requestedTypes[index]);
+                const categoriesChanged = localizedCategories.some((categoryName, index) => categoryName !== requestedCategories[index]);
+
+                if (!typesChanged && !categoriesChanged) return;
+
+                const nextParams = new URLSearchParams(searchParams);
+                nextParams.delete('type');
+                nextParams.delete('category');
+                localizedTypes.forEach((typeName) => nextParams.append('type', typeName));
+                localizedCategories.forEach((categoryName) => nextParams.append('category', categoryName));
+                navigate(`${location.pathname}?${nextParams.toString()}`, { replace: true });
+            } catch (fetchError) {
+                console.error('Error localizing news search filters:', fetchError);
             }
         };
 
-        if (globalServerStrapi && globalTokenStrapi) {
-            fetchNewsTypes();
-        }
-    }, [globalServerStrapi, globalTokenStrapi]);
+        redirectToLocalizedFilters();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [globalServerStrapi, globalTokenStrapi, locale, location.pathname, navigate, searchParams]);
+
+    const {
+        data: newsRows,
+        loading: newsRowsLoading,
+        error: newsRowsError
+    } = useStrapiCollection(
+        'newss',
+        '[News_Categories][fields][0]=Tax_Resource_Category_Name&populate[News_Image][fields][0]=url&populate[News_Image][fields][1]=alternativeText',
+        'News_DateTime',
+        'desc',
+        300
+    );
+
+    const {
+        data: strapiNewsSearch,
+        loading: strapiNewsSearchLoading,
+        error: strapiNewsSearchError
+    } = useStrapiSingle('news-search', '=*');
+
+    const allNews = useMemo(() => sortNewsItems(newsRows || []), [newsRows]);
+
+    const newsTypes = useMemo(() => {
+        const types = allNews
+            .map((item) => normalizeItem(item)?.News_Type)
+            .filter((type) => typeof type === 'string' && type.trim() !== '');
+
+        return Array.from(new Set(types)).sort((a, b) => a.localeCompare(b));
+    }, [allNews]);
+
+    const newsCategories = useMemo(() => {
+        const categories = allNews.flatMap((item) => getNewsCategories(item));
+        return Array.from(new Set(categories)).sort((a, b) => a.localeCompare(b));
+    }, [allNews]);
 
     useEffect(() => {
-        const urlTypes = extractTypesFromParams(searchParams);
+        const urlTypes = extractValuesFromParams(searchParams, 'type');
+        const urlCategories = extractValuesFromParams(searchParams, 'category');
+
         setSelectedTypes((prev) => sameStringArray(prev, urlTypes) ? prev : urlTypes);
+        setSelectedCategories((prev) => sameStringArray(prev, urlCategories) ? prev : urlCategories);
     }, [searchParams]);
+
+    useEffect(() => {
+        if (strapiNewsSearch) setNewsSeacrh(strapiNewsSearch);
+        if (strapiNewsSearchError) {
+            console.error('Error fetching News Search: ', strapiNewsSearchError);
+        }
+    }, [strapiNewsSearch, strapiNewsSearchError]);
+
+    const updateParamList = (key, values) => {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete(key);
+        values.forEach((value) => nextParams.append(key, value));
+        setSearchParams(nextParams, { replace: true });
+        setCurrentPage(1);
+    };
 
     const handleTypeChange = (type) => {
         const nextSelectedTypes = selectedTypes.includes(type)
-            ? selectedTypes.filter(t => t !== type)
+            ? selectedTypes.filter((item) => item !== type)
             : [...selectedTypes, type];
 
         setSelectedTypes(nextSelectedTypes);
-
-        const nextParams = new URLSearchParams(searchParams);
-        nextParams.delete('type');
-        nextSelectedTypes.forEach((value) => nextParams.append('type', value));
-        setSearchParams(nextParams, { replace: true });
+        updateParamList('type', nextSelectedTypes);
     };
 
-    const handleSearch = async (e, page = 1) => {
-        if (e) e.preventDefault();
-        setLoading(true);
-        setError(null);
-        setResults([]);
-        try {
-            const start = (page - 1) * pageSize;
-            let url = `${globalServerStrapi}/api/newss?populate=*&sort=News_DateTime:DESC&pagination[limit]=${pageSize}&pagination[start]=${start}`;
+    const handleCategoryChange = (category) => {
+        const nextSelectedCategories = selectedCategories.includes(category)
+            ? selectedCategories.filter((item) => item !== category)
+            : [...selectedCategories, category];
 
-            // Construir filtros
-            const filters = [];
-
-            // Agregar filtro de búsqueda si hay texto
-            if (search.trim()) {
-                filters.push(`filters[News_Headline][$containsi]=${encodeURIComponent(search)}`);
-            }
-
-            // Agregar filtros de tipo si hay tipos seleccionados
-            if (selectedTypes.length > 0) {
-                selectedTypes.forEach((type, index) => {
-                    filters.push(`filters[$or][${index}][News_Type][$eq]=${encodeURIComponent(type)}`);
-                });
-            }
-
-            // Agregar filtros a la URL
-            if (filters.length > 0) {
-                url += '&' + filters.join('&');
-            }
-
-            //console.log('Search URL:', url); // Debug
-
-            const res = await fetch(url, {
-                headers: {
-                    'Authorization': `Bearer ${globalTokenStrapi}`
-                }
-            });
-            if (!res.ok) throw new Error('Error querying the API');
-            const data = await res.json();
-            setResults(data.data || []);
-            const total = data.meta?.pagination?.total || 0;
-            setTotalPages(Math.ceil(total / pageSize));
-            setCurrentPage(page);
-        } catch (err) {
-            setError('Error loading news.');
-            console.error('Search error:', err);
-        } finally {
-            setLoading(false);
-        }
+        setSelectedCategories(nextSelectedCategories);
+        updateParamList('category', nextSelectedCategories);
     };
+
+    const filteredNews = useMemo(() => {
+        const normalizedSearch = appliedSearch.trim().toLowerCase();
+
+        return allNews.filter((item) => {
+            const attrs = normalizeItem(item) || {};
+            const headline = (attrs.News_Headline || '').toLowerCase();
+            const itemCategories = getNewsCategories(attrs);
+            const matchesSearch = !normalizedSearch || headline.includes(normalizedSearch);
+            const matchesType = selectedTypes.length === 0 || selectedTypes.includes(attrs.News_Type || '');
+            const matchesCategory = selectedCategories.length === 0
+                || selectedCategories.some((category) => itemCategories.includes(category));
+
+            return matchesSearch && matchesType && matchesCategory;
+        });
+    }, [allNews, appliedSearch, selectedTypes, selectedCategories]);
 
     useEffect(() => {
-        if (globalServerStrapi && globalTokenStrapi) {
-            handleSearch(null, 1);
-        }
-        // eslint-disable-next-line
-    }, [selectedTypes, globalServerStrapi, globalTokenStrapi]);
+        const nextTotalPages = Math.max(1, Math.ceil(filteredNews.length / pageSize));
+        setTotalPages(nextTotalPages);
+        setCurrentPage((prev) => Math.min(prev, nextTotalPages));
+    }, [filteredNews]);
+
+    useEffect(() => {
+        const start = (currentPage - 1) * pageSize;
+        setResults(filteredNews.slice(start, start + pageSize));
+    }, [filteredNews, currentPage]);
+
+    const handleSearch = (e, page = 1) => {
+        if (e) e.preventDefault();
+        setAppliedSearch(search);
+        setCurrentPage(page);
+    };
 
     const richTextToString = (richText) => {
         if (!richText) return '';
         if (Array.isArray(richText)) {
             return richText
-                .map(block =>
-                    block.children?.map(child => child.text).join('')
-                )
+                .map((block) => block.children?.map((child) => child.text).join(''))
                 .join('\n');
         }
         if (typeof richText === 'string') return richText;
         return '';
     };
 
-    const {
-        data: strapiNewsSearch,
-        loading: strapiNewsSearchLoading,
-        error: strapiNewsSearchError
-    } = useStrapiSingle(`news-search`, '=*');
-
-    useEffect(() => {
-        if (strapiNewsSearch) setNewsSeacrh(strapiNewsSearch);
-        if (strapiNewsSearchError) {
-            console.error("Error fetching News Search: ", strapiNewsSearchError);
-        }
-    }, [strapiNewsSearch, strapiNewsSearchError]);
-
     return (
         <section className='newsSearch-section'>
             <div className='newsSearch-title-container'>
                 <h2>{newsSearch.News_Search_Title}</h2>
             </div>
-            <form onSubmit={e => handleSearch(e, 1)} className="newsSearch-container">
+            <form onSubmit={(e) => handleSearch(e, 1)} className='newsSearch-container'>
                 <input
-                    type="text"
-                    className="newsSearch-input"
+                    type='text'
+                    className='newsSearch-input'
                     placeholder={newsSearch.News_Search_Placeholder}
                     value={search}
-                    onChange={e => setSearch(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
-                <button type="submit" className="newsSearch-button">
+                <button type='submit' className='newsSearch-button'>
                     <span className='icon-size_1 icon-magnifying-glass-solid-full'></span>
                 </button>
             </form>
 
-            {/* Filtros de tipo */}
             {newsTypes.length > 0 && (
-                <div className="newsSearch-filters-container">
-                    {newsTypes.map(type => (
-                        <label key={type} className="newsSearch-filter-checkbox">
-                            <input
-                                type="checkbox"
-                                checked={selectedTypes.includes(type)}
-                                onChange={() => handleTypeChange(type)}
-                                className="newsSearch-checkbox-input"
-                            />
-                            <span className="newsSearch-checkbox-custom"></span>
-                            <span className="newsSearch-checkbox-label">{type}</span>
-                        </label>
-                    ))}
+                <div className='newsSearch-filter-group'>
+                    <h3 className='newsSearch-filter-title'>Types</h3>
+                    <div className='newsSearch-filters-container'>
+                        {newsTypes.map((type) => (
+                            <label key={type} className='newsSearch-filter-checkbox'>
+                                <input
+                                    type='checkbox'
+                                    checked={selectedTypes.includes(type)}
+                                    onChange={() => handleTypeChange(type)}
+                                    className='newsSearch-checkbox-input'
+                                />
+                                <span className='newsSearch-checkbox-custom'></span>
+                                <span className='newsSearch-checkbox-label'>{type}</span>
+                            </label>
+                        ))}
+                    </div>
                 </div>
             )}
 
-            <div className="row newsSearch-result">
-                {loading ? (
+            {newsCategories.length > 0 && (
+                <div className='newsSearch-filter-group'>
+                    <h3 className='newsSearch-filter-title'>Categories</h3>
+                    <div className='newsSearch-filters-container newsSearch-filters-container--categories'>
+                        {newsCategories.map((category) => (
+                            <label key={category} className='newsSearch-filter-checkbox newsSearch-filter-checkbox--category'>
+                                <input
+                                    type='checkbox'
+                                    checked={selectedCategories.includes(category)}
+                                    onChange={() => handleCategoryChange(category)}
+                                    className='newsSearch-checkbox-input'
+                                />
+                                <span className='newsSearch-checkbox-custom newsSearch-checkbox-custom--category'></span>
+                                <span className='newsSearch-checkbox-label'>{category}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div className='row newsSearch-result'>
+                {newsRowsLoading || strapiNewsSearchLoading ? (
                     <ul className='newsSearch-list'>
                         {Array.from({ length: pageSize }).map((_, i) => (
-                            <li key={i} className="newsSearch-card-skeleton">
-                                <div className="newsSearch-card-img-container">
-                                    <div className="newsSearch-skeleton newsSearch-skeleton-img" />
-                                    <span className="newsSearch-card-category newsSearch-skeleton newsSearch-skeleton-chip"></span>
+                            <li key={i} className='newsSearch-card-skeleton'>
+                                <div className='newsSearch-card-img-container'>
+                                    <div className='newsSearch-skeleton newsSearch-skeleton-img' />
+                                    <span className='newsSearch-card-category newsSearch-skeleton newsSearch-skeleton-chip'></span>
                                 </div>
-                                <div className="newsSearch-card-content">
-                                    <div className="newsSearch-skeleton newsSearch-skeleton-title" />
-                                    <div className="newsSearch-skeleton newsSearch-skeleton-text" />
-                                    <div className="newsSearch-skeleton newsSearch-skeleton-btn" />
+                                <div className='newsSearch-card-content'>
+                                    <div className='newsSearch-skeleton newsSearch-skeleton-title' />
+                                    <div className='newsSearch-skeleton newsSearch-skeleton-text' />
+                                    <div className='newsSearch-skeleton newsSearch-skeleton-btn' />
                                 </div>
                             </li>
                         ))}
                     </ul>
                 ) : (
                     <>
-                        {error && <div className="newsSearch-error-message">{error}</div>}
-                        {results.length === 0 && !error && <div className="newsSearch-no-results">No news was found.</div>}
-                        <ul className='newsSearch-list' >
-                            {results.map(news => {
-                                const attrs = news.attributes || news;
-                                const news_image_url = attrs.News_Image?.data?.attributes?.url || attrs.News_Image?.url;
-                                const news_Type = attrs.News_Type || '';
-                                const news_Headline = attrs.News_Headline || '';
-                                const news_Summary = richTextToString(attrs.News_Summary);
-                                const news_URL_slug = attrs.News_URL || '';
-                                const news_DateTime = attrs.News_DateTime || '';
+                        {newsRowsError && <div className='newsSearch-error-message'>Error loading news.</div>}
+                        {results.length === 0 && !newsRowsError && <div className='newsSearch-no-results'>No news was found.</div>}
+                        <ul className='newsSearch-list'>
+                            {results.map((news) => {
+                                const attrs = normalizeItem(news) || {};
+                                const newsImageUrl = attrs.News_Image?.data?.attributes?.url || attrs.News_Image?.url;
+                                const newsType = attrs.News_Type || '';
+                                const newsHeadline = attrs.News_Headline || '';
+                                const newsSummary = richTextToString(attrs.News_Summary);
+                                const newsUrlSlug = attrs.News_URL || '';
+                                const newsDateTime = attrs.News_DateTime || '';
+                                const newsItemCategories = getNewsCategories(attrs);
                                 const summaryLimit = 150;
-                                const summaryShort = news_Summary.length > summaryLimit ? news_Summary.slice(0, summaryLimit) + '...' : news_Summary;
+                                const summaryShort = newsSummary.length > summaryLimit ? `${newsSummary.slice(0, summaryLimit)}...` : newsSummary;
+
                                 return (
-                                    <li key={news.id} className="newsSearch-card">
-                                        <div className="newsSearch-card-img-container">
-                                            {news_image_url ? (
+                                    <li key={news.id} className='newsSearch-card'>
+                                        <div className='newsSearch-card-img-container'>
+                                            {newsImageUrl ? (
                                                 <img
-                                                    src={globalServerStrapi + news_image_url}
-                                                    alt={news_Headline}
-                                                    className="newsSearch-card-img"
-                                                />) : (
-                                                news_Type === 'Alert' ? (
+                                                    src={globalServerStrapi + newsImageUrl}
+                                                    alt={newsHeadline}
+                                                    className='newsSearch-card-img'
+                                                />
+                                            ) : (
+                                                newsType === 'Alert' ? (
                                                     <img
                                                         src='/assets/img/alert_img.png'
-                                                        alt={news_Headline}
-                                                        className="newsSearch-card-img"
+                                                        alt={newsHeadline}
+                                                        className='newsSearch-card-img'
                                                     />
                                                 ) : (
-                                                    news_Type === 'Legal Publication' ? (
+                                                    newsType === 'Legal Publication' ? (
                                                         <img
                                                             src='/assets/img/legal_publication_img.png'
-                                                            alt={news_Headline}
-                                                            className="newsSearch-card-img"
+                                                            alt={newsHeadline}
+                                                            className='newsSearch-card-img'
                                                         />
                                                     ) : (
                                                         <img
                                                             src='/assets/img/news_img.png'
-                                                            alt={news_Headline}
-                                                            className="newsSearch-card-img"
+                                                            alt={newsHeadline}
+                                                            className='newsSearch-card-img'
                                                         />
                                                     )
                                                 )
                                             )}
                                         </div>
-                                        <div className="newsSearch-card-content">
-                                            <h6 className='newsSearch-card-category'>[{news_Type}]</h6>
-                                            <Link to={`/newsdetails/${news_URL_slug}`} className="newsSearch-card-title-link">
-                                                <h5 className="newsSearch-card-title">{news_Headline}</h5>
+                                        <div className='newsSearch-card-content'>
+                                            <h6 className='newsSearch-card-category'>[{newsType}]</h6>
+                                            {newsItemCategories.length > 0 && (
+                                                <div className='newsSearch-card-categories'>
+                                                    {newsItemCategories.map((category) => (
+                                                        <span key={`${news.id}-${category}`} className='newsSearch-card-chip'>
+                                                            {category}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            <Link to={`/newsdetails/${newsUrlSlug}`} className='newsSearch-card-title-link'>
+                                                <h5 className='newsSearch-card-title'>{newsHeadline}</h5>
                                             </Link>
-                                            <p className="newsSearch-card-intro">{summaryShort}</p>
-                                            <p className="newsSearch-card-date">{new Date(news_DateTime).toLocaleDateString()}</p>
-                                            <Link to={`/news_details/${news_URL_slug}`} className="newsSearch-card-details-link">
+                                            <p className='newsSearch-card-intro'>{summaryShort}</p>
+                                            <p className='newsSearch-card-date'>{new Date(newsDateTime).toLocaleDateString()}</p>
+                                            <Link to={`/news_details/${newsUrlSlug}`} className='newsSearch-card-details-link'>
                                                 {newsSearch.News_Search_Details_Link_Text}
                                             </Link>
                                         </div>
@@ -289,7 +471,7 @@ const NewsSearch = () => {
                 )}
             </div>
             {totalPages > 1 && (
-                <div className="newsSearch-pagination-container">
+                <div className='newsSearch-pagination-container'>
                     <button
                         className={`newsSearch-pagination-btn${currentPage === 1 ? ' disabled' : ''}`}
                         onClick={() => currentPage > 1 && handleSearch(null, currentPage - 1)}
@@ -316,7 +498,7 @@ const NewsSearch = () => {
                     </button>
                 </div>
             )}
-        </section >
+        </section>
     );
 };
 

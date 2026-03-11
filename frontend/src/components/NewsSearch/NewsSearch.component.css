@@ -49,6 +49,19 @@
     margin-top: 80px;
 }
 
+.newsSearch-filter-group {
+    margin: 24px auto 0;
+    max-width: 900px;
+}
+
+.newsSearch-filter-title {
+    margin: 0 0 12px;
+    color: #14755C;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+}
+
 .newsSearch-list {
     list-style: none;
     padding: 0;
@@ -89,6 +102,7 @@
 .newsSearch-card-category {
     color: #393D3D;
     font-weight: 800;
+    margin-bottom: 8px;
 }
 
 .newsSearch-card-content {
@@ -119,6 +133,24 @@
     line-height: 1.2;
 }
 
+.newsSearch-card-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.newsSearch-card-chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid #DCAC43;
+    background: #F7D77F;
+    color: #393D3D;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
 .newsSearch-pagination-container {
     display: flex;
     align-items: center;
@@ -127,18 +159,6 @@
     margin: 40px 0 0 0;
 }
 
-.newsSearch-card-details-link {
-    color: #109B78;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
-    display: inline-block;
-}
-
-.newsSearch-card-details-link:hover {
-    color: #14755C;
-    text-decoration: underline;
-}
 
 .newsSearch-pagination-btn {
     border: none;
@@ -256,8 +276,12 @@
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-    margin: 30px auto;
-    max-width: 600px;
+    margin: 0 auto;
+    max-width: 900px;
+}
+
+.newsSearch-filters-container--categories {
+    padding-top: 4px;
 }
 
 .newsSearch-filter-checkbox {
@@ -312,6 +336,20 @@
     font-size: 14px;
     color: #393D3D;
     font-weight: 500;
+}
+
+.newsSearch-filter-checkbox--category .newsSearch-checkbox-custom--category {
+    border-color: #DCAC43;
+    background-color: #fffaf0;
+}
+
+.newsSearch-filter-checkbox--category:hover .newsSearch-checkbox-custom--category {
+    border-color: #D1661F;
+}
+
+.newsSearch-checkbox-input:checked ~ .newsSearch-checkbox-custom--category {
+    background-color: #DCAC43;
+    border-color: #DCAC43;
 }
 
 .newsSearch-card-details-link {
