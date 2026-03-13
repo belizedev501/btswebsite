@@ -255,7 +255,7 @@ const GuideSearch = () => {
 
                 {availableCategories.length > 0 && (
                     <div className='guide-search__filter-group'>
-                        <h3 className='guide-search__filter-title'>Categories</h3>
+                        <label className='guide-search__label'>Categories</label>
                         <div className='guide-search__check-grid'>
                             {availableCategories.map((category) => (
                                 <label key={category} className='guide-search__check-item'>

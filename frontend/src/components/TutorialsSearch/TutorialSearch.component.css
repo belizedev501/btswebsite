@@ -23,8 +23,8 @@
 .tutorial-search__title {
     margin: 0;
     color: var(--brand-dark-teal);
-    font-size: 2rem;
-    font-weight: 700;
+    /*font-size: 2rem;
+    font-weight: 700;*/
 }
 
 .tutorial-search__text {
@@ -131,8 +131,9 @@
 .tutorial-search__card-title {
     margin: 0;
     color: var(--brand-dark-teal);
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 21px;
+    line-height: 30px;
+    padding-bottom: 16px;
 }
 
 .tutorial-search__card-summary {

@@ -279,7 +279,7 @@ const TutorialSearch = () => {
 
                 {availableCategories.length > 0 && (
                     <div className='tutorial-search__filter-group'>
-                        <h3 className='tutorial-search__filter-title'>Categories</h3>
+                        <label className='tutorial-search__label'>Categories</label>
                         <div className='tutorial-search__check-grid'>
                             {availableCategories.map((category) => (
                                 <label key={category} className='tutorial-search__check-item'>
@@ -297,7 +297,7 @@ const TutorialSearch = () => {
 
                 {availableTags.length > 0 && (
                     <div className='tutorial-search__filter-group'>
-                        <h3 className='tutorial-search__filter-title'>Tags</h3>
+                        <label className='tutorial-search__label'>Tags</label>
                         <div className='tutorial-search__check-grid'>
                             {availableTags.map((tag) => (
                                 <label key={tag} className='tutorial-search__check-item'>
