@@ -75,6 +75,16 @@
     line-height: 1;
 }
 
+.trc-type-badge--button {
+    border: 0;
+    cursor: pointer;
+}
+
+.trc-type-badge--button:focus {
+    outline: 2px solid #109B78;
+    outline-offset: 2px;
+}
+
 .trc-category-badge {
     display: inline-block;
     padding: 6px 10px;

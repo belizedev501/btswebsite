@@ -211,12 +211,32 @@ const GuideSearch = () => {
         });
     }, [guides, titleQuery, selectedCategories, selectedTags]);
 
+    const syncCategoriesWithUrl = (categories) => {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete('category');
+        categories.forEach((category) => nextParams.append('category', category));
+        navigate(`${location.pathname}?${nextParams.toString()}`);
+    };
+
     const handleCheckboxToggle = (value, selected, setSelected) => {
         if (selected.includes(value)) {
             setSelected(selected.filter((item) => item !== value));
             return;
         }
         setSelected([...selected, value]);
+    };
+
+    const handleCategoryToggle = (category) => {
+        const nextCategories = selectedCategories.includes(category)
+            ? selectedCategories.filter((item) => item !== category)
+            : [...selectedCategories, category];
+        setSelectedCategories(nextCategories);
+        syncCategoriesWithUrl(nextCategories);
+    };
+
+    const handleCategoryBadgeClick = (category) => {
+        setSelectedCategories([category]);
+        syncCategoriesWithUrl([category]);
     };
 
     const page = normalizeItem(guideSearchData) || {};
@@ -262,7 +282,7 @@ const GuideSearch = () => {
                                     <input
                                         type='checkbox'
                                         checked={selectedCategories.includes(category)}
-                                        onChange={() => handleCheckboxToggle(category, selectedCategories, setSelectedCategories)}
+                                        onChange={() => handleCategoryToggle(category)}
                                     />
                                     <span>{category}</span>
                                 </label>
@@ -313,9 +333,14 @@ const GuideSearch = () => {
                             {guide.categories.length > 0 && (
                                 <div className='guide-search__chips'>
                                     {guide.categories.map((category) => (
-                                        <span className='guide-search__chip' key={`${guide.id}-category-${category}`}>
+                                        <button
+                                            type='button'
+                                            className='guide-search__chip guide-search__chip--button'
+                                            key={`${guide.id}-category-${category}`}
+                                            onClick={() => handleCategoryBadgeClick(category)}
+                                        >
                                             {category}
-                                        </span>
+                                        </button>
                                     ))}
                                 </div>
                             )}

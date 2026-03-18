@@ -367,6 +367,14 @@ const TaxResourceDetail = () => {
     const bodyContent = renderRichText(resource?.Tax_Resource_Body);
     const resourceTypes = parseResourceTypes(resource?.Tax_Resource_Type);
     const resourceTags = normalizeTags(resource);
+    const isSpanish = locale === 'es';
+    const texts = {
+        taxResources: isSpanish ? 'Recursos Tributarios' : 'Tax Resources',
+        category: isSpanish ? 'Categoria' : 'Category',
+        loading: isSpanish ? 'Cargando recurso tributario...' : 'Loading Tax Resource...',
+        error: isSpanish ? 'Error cargando el recurso tributario.' : 'Error loading Tax Resource.',
+        notFound: isSpanish ? 'Recurso tributario no encontrado.' : 'Tax Resource not found.'
+    };
     const categoryId = primaryCategory?.Tax_Resource_Category_ID || primaryCategory?.documentId || primaryCategory?.id;
     const fromPath = (searchParams.get('from') || '').trim();
     const fromCategoryName = (searchParams.get('fromCategoryName') || '').trim();
@@ -376,7 +384,7 @@ const TaxResourceDetail = () => {
     const breadcrumbCategoryLink = fromPath.startsWith('/tax_resources/category/')
         ? fromPath
         : (categoryId ? `/tax_resources/category/${categoryId}` : '/tax_resources');
-    const breadcrumbCategoryLabel = fromCategoryName || primaryCategory?.Tax_Resource_Category_Name || 'Category';
+    const breadcrumbCategoryLabel = primaryCategory?.Tax_Resource_Category_Name || fromCategoryName || texts.category;
 
     useEffect(() => {
         if (resource) {
@@ -490,14 +498,14 @@ const TaxResourceDetail = () => {
 
     const attachments = normalizeAttachments(resource?.Tax_Resource_Attachments);
 
-    if (loading) return <p>Loading Tax Resource...</p>;
-    if (error) return <p>Error loading Tax Resource.</p>;
-    if (!resource) return <p>Tax Resource not found.</p>;
+    if (loading) return <p>{texts.loading}</p>;
+    if (error) return <p>{texts.error}</p>;
+    if (!resource) return <p>{texts.notFound}</p>;
 
     return (
         <section className='tax-resource-detail'>
             <nav className='trd-breadcrumb' aria-label='Breadcrumb'>
-                <Link to='/tax_resources'>Tax Resources</Link>
+                <Link to='/tax_resources'>{texts.taxResources}</Link>
                 <span>/</span>
                 <Link to={breadcrumbCategoryLink}>{breadcrumbCategoryLabel}</Link>
                 <span>/</span>

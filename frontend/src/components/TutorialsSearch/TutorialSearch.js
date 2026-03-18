@@ -70,8 +70,8 @@ const getVimeoEmbed = (url = '') => {
 
 const getVideoEmbedUrl = (url = '') => getYoutubeEmbed(url) || getVimeoEmbed(url) || '';
 
-const extractCategoriesFromParams = (params) => {
-    const rawValues = params.getAll('category');
+const extractValuesFromParams = (params, key) => {
+    const rawValues = params.getAll(key);
     return rawValues
         .flatMap((value) => value.split(','))
         .map((value) => value.trim())
@@ -85,17 +85,18 @@ const TutorialSearch = () => {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const [titleQuery, setTitleQuery] = useState(() => extractTitleFromParams(searchParams));
-    const [selectedCategories, setSelectedCategories] = useState(() => extractCategoriesFromParams(searchParams));
-    const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState(() => extractValuesFromParams(searchParams, 'category'));
+    const [selectedTags, setSelectedTags] = useState(() => extractValuesFromParams(searchParams, 'tag'));
     const { globalServerStrapi, globalTokenStrapi, locale } = useContext(GlobalContext);
 
     useEffect(() => {
         setTitleQuery(extractTitleFromParams(searchParams));
-        setSelectedCategories(extractCategoriesFromParams(searchParams));
+        setSelectedCategories(extractValuesFromParams(searchParams, 'category'));
+        setSelectedTags(extractValuesFromParams(searchParams, 'tag'));
     }, [searchParams]);
 
     useEffect(() => {
-        const requestedCategories = extractCategoriesFromParams(searchParams);
+        const requestedCategories = extractValuesFromParams(searchParams, 'category');
         if (!locale || !globalServerStrapi || requestedCategories.length === 0) return;
 
         const baseUrl = globalServerStrapi.replace(/\/+$/, '');
@@ -235,12 +236,37 @@ const TutorialSearch = () => {
         });
     }, [tutorials, titleQuery, selectedCategories, selectedTags]);
 
-    const handleCheckboxToggle = (value, selected, setSelected) => {
-        if (selected.includes(value)) {
-            setSelected(selected.filter((item) => item !== value));
-            return;
-        }
-        setSelected([...selected, value]);
+    const syncFilterValuesWithUrl = (key, values) => {
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete(key);
+        values.forEach((value) => nextParams.append(key, value));
+        navigate(`${location.pathname}?${nextParams.toString()}`);
+    };
+
+    const handleCategoryToggle = (category) => {
+        const nextCategories = selectedCategories.includes(category)
+            ? selectedCategories.filter((item) => item !== category)
+            : [...selectedCategories, category];
+        setSelectedCategories(nextCategories);
+        syncFilterValuesWithUrl('category', nextCategories);
+    };
+
+    const handleTagToggle = (tag) => {
+        const nextTags = selectedTags.includes(tag)
+            ? selectedTags.filter((item) => item !== tag)
+            : [...selectedTags, tag];
+        setSelectedTags(nextTags);
+        syncFilterValuesWithUrl('tag', nextTags);
+    };
+
+    const handleCategoryBadgeClick = (category) => {
+        setSelectedCategories([category]);
+        syncFilterValuesWithUrl('category', [category]);
+    };
+
+    const handleTagBadgeClick = (tag) => {
+        setSelectedTags([tag]);
+        syncFilterValuesWithUrl('tag', [tag]);
     };
 
     const page = normalizeItem(tutorialSearchData) || {};
@@ -286,7 +312,7 @@ const TutorialSearch = () => {
                                     <input
                                         type='checkbox'
                                         checked={selectedCategories.includes(category)}
-                                        onChange={() => handleCheckboxToggle(category, selectedCategories, setSelectedCategories)}
+                                        onChange={() => handleCategoryToggle(category)}
                                     />
                                     <span>{category}</span>
                                 </label>
@@ -304,7 +330,7 @@ const TutorialSearch = () => {
                                     <input
                                         type='checkbox'
                                         checked={selectedTags.includes(tag)}
-                                        onChange={() => handleCheckboxToggle(tag, selectedTags, setSelectedTags)}
+                                        onChange={() => handleTagToggle(tag)}
                                     />
                                     <span>{tag}</span>
                                 </label>
@@ -334,9 +360,14 @@ const TutorialSearch = () => {
                                 {tutorial.categories.length > 0 && (
                                     <div className='tutorial-search__chips'>
                                         {tutorial.categories.map((category) => (
-                                            <span className='tutorial-search__chip' key={`${tutorial.id}-category-${category}`}>
+                                            <button
+                                                type='button'
+                                                className='tutorial-search__chip tutorial-search__chip--button'
+                                                key={`${tutorial.id}-category-${category}`}
+                                                onClick={() => handleCategoryBadgeClick(category)}
+                                            >
                                                 {category}
-                                            </span>
+                                            </button>
                                         ))}
                                     </div>
                                 )}
@@ -344,9 +375,14 @@ const TutorialSearch = () => {
                                 {tutorial.tags.length > 0 && (
                                     <div className='tutorial-search__chips'>
                                         {tutorial.tags.map((tag) => (
-                                            <span className='tutorial-search__chip tutorial-search__chip--tag' key={`${tutorial.id}-tag-${tag}`}>
+                                            <button
+                                                type='button'
+                                                className='tutorial-search__chip tutorial-search__chip--button tutorial-search__chip--tag'
+                                                key={`${tutorial.id}-tag-${tag}`}
+                                                onClick={() => handleTagBadgeClick(tag)}
+                                            >
                                                 {tag}
-                                            </span>
+                                            </button>
                                         ))}
                                     </div>
                                 )}

@@ -167,6 +167,15 @@
     font-weight: 600;
 }
 
+.guide-search__chip--button {
+    cursor: pointer;
+}
+
+.guide-search__chip--button:focus {
+    outline: 2px solid var(--brand-teal);
+    outline-offset: 2px;
+}
+
 .guide-search__chip--tag {
     background: var(--cta-olive-green);
     color: #fff;

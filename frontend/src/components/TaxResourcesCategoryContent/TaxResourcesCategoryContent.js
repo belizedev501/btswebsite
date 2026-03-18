@@ -78,6 +78,14 @@ const TaxResourcesCategoryContent = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const titleFilter = (searchParams.get('title') || '').trim();
     const typeFilter = (searchParams.get('type') || '').trim();
+    const isSpanish = locale === 'es';
+    const texts = {
+        taxResources: isSpanish ? 'Recursos Tributarios' : 'Tax Resources',
+        loading: isSpanish ? 'Cargando categoria de recursos tributarios...' : 'Loading Tax Resources category...',
+        error: isSpanish ? 'Error cargando la categoria de recursos tributarios.' : 'Error loading Tax Resources category.',
+        notFound: isSpanish ? 'Categoria de recursos tributarios no encontrada.' : 'Tax Resources category not found.',
+        empty: isSpanish ? 'No se encontraron recursos tributarios relacionados para los filtros seleccionados.' : 'No related Tax Resources found for the selected filters.'
+    };
 
     const filters = useMemo(() => ({ Tax_Resource_Category_ID: categoryId }), [categoryId]);
 
@@ -241,14 +249,14 @@ const TaxResourcesCategoryContent = () => {
         setSearchParams(next);
     };
 
-    if (loading) return <p>Loading Tax Resources category...</p>;
-    if (error) return <p>Error loading Tax Resources category.</p>;
-    if (!category) return <p>Tax Resources category not found.</p>;
+    if (loading) return <p>{texts.loading}</p>;
+    if (error) return <p>{texts.error}</p>;
+    if (!category) return <p>{texts.notFound}</p>;
 
     return (
         <section className='trc-content'>
             <nav className='trc-breadcrumb' aria-label='Breadcrumb'>
-                <Link to='/tax_resources'>Tax Resources</Link>
+                <Link to='/tax_resources'>{texts.taxResources}</Link>
                 <span>/</span>
                 <span>{category.Tax_Resource_Category_Name}</span>
             </nav>
@@ -285,7 +293,7 @@ const TaxResourcesCategoryContent = () => {
 
             <div className='trc-list'>
                 {filteredResources.length === 0 && (
-                    <p>No related Tax Resources found for the selected filters.</p>
+                    <p>{texts.empty}</p>
                 )}
                 {filteredResources.map((resource) => {
                     const summaryContent = renderRichText(resource?.Tax_Resource_Summary);
@@ -312,7 +320,14 @@ const TaxResourcesCategoryContent = () => {
                             {(resourceTypesForItem.length > 0 || effectiveDate) && (
                                 <div className='trc-item-badges'>
                                     {resourceTypesForItem.map((type) => (
-                                        <span className='trc-type-badge' key={type}>{type}</span>
+                                        <button
+                                            type='button'
+                                            className='trc-type-badge trc-type-badge--button'
+                                            key={type}
+                                            onClick={() => updateFilter('type', type)}
+                                        >
+                                            {type}
+                                        </button>
                                     ))}
                                     {effectiveDate && <span className='trc-date-badge'>Effective: {effectiveDate}</span>}
                                 </div>

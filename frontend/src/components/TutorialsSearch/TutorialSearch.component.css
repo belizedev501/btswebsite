@@ -158,6 +158,15 @@
     font-weight: 600;
 }
 
+.tutorial-search__chip--button {
+    cursor: pointer;
+}
+
+.tutorial-search__chip--button:focus {
+    outline: 2px solid var(--brand-teal);
+    outline-offset: 2px;
+}
+
 .tutorial-search__chip--tag {
     background: var(--cta-olive-green);
     color: #fff;
