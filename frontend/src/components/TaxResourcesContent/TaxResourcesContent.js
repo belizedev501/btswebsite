@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useStrapiCollection, useStrapiSingle } from '../Strapi/strapiCollection';
+import { GlobalContext } from '../Context/Context';
 import './TaxResourcesContent.component.css';
 import { renderRichText } from '../utils/richText';
 
@@ -70,6 +71,18 @@ const parseResourceTypes = (value) => {
 };
 
 const TaxResourcesContent = () => {
+    const { locale } = useContext(GlobalContext);
+    const isSpanish = locale === 'es';
+    const texts = {
+        loading: isSpanish ? 'Cargando recursos tributarios...' : 'Loading Tax Resources...',
+        error: isSpanish ? 'Error cargando recursos tributarios.' : 'Error loading Tax Resources.',
+        defaultTitle: isSpanish ? 'Recursos Tributarios' : 'Tax Resources',
+        defaultText: isSpanish ? 'Accede a leyes, formularios, guias y actualizaciones para todos los tipos de impuestos.' : 'Access laws, forms, guidelines, and updates for all tax types.',
+        newsTitle: isSpanish ? 'Noticias y Actualizaciones' : 'News & Updates',
+        newsText: isSpanish ? 'Mantente informado con las ultimas actualizaciones del Belize Tax Service.' : 'Stay informed with the latest updates from Belize Tax Service.',
+        upcomingEvents: isSpanish ? 'Proximos Eventos' : 'Upcoming Events'
+    };
+
     const {
         data: pageData,
         loading: pageLoading
@@ -128,18 +141,18 @@ const TaxResourcesContent = () => {
     }, [newsByType]);
 
     if (categoriesLoading || pageLoading || newsLoading || eventsLoading) {
-        return <p>Loading Tax Resources...</p>;
+        return <p>{texts.loading}</p>;
     }
 
     if (categoriesError) {
-        return <p>Error loading Tax Resources.</p>;
+        return <p>{texts.error}</p>;
     }
 
     return (
         <section className='tr-content'>
             <div className='tr-header'>
-                <h2>{pageData?.Tax_Resources_Page_Title || 'Tax Resources'}</h2>
-                <h6>{pageData?.Tax_Resources_Page_Text || 'Access laws, forms, guidelines, and updates for all tax types.'}</h6>
+                <h2>{pageData?.Tax_Resources_Page_Title || texts.defaultTitle}</h2>
+                <h6>{pageData?.Tax_Resources_Page_Text || texts.defaultText}</h6>
             </div>
 
             <div className='tr-grid'>
@@ -184,9 +197,9 @@ const TaxResourcesContent = () => {
                 })}
 
                 <article className='tr-card'>
-                    <h3 className='tr-card-title'>{pageData?.Tax_Resources_Page_News_Title || 'News & Updates'}</h3>
+                    <h3 className='tr-card-title'>{pageData?.Tax_Resources_Page_News_Title || texts.newsTitle}</h3>
                     <div className='tr-card-description'>
-                        <p>{pageData?.Tax_Resources_Page_News_Text || 'Stay informed with the latest updates from Belize Tax Service.'}</p>
+                        <p>{pageData?.Tax_Resources_Page_News_Text || texts.newsText}</p>
                     </div>
                     <div className='tr-card-types'>
                         {orderedNewsTypes.map((newsType) => (
@@ -201,7 +214,7 @@ const TaxResourcesContent = () => {
                         ))}
                         <Link className='tr-type-link' to='/calendar'>
                             <span className='icon-size_5 icon-calendar-days-solid' />
-                            <span>Upcoming Events ({normalizeArray(eventsRows).length})</span>
+                            <span>{texts.upcomingEvents} ({normalizeArray(eventsRows).length})</span>
                         </Link>
                     </div>
                 </article>

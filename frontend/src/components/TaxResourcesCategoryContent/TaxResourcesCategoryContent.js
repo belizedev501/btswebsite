@@ -84,7 +84,11 @@ const TaxResourcesCategoryContent = () => {
         loading: isSpanish ? 'Cargando categoria de recursos tributarios...' : 'Loading Tax Resources category...',
         error: isSpanish ? 'Error cargando la categoria de recursos tributarios.' : 'Error loading Tax Resources category.',
         notFound: isSpanish ? 'Categoria de recursos tributarios no encontrada.' : 'Tax Resources category not found.',
-        empty: isSpanish ? 'No se encontraron recursos tributarios relacionados para los filtros seleccionados.' : 'No related Tax Resources found for the selected filters.'
+        empty: isSpanish ? 'No se encontraron recursos tributarios relacionados para los filtros seleccionados.' : 'No related Tax Resources found for the selected filters.',
+        filterByTitle: isSpanish ? 'Filtrar por titulo' : 'Filter by title',
+        allTypes: isSpanish ? 'Todos los tipos' : 'All types',
+        effective: isSpanish ? 'Vigente' : 'Effective',
+        openAttachment: isSpanish ? 'Abrir adjunto' : 'Open attachment'
     };
 
     const filters = useMemo(() => ({ Tax_Resource_Category_ID: categoryId }), [categoryId]);
@@ -275,7 +279,7 @@ const TaxResourcesCategoryContent = () => {
                 <input
                     type='text'
                     className='form-control'
-                    placeholder='Filter by title'
+                    placeholder={texts.filterByTitle}
                     value={titleFilter}
                     onChange={(event) => updateFilter('title', event.target.value)}
                 />
@@ -284,7 +288,7 @@ const TaxResourcesCategoryContent = () => {
                     value={typeFilter}
                     onChange={(event) => updateFilter('type', event.target.value)}
                 >
-                    <option value=''>All types</option>
+                    <option value=''>{texts.allTypes}</option>
                     {resourceTypes.map((type) => (
                         <option value={type} key={type}>{type}</option>
                     ))}
@@ -304,7 +308,7 @@ const TaxResourcesCategoryContent = () => {
                     const resourceCategories = normalizeResourceCategories(resource);
                     const attachment = normalizeItems(resource?.Tax_Resource_Attachments)[0];
                     const attachmentUrl = toAbsoluteUrl(attachment?.url, globalServerStrapi);
-                    const attachmentLabel = attachment?.alternativeText || attachment?.name || 'Open attachment';
+                    const attachmentLabel = attachment?.alternativeText || attachment?.name || texts.openAttachment;
                     const detailSearch = new URLSearchParams();
                     detailSearch.set('from', `${location.pathname}${location.search}`);
                     if (category?.Tax_Resource_Category_Name) {
@@ -329,7 +333,7 @@ const TaxResourcesCategoryContent = () => {
                                             {type}
                                         </button>
                                     ))}
-                                    {effectiveDate && <span className='trc-date-badge'>Effective: {effectiveDate}</span>}
+                                    {effectiveDate && <span className='trc-date-badge'>{texts.effective}: {effectiveDate}</span>}
                                 </div>
                             )}
                             {resourceCategories.length > 0 && (

@@ -335,6 +335,81 @@ const getTagLabel = (tag) => {
     );
 };
 
+const fetchFirstItem = async (url, headers) => {
+    const response = await fetch(url, { headers });
+    if (!response.ok) return null;
+    const result = await response.json();
+    const item = Array.isArray(result?.data) ? result.data[0] : null;
+    if (!item) return null;
+    if (item?.attributes) {
+        return {
+            id: item.id,
+            documentId: item.documentId || item.attributes?.documentId,
+            ...item.attributes
+        };
+    }
+    return item;
+};
+
+const resolveLocalizedCategoryContext = async ({
+    baseUrl,
+    headers,
+    locale,
+    fromCategoryName,
+    fromCategoryId,
+    fallbackCategoryId,
+    fallbackCategory,
+    fromPathQuery
+}) => {
+    let sourceCategory = null;
+
+    if (fromCategoryName) {
+        const byNameAllLocales = `${baseUrl}/api/tax-resource-categories?filters[Tax_Resource_Category_Name][$eqi]=${encodeURIComponent(fromCategoryName)}&pagination[limit]=1&locale=all`;
+        sourceCategory = await fetchFirstItem(byNameAllLocales, headers);
+    }
+
+    if (!sourceCategory && fromCategoryId) {
+        const byIdAllLocales = `${baseUrl}/api/tax-resource-categories?filters[Tax_Resource_Category_ID][$eq]=${encodeURIComponent(fromCategoryId)}&pagination[limit]=1&locale=all`;
+        sourceCategory = await fetchFirstItem(byIdAllLocales, headers);
+    }
+
+    if (!sourceCategory && fallbackCategoryId) {
+        const byPrimaryIdAllLocales = `${baseUrl}/api/tax-resource-categories?filters[Tax_Resource_Category_ID][$eq]=${encodeURIComponent(fallbackCategoryId)}&pagination[limit]=1&locale=all`;
+        sourceCategory = await fetchFirstItem(byPrimaryIdAllLocales, headers);
+    }
+
+    if (!sourceCategory?.documentId) {
+        const fallbackLocalizedCategoryId = fallbackCategory?.Tax_Resource_Category_ID
+            || fallbackCategory?.documentId
+            || fallbackCategory?.id;
+        const fallbackLocalizedCategoryName = fallbackCategory?.Tax_Resource_Category_Name;
+
+        if (!fallbackLocalizedCategoryId || !fallbackLocalizedCategoryName) return null;
+
+        return {
+            localizedCategoryId: fallbackLocalizedCategoryId,
+            localizedCategoryName: fallbackLocalizedCategoryName,
+            localizedFromPath: `/tax_resources/category/${fallbackLocalizedCategoryId}${fromPathQuery || ''}`
+        };
+    }
+
+    const localizedByDocumentId = `${baseUrl}/api/tax-resource-categories?filters[documentId][$eq]=${encodeURIComponent(sourceCategory.documentId)}&pagination[limit]=1&locale=${locale}`;
+    const localizedCategory = await fetchFirstItem(localizedByDocumentId, headers);
+    if (!localizedCategory) return null;
+
+    const localizedCategoryId = localizedCategory?.Tax_Resource_Category_ID
+        || localizedCategory?.documentId
+        || localizedCategory?.id;
+    const localizedCategoryName = localizedCategory?.Tax_Resource_Category_Name;
+    if (!localizedCategoryId || !localizedCategoryName) return null;
+
+    return {
+        localizedCategoryId,
+        localizedCategoryName,
+        localizedFromPath: `/tax_resources/category/${localizedCategoryId}${fromPathQuery || ''}`
+    };
+};
+
 const TaxResourceDetail = () => {
     const { resourceId } = useParams();
     const navigate = useNavigate();
@@ -373,18 +448,34 @@ const TaxResourceDetail = () => {
         category: isSpanish ? 'Categoria' : 'Category',
         loading: isSpanish ? 'Cargando recurso tributario...' : 'Loading Tax Resource...',
         error: isSpanish ? 'Error cargando el recurso tributario.' : 'Error loading Tax Resource.',
-        notFound: isSpanish ? 'Recurso tributario no encontrado.' : 'Tax Resource not found.'
+        notFound: isSpanish ? 'Recurso tributario no encontrado.' : 'Tax Resource not found.',
+        effectiveDate: isSpanish ? 'Fecha de vigencia' : 'Effective Date',
+        reference: isSpanish ? 'Referencia' : 'Reference',
+        openResource: isSpanish ? 'Abrir recurso en una nueva pestana' : 'Open resource in a new tab',
+        tags: isSpanish ? 'Etiquetas' : 'Tags'
     };
     const categoryId = primaryCategory?.Tax_Resource_Category_ID || primaryCategory?.documentId || primaryCategory?.id;
     const fromPath = (searchParams.get('from') || '').trim();
     const fromCategoryName = (searchParams.get('fromCategoryName') || '').trim();
+    const fromCategoryMatch = fromPath.match(/^\/tax_resources\/category\/([^/?#]+)/);
+    const fromCategoryId = fromCategoryMatch?.[1] || '';
+    const fromPathQuery = fromPath.includes('?') ? fromPath.slice(fromPath.indexOf('?')) : '';
+    const fromCategory = fromCategoryId
+        ? resourceCategories.find((category) => {
+            const relatedCategoryId = category?.Tax_Resource_Category_ID || category?.documentId || category?.id;
+            return String(relatedCategoryId) === String(fromCategoryId);
+        }) || null
+        : null;
     const effectiveDate = resource?.Tax_Resource_Effective_Date
         ? new Date(resource.Tax_Resource_Effective_Date).toLocaleDateString()
         : '';
     const breadcrumbCategoryLink = fromPath.startsWith('/tax_resources/category/')
         ? fromPath
         : (categoryId ? `/tax_resources/category/${categoryId}` : '/tax_resources');
-    const breadcrumbCategoryLabel = primaryCategory?.Tax_Resource_Category_Name || fromCategoryName || texts.category;
+    const breadcrumbCategoryLabel = (fromPath.startsWith('/tax_resources/category/') ? fromCategoryName : '')
+        || fromCategory?.Tax_Resource_Category_Name
+        || primaryCategory?.Tax_Resource_Category_Name
+        || texts.category;
 
     useEffect(() => {
         if (resource) {
@@ -400,31 +491,55 @@ const TaxResourceDetail = () => {
         if (!cachedResource || !locale || !globalServerStrapi) return;
 
         const cachedLocale = cachedResource?.locale || cachedResource?.attributes?.locale;
-        if (cachedLocale && cachedLocale === locale) return;
-
         const documentId = cachedResource?.documentId || cachedResource?.attributes?.documentId;
-        if (!documentId) return;
 
         const headers = {};
         if (globalTokenStrapi) headers.Authorization = `Bearer ${globalTokenStrapi}`;
 
         const baseUrl = globalServerStrapi.replace(/\/+$/, '');
-        const url = `${baseUrl}/api/tax-resources?filters[documentId][$eq]=${encodeURIComponent(documentId)}&pagination[limit]=1&locale=${locale}`;
 
         let cancelled = false;
         const fetchLocalized = async () => {
             try {
-                const response = await fetch(url, { headers });
-                if (!response.ok) return;
-                const result = await response.json();
-                if (cancelled) return;
+                let localizedAttrs = cachedResource;
 
-                const localizedItem = Array.isArray(result?.data) ? result.data[0] : null;
-                const localizedAttrs = localizedItem?.attributes || localizedItem;
+                if (!cachedLocale || cachedLocale !== locale) {
+                    if (!documentId) return;
+                    const url = `${baseUrl}/api/tax-resources?filters[documentId][$eq]=${encodeURIComponent(documentId)}&pagination[limit]=1&locale=${locale}`;
+                    const response = await fetch(url, { headers });
+                    if (!response.ok) return;
+                    const result = await response.json();
+                    if (cancelled) return;
+
+                    const localizedItem = Array.isArray(result?.data) ? result.data[0] : null;
+                    localizedAttrs = localizedItem?.attributes || localizedItem;
+                }
+
                 const localizedResourceId = localizedAttrs?.Tax_Resource_ID;
+                if (!localizedResourceId) return;
 
-                if (localizedResourceId && localizedResourceId !== resourceId) {
-                    navigate(`/tax_resources/${localizedResourceId}${location.search}`, { replace: true });
+                const localizedCategoryContext = await resolveLocalizedCategoryContext({
+                    baseUrl,
+                    headers,
+                    locale,
+                    fromCategoryName,
+                    fromCategoryId,
+                    fallbackCategoryId: categoryId,
+                    fallbackCategory: primaryCategory,
+                    fromPathQuery
+                });
+
+                const nextSearch = new URLSearchParams(searchParams);
+                if (localizedCategoryContext) {
+                    nextSearch.set('from', localizedCategoryContext.localizedFromPath);
+                    nextSearch.set('fromCategoryName', localizedCategoryContext.localizedCategoryName);
+                }
+
+                const nextUrl = `/tax_resources/${localizedResourceId}${nextSearch.toString() ? `?${nextSearch.toString()}` : ''}`;
+                const currentUrl = `${location.pathname}${location.search}`;
+
+                if (nextUrl !== currentUrl) {
+                    navigate(nextUrl, { replace: true });
                 }
             } catch (fetchError) {
                 console.error('Error fetching localized tax resource by documentId:', fetchError);
@@ -436,7 +551,7 @@ const TaxResourceDetail = () => {
         return () => {
             cancelled = true;
         };
-    }, [cachedResource, globalServerStrapi, globalTokenStrapi, locale, location.search, navigate, resourceId]);
+    }, [cachedResource, categoryId, fromCategoryId, fromCategoryName, fromPathQuery, globalServerStrapi, globalTokenStrapi, locale, location.pathname, location.search, navigate, primaryCategory, resourceId, searchParams]);
 
     useEffect(() => {
         if (loading || resource || !resourceId || fallbackTried || !locale || !globalServerStrapi) return;
@@ -469,9 +584,30 @@ const TaxResourceDetail = () => {
                 const localizedItem = Array.isArray(localizedResult?.data) ? localizedResult.data[0] : null;
                 const localizedAttrs = localizedItem?.attributes || localizedItem;
                 const localizedResourceId = localizedAttrs?.Tax_Resource_ID;
+                if (!localizedResourceId) return;
 
-                if (localizedResourceId && localizedResourceId !== resourceId) {
-                    navigate(`/tax_resources/${localizedResourceId}${location.search}`, { replace: true });
+                const localizedCategoryContext = await resolveLocalizedCategoryContext({
+                    baseUrl,
+                    headers,
+                    locale,
+                    fromCategoryName,
+                    fromCategoryId,
+                    fallbackCategoryId: categoryId,
+                    fallbackCategory: primaryCategory,
+                    fromPathQuery
+                });
+
+                const nextSearch = new URLSearchParams(searchParams);
+                if (localizedCategoryContext) {
+                    nextSearch.set('from', localizedCategoryContext.localizedFromPath);
+                    nextSearch.set('fromCategoryName', localizedCategoryContext.localizedCategoryName);
+                }
+
+                const nextUrl = `/tax_resources/${localizedResourceId}${nextSearch.toString() ? `?${nextSearch.toString()}` : ''}`;
+                const currentUrl = `${location.pathname}${location.search}`;
+
+                if (nextUrl !== currentUrl) {
+                    navigate(nextUrl, { replace: true });
                 }
             } catch (fetchError) {
                 console.error('Error fetching fallback tax resource locale:', fetchError);
@@ -486,14 +622,21 @@ const TaxResourceDetail = () => {
         };
     }, [
         fallbackTried,
+        categoryId,
+        fromCategoryId,
+        fromCategoryName,
+        fromPathQuery,
         globalServerStrapi,
         globalTokenStrapi,
         loading,
         locale,
+        location.pathname,
         location.search,
         navigate,
+        primaryCategory,
         resource,
-        resourceId
+        resourceId,
+        searchParams
     ]);
 
     const attachments = normalizeAttachments(resource?.Tax_Resource_Attachments);
@@ -520,7 +663,7 @@ const TaxResourceDetail = () => {
                 {resourceTypes.map((type) => (
                     <span className='trd-tag trd-tag-type' key={type}>{type}</span>
                 ))}
-                {effectiveDate && <span className='trd-tag trd-tag-date'>Effective Date: {effectiveDate}</span>}
+                {effectiveDate && <span className='trd-tag trd-tag-date'>{texts.effectiveDate}: {effectiveDate}</span>}
                 {resourceCategories.map((category) => {
                     const relatedCategoryId = category?.Tax_Resource_Category_ID || category?.documentId || category?.id;
                     const relatedCategoryName = category?.Tax_Resource_Category_Name;
@@ -552,11 +695,11 @@ const TaxResourceDetail = () => {
 
             {resourceUrl && (
                 <div className='trd-external'>
-                    <h5>Reference</h5>
+                    <h5>{texts.reference}</h5>
                     <ResourcePreview url={resourceUrl} />
                     <p>
                         <a href={resourceUrl} target='_blank' rel='noreferrer'>
-                            Open resource in a new tab
+                            {texts.openResource}
                         </a>
                     </p>
                 </div>
@@ -581,7 +724,7 @@ const TaxResourceDetail = () => {
 
             {resourceTags.length > 0 && (
                 <div className='trd-related-tags'>
-                    <h5>Tags</h5>
+                    <h5>{texts.tags}</h5>
                     <div className='trd-related-tags-list'>
                         {resourceTags.map((tag, index) => {
                             const label = getTagLabel(tag);

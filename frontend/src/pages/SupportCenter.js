@@ -71,7 +71,7 @@ const SupportCenter = () => {
     return (
         <>
             {/* React Document Metadata */}
-            <title>{SupportCenterContent?.metaTitle || 'BTS - Support Center'}</title>
+            <title>{supportCenterSEO?.metaTitle || 'BTS - Support Center'}</title>
             <meta name="description" content={supportCenterSEO?.metaDescription || 'Default description'} />
             <meta name="keywords" content={supportCenterSEO?.metaKeywords || 'Default keywords'} />
 
