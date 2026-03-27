@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FaFacebookF, FaLinkedinIn, FaWhatsapp, FaLink } from 'react-icons/fa';
 import { useStrapiCollection } from '../Strapi/strapiCollection';
 import { GlobalContext } from '../Context/Context';
@@ -9,6 +9,7 @@ import { renderRichText } from '../utils/richText';
 const NewsDetail = () => {
     const { slug } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { locale, globalServerStrapi, globalTokenStrapi } = useContext(GlobalContext);
     const [fallbackTried, setFallbackTried] = useState(false);
     const [cachedNews, setCachedNews] = useState(null);
@@ -70,7 +71,7 @@ const NewsDetail = () => {
                 const localizedSlug = localizedAttrs?.News_URL;
 
                 if (localizedSlug && localizedSlug !== cleanedSlug) {
-                    navigate(`/NewsDetails/${localizedSlug}`, { replace: true });
+                    navigate(`/news_details/${localizedSlug}${location.search}`, { replace: true });
                 }
             } catch (fetchError) {
                 console.error('Error fetching localized news by documentId:', fetchError);
@@ -82,7 +83,7 @@ const NewsDetail = () => {
         return () => {
             cancelled = true;
         };
-    }, [cachedNews, cleanedSlug, globalServerStrapi, globalTokenStrapi, locale, navigate]);
+    }, [cachedNews, cleanedSlug, globalServerStrapi, globalTokenStrapi, locale, location.search, navigate]);
 
     useEffect(() => {
         if (loading || error || news || !cleanedSlug || fallbackTried || !globalServerStrapi) return;
@@ -118,7 +119,7 @@ const NewsDetail = () => {
                 const localizedSlug = localizedAttrs?.News_URL;
 
                 if (localizedSlug && localizedSlug !== cleanedSlug) {
-                    navigate(`/NewsDetails/${localizedSlug}`, { replace: true });
+                    navigate(`/news_details/${localizedSlug}${location.search}`, { replace: true });
                 }
             } catch (fetchError) {
                 console.error('Error fetching fallback news locale:', fetchError);
@@ -139,6 +140,7 @@ const NewsDetail = () => {
         globalTokenStrapi,
         loading,
         locale,
+        location.search,
         navigate,
         news
     ]);

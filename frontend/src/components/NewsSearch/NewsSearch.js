@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { GlobalContext } from '../Context/Context';
 import './NewsSearch.component.css';
@@ -11,6 +11,11 @@ const extractValuesFromParams = (params, key) => {
         .flatMap((value) => value.split(','))
         .map((value) => value.trim())
         .filter(Boolean);
+};
+
+const extractPageFromParams = (params) => {
+    const rawValue = Number.parseInt(params.get('page') || '1', 10);
+    return Number.isNaN(rawValue) || rawValue < 1 ? 1 : rawValue;
 };
 
 const sameStringArray = (a, b) => {
@@ -92,13 +97,12 @@ const NewsSearch = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [search, setSearch] = useState('');
     const [appliedSearch, setAppliedSearch] = useState('');
-    const [results, setResults] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const pageSize = 6;
     const [newsSearch, setNewsSeacrh] = useState([]);
     const [selectedTypes, setSelectedTypes] = useState(() => extractValuesFromParams(searchParams, 'type'));
     const [selectedCategories, setSelectedCategories] = useState(() => extractValuesFromParams(searchParams, 'category'));
+    const currentPage = useMemo(() => extractPageFromParams(searchParams), [searchParams]);
 
     useEffect(() => {
         const requestedTypes = extractValuesFromParams(searchParams, 'type');
@@ -241,6 +245,19 @@ const NewsSearch = () => {
         setSelectedCategories((prev) => sameStringArray(prev, urlCategories) ? prev : urlCategories);
     }, [searchParams]);
 
+    const navigateWithPage = useCallback((page = 1, options = {}) => {
+        const nextParams = new URLSearchParams(searchParams);
+
+        if (page > 1) {
+            nextParams.set('page', String(page));
+        } else {
+            nextParams.delete('page');
+        }
+
+        const query = nextParams.toString();
+        navigate(query ? `${location.pathname}?${query}` : location.pathname, options);
+    }, [location.pathname, navigate, searchParams]);
+
     useEffect(() => {
         if (strapiNewsSearch) setNewsSeacrh(strapiNewsSearch);
         if (strapiNewsSearchError) {
@@ -252,8 +269,8 @@ const NewsSearch = () => {
         const nextParams = new URLSearchParams(searchParams);
         nextParams.delete(key);
         values.forEach((value) => nextParams.append(key, value));
+        nextParams.delete('page');
         setSearchParams(nextParams, { replace: true });
-        setCurrentPage(1);
     };
 
     const handleTypeChange = (type) => {
@@ -291,20 +308,25 @@ const NewsSearch = () => {
     }, [allNews, appliedSearch, selectedTypes, selectedCategories]);
 
     useEffect(() => {
+        if (newsRowsLoading) return;
+
         const nextTotalPages = Math.max(1, Math.ceil(filteredNews.length / pageSize));
         setTotalPages(nextTotalPages);
-        setCurrentPage((prev) => Math.min(prev, nextTotalPages));
-    }, [filteredNews]);
+        if (currentPage > nextTotalPages) {
+            navigateWithPage(nextTotalPages, { replace: true });
+        }
+    }, [currentPage, filteredNews, navigateWithPage, newsRowsLoading]);
 
-    useEffect(() => {
-        const start = (currentPage - 1) * pageSize;
-        setResults(filteredNews.slice(start, start + pageSize));
-    }, [filteredNews, currentPage]);
+    const results = useMemo(() => {
+        const safePage = Math.min(currentPage, totalPages);
+        const start = (safePage - 1) * pageSize;
+        return filteredNews.slice(start, start + pageSize);
+    }, [currentPage, filteredNews, totalPages]);
 
     const handleSearch = (e, page = 1) => {
         if (e) e.preventDefault();
         setAppliedSearch(search);
-        setCurrentPage(page);
+        navigateWithPage(page);
     };
 
     const richTextToString = (richText) => {
@@ -454,12 +476,12 @@ const NewsSearch = () => {
                                                     ))}
                                                 </div>
                                             )}
-                                            <Link to={`/news_details/${newsUrlSlug}`} className='newsSearch-card-title-link'>
+                                            <Link to={`/news_details/${newsUrlSlug}${location.search}`} className='newsSearch-card-title-link'>
                                                 <h5 className='newsSearch-card-title'>{newsHeadline}</h5>
                                             </Link>
                                             <p className='newsSearch-card-intro'>{summaryShort}</p>
                                             <p className='newsSearch-card-date'>{new Date(newsDateTime).toLocaleDateString()}</p>
-                                            <Link to={`/news_details/${newsUrlSlug}`} className='newsSearch-card-details-link'>
+                                            <Link to={`/news_details/${newsUrlSlug}${location.search}`} className='newsSearch-card-details-link'>
                                                 {newsSearch.News_Search_Details_Link_Text}
                                             </Link>
                                         </div>
@@ -473,6 +495,7 @@ const NewsSearch = () => {
             {totalPages > 1 && (
                 <div className='newsSearch-pagination-container'>
                     <button
+                        type='button'
                         className={`newsSearch-pagination-btn${currentPage === 1 ? ' disabled' : ''}`}
                         onClick={() => currentPage > 1 && handleSearch(null, currentPage - 1)}
                         disabled={currentPage === 1}
@@ -481,6 +504,7 @@ const NewsSearch = () => {
                     </button>
                     {Array.from({ length: totalPages }, (_, i) => (
                         <button
+                            type='button'
                             key={i + 1}
                             className={`newsSearch-pagination-page${currentPage === i + 1 ? ' active' : ''}`}
                             onClick={() => handleSearch(null, i + 1)}
@@ -490,6 +514,7 @@ const NewsSearch = () => {
                         </button>
                     ))}
                     <button
+                        type='button'
                         className={`newsSearch-pagination-btn${currentPage === totalPages ? ' disabled' : ''}`}
                         onClick={() => currentPage < totalPages && handleSearch(null, currentPage + 1)}
                         disabled={currentPage === totalPages}
