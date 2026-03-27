@@ -1,4 +1,4 @@
-name: Deploy Frontend to Azure
+﻿name: Deploy Frontend to Azure
 
 on:
   push:
@@ -23,13 +23,15 @@ jobs:
           npm ci
           CI=false npm run build
 
-      - name: Create package.json for static server
+      - name: Create startup files for static server
         run: |
           cat > ./frontend/build/server.js << 'EOF'
-          const { spawn } = require('child_process');
+          const http = require('http');
           const fs = require('fs');
           const path = require('path');
 
+          const rootDir = __dirname;
+          const port = Number(process.env.PORT || 8080);
           const env = {
             REACT_APP_STRAPI_URL: process.env.REACT_APP_STRAPI_URL || '',
             REACT_APP_STRAPI_TOKEN: process.env.REACT_APP_STRAPI_TOKEN || '',
@@ -37,16 +39,80 @@ jobs:
           };
 
           fs.writeFileSync(
-            path.join(__dirname, 'env.js'),
+            path.join(rootDir, 'env.js'),
             `window.__ENV__ = ${JSON.stringify(env)};`
           );
 
-          const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-          const child = spawn(npxCmd, ['serve', '-s', '.', '-l', '8080'], {
-            stdio: 'inherit'
+          const mimeTypes = {
+            '.css': 'text/css; charset=utf-8',
+            '.html': 'text/html; charset=utf-8',
+            '.ico': 'image/x-icon',
+            '.js': 'application/javascript; charset=utf-8',
+            '.json': 'application/json; charset=utf-8',
+            '.map': 'application/json; charset=utf-8',
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.svg': 'image/svg+xml',
+            '.txt': 'text/plain; charset=utf-8',
+            '.webp': 'image/webp',
+            '.woff': 'font/woff',
+            '.woff2': 'font/woff2'
+          };
+
+          const sendFile = (filePath, res) => {
+            fs.readFile(filePath, (error, data) => {
+              if (error) {
+                if (error.code === 'ENOENT') {
+                  res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+                  res.end('Not found');
+                  return;
+                }
+
+                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+                res.end('Internal server error');
+                return;
+              }
+
+              const extension = path.extname(filePath).toLowerCase();
+              res.writeHead(200, {
+                'Content-Type': mimeTypes[extension] || 'application/octet-stream',
+                'Cache-Control': extension === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable'
+              });
+              res.end(data);
+            });
+          };
+
+          const server = http.createServer((req, res) => {
+            const requestPath = decodeURIComponent((req.url || '/').split('?')[0]);
+            const safePath = path.normalize(requestPath).replace(/^([.][.][\/\\])+/, '');
+            let filePath = path.join(rootDir, safePath === '/' ? 'index.html' : safePath);
+
+            if (!filePath.startsWith(rootDir)) {
+              res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
+              res.end('Forbidden');
+              return;
+            }
+
+            fs.stat(filePath, (error, stats) => {
+              if (!error && stats.isDirectory()) {
+                filePath = path.join(filePath, 'index.html');
+                sendFile(filePath, res);
+                return;
+              }
+
+              if (!error && stats.isFile()) {
+                sendFile(filePath, res);
+                return;
+              }
+
+              sendFile(path.join(rootDir, 'index.html'), res);
+            });
           });
 
-          child.on('exit', (code) => process.exit(code ?? 0));
+          server.listen(port, '0.0.0.0', () => {
+            console.log(`Static server listening on ${port}`);
+          });
           EOF
 
           cat > ./frontend/build/package.json << 'EOF'
@@ -56,9 +122,6 @@ jobs:
             "description": "Static server for React app",
             "scripts": {
               "start": "node server.js"
-            },
-            "dependencies": {
-              "serve": "^14.2.1"
             }
           }
           EOF
