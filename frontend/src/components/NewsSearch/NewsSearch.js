@@ -454,7 +454,7 @@ const NewsSearch = () => {
                                                     ))}
                                                 </div>
                                             )}
-                                            <Link to={`/newsdetails/${newsUrlSlug}`} className='newsSearch-card-title-link'>
+                                            <Link to={`/news_details/${newsUrlSlug}`} className='newsSearch-card-title-link'>
                                                 <h5 className='newsSearch-card-title'>{newsHeadline}</h5>
                                             </Link>
                                             <p className='newsSearch-card-intro'>{summaryShort}</p>
