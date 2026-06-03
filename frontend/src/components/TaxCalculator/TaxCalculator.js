@@ -1,6 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './TaxCalculator.component.css';
 import { useStrapiSingle } from '../Strapi/strapiCollection';
+import { GlobalContext } from '../Context/Context';
+
+const copySuccessMessages = {
+    en: 'Results copied to clipboard',
+    es: 'Resultados copiados al portapapeles'
+};
 
 const TaxCalculator = () => {
     const [taxCalculator, setTaxCalculator] = useState(null);
@@ -14,6 +20,7 @@ const TaxCalculator = () => {
         totalYearEmoluments: '',
         totalTaxPayableYearly: ''
     });
+    const { locale } = useContext(GlobalContext);
 
     // Consultas a Strapi con idioma
     const {
@@ -104,7 +111,7 @@ ${taxCalculator.Tax_Calculator_Result_Text_4}: $${results.totalTaxPayableYearly}
         `.trim();
 
         navigator.clipboard.writeText(resultText).then(() => {
-            alert('Resultados copiados al portapapeles');
+            alert(taxCalculator.Tax_Calculator_Copy_Success_Alert || copySuccessMessages[locale] || copySuccessMessages.en);
         }).catch(err => {
             console.error('Error al copiar:', err);
         });
