@@ -9,6 +9,7 @@ import NewsDetails from "../pages/NewsDetails";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import FAQs from "../pages/FAQs";
+import FAQsElectronicInvoicing from "../pages/FAQsElectronicInvoicing";
 import Calendar from "../pages/Calendar";
 import TaxResources from "../pages/TaxResources";
 import TaxResourcesCategory from "../pages/TaxResourcesCategory";
@@ -46,6 +47,7 @@ const AppRoutes = () => {
                 <Route path="/news" element={<News />} />
                 <Route path="/news_details/:slug" element={<NewsDetails />} />
                 <Route path="/faq" element={<FAQs />} />
+                <Route path="/electronic-invoicing-faqs/" element={<FAQsElectronicInvoicing />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/tax_resources" element={<TaxResources />} />
                 <Route path="/tax_resources/category/:categoryId" element={<TaxResourcesCategory />} />
@@ -55,6 +57,7 @@ const AppRoutes = () => {
                 <Route path="/guides" element={<Guides />} />
                 <Route path="/guide/:slug" element={<Guide />} />
                 <Route path="/guides_and_tutorials" element={<GuidesAndTutorials />} />
+                <Route path="/electronic-invoicing-faqs/" element={<FAQsElectronicInvoicing />} />
             </Routes>
             <Footer />
         </Router>
